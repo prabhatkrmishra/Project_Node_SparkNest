@@ -3959,10 +3959,10 @@ body.search-is-visible .s-header__search-inner {
   z-index: 2;
   box-sizing: border-box;
   background-color: var(--slider-bg-color);
-  padding: var(--vspace-1) 4rem var(--vspace-2) 8rem;
+  padding: var(--vspace-1) 4rem var(--vspace-2) 6rem;
   text-align: center;
   max-width: 680px;
-  max-height: calc(20 * var(--space));
+  max-height: calc(30 * var(--space));
   overflow: hidden;
   position: relative;
 }

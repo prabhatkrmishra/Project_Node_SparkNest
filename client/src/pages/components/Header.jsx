@@ -27,7 +27,10 @@ const Header = () => {
       <div className="row s-header__navigation">
         <nav className="s-header__nav-wrap">
           <h3 className="s-header__nav-heading">Navigate to</h3>
-          <ul className="s-header__nav" style={currentPath === "/" ? {paddingLeft: "40px"} : {}}>
+          <ul
+            className="s-header__nav"
+            style={currentPath === "/" ? { paddingLeft: "20px" } : {}}
+          >
             <li className={currentPath === "/" ? "current-menu-item" : ""}>
               <a href="/">Home</a>
             </li>

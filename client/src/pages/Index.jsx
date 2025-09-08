@@ -47,7 +47,7 @@ const Index = () => {
                       </p>
                       <a
                         className="hero__more-link"
-                        href="single-standard.html"
+                        href="/category?type=health"
                       >
                         Read More
                       </a>
@@ -82,7 +82,7 @@ const Index = () => {
                       </p>
                       <a
                         className="hero__more-link"
-                        href="single-standard.html"
+                        href="/category?type=inspiration"
                       >
                         Read More
                       </a>
@@ -117,7 +117,7 @@ const Index = () => {
                       </p>
                       <a
                         className="hero__more-link"
-                        href="single-standard.html"
+                        href="/category?type=lifestyle"
                       >
                         Read More
                       </a>
