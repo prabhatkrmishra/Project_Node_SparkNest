@@ -3959,7 +3959,7 @@ body.search-is-visible .s-header__search-inner {
   z-index: 2;
   box-sizing: border-box;
   background-color: var(--slider-bg-color);
-  padding: var(--vspace-1) 4rem var(--vspace-2) 6rem;
+  padding: var(--vspace-1) 4rem var(--vspace-2) 8rem;
   text-align: center;
   max-width: 680px;
   max-height: calc(20 * var(--space));
@@ -3982,7 +3982,6 @@ body.search-is-visible .s-header__search-inner {
 }
 
 .hero__entry-meta {
-  margin-left: 0.4rem;
   margin-bottom: var(--vspace-0_5);
 }
 

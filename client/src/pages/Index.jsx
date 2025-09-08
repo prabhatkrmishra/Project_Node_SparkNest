@@ -13,7 +13,7 @@ const Index = () => {
       <Helmet>
         <title>BloggingVerse</title>
       </Helmet>
-      <PreLoader/>
+      <PreLoader />
       <div id="page" className="s-pagewrap ss-home">
         <Header />
         <section id="content" className="s-content">
@@ -125,7 +125,6 @@ const Index = () => {
                   </div>
                 </article>
               </div>
-
               <div className="swiper-pagination"></div>
             </div>
 

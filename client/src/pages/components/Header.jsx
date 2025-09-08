@@ -27,7 +27,7 @@ const Header = () => {
       <div className="row s-header__navigation">
         <nav className="s-header__nav-wrap">
           <h3 className="s-header__nav-heading">Navigate to</h3>
-          <ul className="s-header__nav">
+          <ul className="s-header__nav" style={currentPath === "/" ? {paddingLeft: "40px"} : {}}>
             <li className={currentPath === "/" ? "current-menu-item" : ""}>
               <a href="/">Home</a>
             </li>
@@ -37,7 +37,7 @@ const Header = () => {
                 isActivePath("/category") ? "current-menu-item" : ""
               }`}
             >
-              <a href="/category?type=design">Categories</a>
+              <a>Categories</a>
               <ul className="sub-menu">
                 <li>
                   <a href="/category?type=design">Design</a>
@@ -65,7 +65,7 @@ const Header = () => {
                 isActivePath("/blog") ? "current-menu-item" : ""
               }`}
             >
-              <a href="/blog?type=standard-post">Blog</a>
+              <a>Blog</a>
               <ul className="sub-menu">
                 <li>
                   <a href="/blog?type=standard-post">Standard Post</a>
