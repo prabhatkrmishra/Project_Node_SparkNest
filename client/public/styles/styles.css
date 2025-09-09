@@ -169,6 +169,7 @@
   --color-btn-stroke-text: var(--color-black);
   --color-btn-stroke-hover: var(--color-black);
   --color-btn-stroke-hover-text: var(--color-white);
+  --color-btn-stroke-border-black: var(--color-black);
 
   /* preloader
      */
@@ -2325,6 +2326,23 @@ button.btn--stroke:hover {
   background: var(--color-btn-stroke-hover) !important;
   border: 2px solid var(--color-btn-stroke-hover);
   color: var(--color-btn-stroke-hover-text);
+}
+
+.btn--hollow,
+button.btn--hollow {
+  background: transparent !important;
+  font-weight: 700;
+  border: 2px solid var(--color-btn-stroke);
+  color: var(--color-btn-stroke-text);
+}
+
+.btn--hollow:focus,
+button.btn--hollow:focus,
+.btn--hollow:hover,
+button.btn--hollow:hover {
+  background: var(--color-gray-5) !important;
+  border: 2px solid var(var(--color-gray-15));
+  color: var(var(--color-gray-15));
 }
 
 .btn--pill,
@@ -5346,5 +5364,26 @@ body.search-is-visible .s-header__search-inner {
 @media screen and (max-width: 400px) {
   .comment-respond form {
     padding-top: var(--vspace-1);
+  }
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.iWidth {
+
+}
+
+@media screen and (max-width: 1240px) {
+  .signup-form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .iWidth {
+    width: 100%;
   }
 }

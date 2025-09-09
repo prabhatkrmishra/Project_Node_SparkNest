@@ -1,5 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
+import 'bootstrap/dist/css/bootstrap-utilities.css';
 
 import MobileMenu from "./effects/MobileMenu";
 import SearchEffect from "./effects/SearchEffect";
@@ -93,9 +94,9 @@ const Header = () => {
             </li>
 
             <li
-              className={currentPath === "/styles" ? "current-menu-item" : ""}
+              className={currentPath === "/login" ? "current-menu-item" : ""}
             >
-              <a href="/styles">Styles</a>
+              <a className="text-secondary" href="/login">Log in</a>
             </li>
           </ul>
         </nav>

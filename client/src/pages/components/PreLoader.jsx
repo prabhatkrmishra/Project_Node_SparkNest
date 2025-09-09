@@ -1,9 +1,11 @@
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 
 const PreLoader = () => {
-  useEffect(() => {
+  useLayoutEffect(() => {
     const preloader = document.querySelector("#preloader");
-    if (!preloader) return;
+    if (!preloader) {
+      return;
+    }
 
     document.documentElement.classList.add("ss-preload");
 
@@ -11,19 +13,43 @@ const PreLoader = () => {
       document.documentElement.classList.remove("ss-preload");
       document.documentElement.classList.add("ss-loaded");
 
-      preloader.addEventListener("transitionend", function afterTransition(e) {
-        if (e.target.matches("#preloader")) {
-          e.target.style.display = "none";
-          preloader.removeEventListener(e.type, afterTransition);
+      if (preloader.classList.contains("transition")) {
+        preloader.addEventListener(
+          "transitionend",
+          function afterTransition(e) {
+            if (e.target.matches("#preloader")) {
+              e.target.style.display = "none";
+              preloader.removeEventListener(e.type, afterTransition);
+            }
+          }
+        );
+      } else {
+        preloader.style.display = "none";
+      }
+
+      setTimeout(() => {
+        if (preloader.style.display !== "none") {
+          preloader.style.display = "none";
         }
-      });
+      }, 3000);
     };
 
+    const handleDOMContentLoaded = () => {
+      handleLoad();
+    };
+
+    document.addEventListener("DOMContentLoaded", handleDOMContentLoaded);
+
     window.addEventListener("load", handleLoad);
+
+    return () => {
+      document.removeEventListener("DOMContentLoaded", handleDOMContentLoaded);
+      window.removeEventListener("load", handleLoad);
+    };
   }, []);
 
   return (
-    <div id="preloader">
+    <div id="preloader" className="transition">
       <div id="loader" className="dots-fade">
         <div></div>
         <div></div>
