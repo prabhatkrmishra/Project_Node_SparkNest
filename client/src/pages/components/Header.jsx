@@ -71,13 +71,13 @@ const Header = () => {
               <a>Blog</a>
               <ul className="sub-menu">
                 <li>
-                  <a href="/blog?type=standard-post">Standard Post</a>
+                  <a href="/blogs?type=standard-post">Standard Post</a>
                 </li>
                 <li>
-                  <a href="/blog?type=video-post">Video Post</a>
+                  <a href="/blogs?type=video-post">Video Post</a>
                 </li>
                 <li>
-                  <a href="/blog?type=audio-post">Audio Post</a>
+                  <a href="/blogs?type=audio-post">Audio Post</a>
                 </li>
               </ul>
             </li>

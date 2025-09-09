@@ -26,8 +26,8 @@ const About = () => {
                     <img
                       alt=""
                       sizes="(max-width: 2400px) 100vw, 2400px"
-                      src="images/thumbs/about/about-1200.jpg"
-                      srcSet="images/thumbs/about/about-2400.jpg 2400w, images/thumbs/about/about-1200.jpg 1200w, images/thumbs/about/about-600.jpg 600w"
+                      src="/images/thumbs/about/about-1200.jpg"
+                      srcSet="/images/thumbs/about/about-2400.jpg 2400w, /images/thumbs/about/about-1200.jpg 1200w, /images/thumbs/about/about-600.jpg 600w"
                     />
                   </figure>
                 </div>

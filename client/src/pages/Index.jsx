@@ -24,41 +24,7 @@ const Index = () => {
                   <div
                     className="hero__entry-image"
                     style={{
-                      backgroundImage: `url('images/thumbs/featured/featured-02_2000.jpg')`,
-                    }}
-                  ></div>
-                  <div className="hero__entry-text">
-                    <div className="hero__entry-text-inner">
-                      <div className="hero__entry-meta">
-                        <span className="cat-links">
-                          <a href="category.html">Health</a>
-                        </span>
-                      </div>
-                      <h2 className="hero__entry-title">
-                        <a href="single-standard.html">
-                          10 Reasons Why Being in Nature Is Good For You.
-                        </a>
-                      </h2>
-                      <p className="hero__entry-desc">
-                        Voluptas harum sequi rerum quasi quisquam. Est tenetur
-                        ut doloribus in aliquid animi nostrum. Tempora quibusdam
-                        ad nulla. Quis autem possimus dolores est est fugiat
-                        saepe vel aut. Earum consequatur.
-                      </p>
-                      <a
-                        className="hero__more-link"
-                        href="/category?type=health"
-                      >
-                        Read More
-                      </a>
-                    </div>
-                  </div>
-                </article>
-                <article className="hero__slide swiper-slide">
-                  <div
-                    className="hero__entry-image"
-                    style={{
-                      backgroundImage: `url('images/thumbs/featured/featured-01_2000.jpg')`,
+                      backgroundImage: `url('/images/thumbs/featured/featured-01_2000.jpg')`,
                     }}
                   ></div>
                   <div className="hero__entry-text">
@@ -93,7 +59,41 @@ const Index = () => {
                   <div
                     className="hero__entry-image"
                     style={{
-                      backgroundImage: `url('images/thumbs/featured/featured-03_2000.jpg')`,
+                      backgroundImage: `url('/images/thumbs/featured/featured-02_2000.jpg')`,
+                    }}
+                  ></div>
+                  <div className="hero__entry-text">
+                    <div className="hero__entry-text-inner">
+                      <div className="hero__entry-meta">
+                        <span className="cat-links">
+                          <a href="category.html">Health</a>
+                        </span>
+                      </div>
+                      <h2 className="hero__entry-title">
+                        <a href="single-standard.html">
+                          10 Reasons Why Being in Nature Is Good For You.
+                        </a>
+                      </h2>
+                      <p className="hero__entry-desc">
+                        Voluptas harum sequi rerum quasi quisquam. Est tenetur
+                        ut doloribus in aliquid animi nostrum. Tempora quibusdam
+                        ad nulla. Quis autem possimus dolores est est fugiat
+                        saepe vel aut. Earum consequatur.
+                      </p>
+                      <a
+                        className="hero__more-link"
+                        href="/category?type=health"
+                      >
+                        Read More
+                      </a>
+                    </div>
+                  </div>
+                </article>
+                <article className="hero__slide swiper-slide">
+                  <div
+                    className="hero__entry-image"
+                    style={{
+                      backgroundImage: `url('/images/thumbs/featured/featured-03_2000.jpg')`,
                     }}
                   ></div>
                   <div className="hero__entry-text">
@@ -158,8 +158,8 @@ const Index = () => {
                   <div className="entry__thumb">
                     <a href="single-standard.html" className="thumb-link">
                       <img
-                        src="images/thumbs/masonry/statue-600.jpg"
-                        srcSet="images/thumbs/masonry/statue-600.jpg 1x, images/thumbs/masonry/statue-1200.jpg 2x"
+                        src="/images/thumbs/masonry/statue-600.jpg"
+                        srcSet="/images/thumbs/masonry/statue-600.jpg 1x, /images/thumbs/masonry/statue-1200.jpg 2x"
                         alt=""
                       />
                     </a>
@@ -200,8 +200,8 @@ const Index = () => {
                   <div className="entry__thumb">
                     <a href="single-standard.html" className="thumb-link">
                       <img
-                        src="images/thumbs/masonry/beetle-600.jpg"
-                        srcSet="images/thumbs/masonry/beetle-600.jpg 1x, images/thumbs/masonry/beetle-1200.jpg 2x"
+                        src="/images/thumbs/masonry/beetle-600.jpg"
+                        srcSet="/images/thumbs/masonry/beetle-600.jpg 1x, /images/thumbs/masonry/beetle-1200.jpg 2x"
                         alt=""
                       />
                     </a>
@@ -243,8 +243,8 @@ const Index = () => {
                   <div className="entry__thumb">
                     <a href="single-standard.html" className="thumb-link">
                       <img
-                        src="images/thumbs/masonry/grayscale-600.jpg"
-                        srcSet="images/thumbs/masonry/grayscale-600.jpg 1x, images/thumbs/masonry/grayscale-1200.jpg 2x"
+                        src="/images/thumbs/masonry/grayscale-600.jpg"
+                        srcSet="/images/thumbs/masonry/grayscale-600.jpg 1x, /images/thumbs/masonry/grayscale-1200.jpg 2x"
                         alt=""
                       />
                     </a>
@@ -286,8 +286,8 @@ const Index = () => {
                   <div className="entry__thumb">
                     <a href="single-standard.html" className="thumb-link">
                       <img
-                        src="images/thumbs/masonry/woodcraft-600.jpg"
-                        srcSet="images/thumbs/masonry/woodcraft-600.jpg 1x, images/thumbs/masonry/woodcraft-1200.jpg 2x"
+                        src="/images/thumbs/masonry/woodcraft-600.jpg"
+                        srcSet="/images/thumbs/masonry/woodcraft-600.jpg 1x, /images/thumbs/masonry/woodcraft-1200.jpg 2x"
                         alt=""
                       />
                     </a>
@@ -329,8 +329,8 @@ const Index = () => {
                   <div className="entry__thumb">
                     <a href="single-standard.html" className="thumb-link">
                       <img
-                        src="images/thumbs/masonry/tulips-600.jpg"
-                        srcSet="images/thumbs/masonry/tulips-600.jpg 1x, images/thumbs/masonry/tulips-1200.jpg 2x"
+                        src="/images/thumbs/masonry/tulips-600.jpg"
+                        srcSet="/images/thumbs/masonry/tulips-600.jpg 1x, /images/thumbs/masonry/tulips-1200.jpg 2x"
                         alt=""
                       />
                     </a>
@@ -372,8 +372,8 @@ const Index = () => {
                   <div className="entry__thumb">
                     <a href="single-standard.html" className="thumb-link">
                       <img
-                        src="images/thumbs/masonry/red-and-blue-600.jpg"
-                        srcSet="images/thumbs/masonry/red-and-blue-600.jpg 1x, images/thumbs/masonry/red-and-blue-1200.jpg 2x"
+                        src="/images/thumbs/masonry/red-and-blue-600.jpg"
+                        srcSet="/images/thumbs/masonry/red-and-blue-600.jpg 1x, /images/thumbs/masonry/red-and-blue-1200.jpg 2x"
                         alt=""
                       />
                     </a>
@@ -416,8 +416,8 @@ const Index = () => {
                   <div className="entry__thumb">
                     <a href="single-standard.html" className="thumb-link">
                       <img
-                        src="images/thumbs/masonry/white-lamp-600.jpg"
-                        srcSet="images/thumbs/masonry/white-lamp-600.jpg 1x, images/thumbs/masonry/white-lamp-1200.jpg 2x"
+                        src="/images/thumbs/masonry/white-lamp-600.jpg"
+                        srcSet="/images/thumbs/masonry/white-lamp-600.jpg 1x, /images/thumbs/masonry/white-lamp-1200.jpg 2x"
                         alt=""
                       />
                     </a>
@@ -460,8 +460,8 @@ const Index = () => {
                   <div className="entry__thumb">
                     <a href="single-standard.html" className="thumb-link">
                       <img
-                        src="images/thumbs/masonry/books-600.jpg"
-                        srcSet="images/thumbs/masonry/books-600.jpg 1x, images/thumbs/masonry/books-1200.jpg 2x"
+                        src="/images/thumbs/masonry/books-600.jpg"
+                        srcSet="/images/thumbs/masonry/books-600.jpg 1x, /images/thumbs/masonry/books-1200.jpg 2x"
                         alt=""
                       />
                     </a>
@@ -504,8 +504,8 @@ const Index = () => {
                   <div className="entry__thumb">
                     <a href="single-standard.html" className="thumb-link">
                       <img
-                        src="images/thumbs/masonry/lamp-600.jpg"
-                        srcSet="images/thumbs/masonry/lamp-600.jpg 1x, images/thumbs/masonry/lamp-1200.jpg 2x"
+                        src="/images/thumbs/masonry/lamp-600.jpg"
+                        srcSet="/images/thumbs/masonry/lamp-600.jpg 1x, /images/thumbs/masonry/lamp-1200.jpg 2x"
                         alt=""
                       />
                     </a>
@@ -548,8 +548,8 @@ const Index = () => {
                   <div className="entry__thumb">
                     <a href="single-standard.html" className="thumb-link">
                       <img
-                        src="images/thumbs/masonry/clock-600.jpg"
-                        srcSet="images/thumbs/masonry/clock-600.jpg 1x, images/thumbs/masonry/clock-1200.jpg 2x"
+                        src="/images/thumbs/masonry/clock-600.jpg"
+                        srcSet="/images/thumbs/masonry/clock-600.jpg 1x, /images/thumbs/masonry/clock-1200.jpg 2x"
                         alt=""
                       />
                     </a>
@@ -591,8 +591,8 @@ const Index = () => {
                   <div className="entry__thumb">
                     <a href="single-standard.html" className="thumb-link">
                       <img
-                        src="images/thumbs/masonry/phone-and-keyboard-600.jpg"
-                        srcSet="images/thumbs/masonry/phone-and-keyboard-600.jpg 1x, images/thumbs/masonry/phone-and-keyboard-1200.jpg 2x"
+                        src="/images/thumbs/masonry/phone-and-keyboard-600.jpg"
+                        srcSet="/images/thumbs/masonry/phone-and-keyboard-600.jpg 1x, /images/thumbs/masonry/phone-and-keyboard-1200.jpg 2x"
                         alt=""
                       />
                     </a>
@@ -638,8 +638,8 @@ const Index = () => {
                   <div className="entry__thumb">
                     <a href="single-standard.html" className="thumb-link">
                       <img
-                        src="images/thumbs/masonry/wheel-600.jpg"
-                        srcSet="images/thumbs/masonry/wheel-600.jpg 1x, images/thumbs/masonry/wheel-1200.jpg 2x"
+                        src="/images/thumbs/masonry/wheel-600.jpg"
+                        srcSet="/images/thumbs/masonry/wheel-600.jpg 1x, /images/thumbs/masonry/wheel-1200.jpg 2x"
                         alt=""
                       />
                     </a>

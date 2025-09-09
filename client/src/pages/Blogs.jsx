@@ -8,24 +8,25 @@ import MasonryEffect from "./components/effects/MasonryEffect";
 import AnimateBricks from "./components/effects/AnimateBricks";
 import MoveToEffect from "./components/effects/MoveToEffect";
 
-const Category = () => {
+const Blogs = () => {
   const [searchParams] = useSearchParams();
-  const categoryType = searchParams.get("type")
+  const blogType = searchParams.get("type")
     ? searchParams.get("type")
-    : "design";
+    : "standard-post";
 
-  var category = "";
-  const validCategoryTypes = [
-    "design",
-    "lifestyle",
-    "inspiration",
-    "workplace",
-    "health",
-    "photography",
-  ];
+  function convertToTitleCase(str) {
+    return str
+      .toLowerCase()
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  }
 
-  if (validCategoryTypes.includes(categoryType)) {
-    category = categoryType.charAt(0).toUpperCase() + categoryType.slice(1);
+  var blog = "";
+  const validBlogTypes = ["standard-post", "video-post", "audio-post"];
+
+  if (validBlogTypes.includes(blogType)) {
+    blog = convertToTitleCase(blogType);
   } else {
     return (window.location.href = "/");
   }
@@ -33,7 +34,7 @@ const Category = () => {
   return (
     <div>
       <Helmet>
-        <title>Category - {category} : BloggingVerse</title>
+        <title>Blogs Type - {blog} : BloggingVerse</title>
       </Helmet>
       <PreLoader />
       <div id="page" className="s-pagewrap">
@@ -47,9 +48,9 @@ const Category = () => {
                     className="page-title__small-type"
                     style={{ marginBottom: "25px" }}
                   >
-                    Category:
+                    Blog Type:
                   </span>
-                  {category}
+                  {blog}
                 </h1>
               </div>
             </div>
@@ -685,4 +686,4 @@ const Category = () => {
   );
 };
 
-export default Category;
+export default Blogs;

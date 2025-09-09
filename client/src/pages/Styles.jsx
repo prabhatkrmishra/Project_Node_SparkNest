@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { solarizedDarkAtom } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 import PreLoader from "./components/PreLoader";
 import Header from "./components/Header";
@@ -63,7 +63,7 @@ const Styles = () => {
                           height="120"
                           className="u-pull-left"
                           alt="sample-image"
-                          src="images/sample-image.jpg"
+                          src="/images/sample-image.jpg"
                         />
                       </a>
                       Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
@@ -331,7 +331,7 @@ const Styles = () => {
                     </ul>
 
                     <h3 className="u-add-bottom">Code</h3>
-                    <SyntaxHighlighter language="css" style={solarizedDarkAtom}>
+                    <SyntaxHighlighter language="css" style={dracula}>
                       {codeString}
                     </SyntaxHighlighter>
                   </div>
@@ -415,8 +415,8 @@ const Styles = () => {
 
                     <figure>
                       <img
-                        src="images/wheel-500.jpg"
-                        srcSet="images/wheel-1000.jpg 1000w, images/wheel-500.jpg 500w"
+                        src="/images/wheel-500.jpg"
+                        srcSet="/images/wheel-1000.jpg 1000w, /images/wheel-500.jpg 500w"
                         sizes="(max-width: 1000px) 100vw, 1000px"
                         alt="A descriptive alt text"
                       />
