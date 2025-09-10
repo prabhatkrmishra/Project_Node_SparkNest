@@ -1,3 +1,4 @@
+import "./styles/styles.css"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import About from "./pages/About";
 import Category from "./pages/Category";
@@ -8,6 +9,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Article from "./pages/components/StandardPost";
 import Styles from "./pages/Styles";
+import Error from "./pages/Error";
 
 function App() {
   return (
@@ -20,9 +22,10 @@ function App() {
         <Route exact path="/blogs/article" element={<Article />} />
         <Route exact path="/about" element={<About />} />
         <Route exact path="/contact" element={<Contact />} />
-        <Route exact path="/login" element={<Login />} />
-        <Route exact path="/signup" element={<Signup />} />
+        <Route exact path="/session/new" element={<Login />} />
+        <Route exact path="/signup/new" element={<Signup />} />
         <Route exact path="/styles" element={<Styles />} />
+        <Route path="*" element={<Error />} />
       </Routes>
     </Router>
   );

@@ -96,7 +96,7 @@ const Header = () => {
             <li
               className={currentPath === "/login" ? "current-menu-item" : ""}
             >
-              <a className="text-secondary" href="/login">Log in</a>
+              <a className="text-dark-emphasis" href="/session/new">Log in</a>
             </li>
           </ul>
         </nav>

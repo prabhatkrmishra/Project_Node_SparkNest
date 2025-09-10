@@ -76,8 +76,6 @@
 /* ------------------------------------------------------------------- 
  * ## fonts 
  * ------------------------------------------------------------------- */
-@import url("https://fonts.googleapis.com/css2?family=Castoro:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap");
-
 :root {
   --font-1: "Inter", sans-serif;
   --font-2: "Castoro", serif;
@@ -107,7 +105,6 @@
   --color-2-light: hsla(9, 68%, 68%, 1);
   --color-2-dark: hsla(9, 68%, 48%, 1);
   --color-2-darker: hsla(9, 68%, 38%, 1);
-
   /* feedback colors
      * color-error(#ffd1d2), color-success(#c8e675), 
      * color-info(#d7ecfb), color-notice(#fff099)
@@ -1652,8 +1649,8 @@ hr.fancy::before {
   background-repeat: no-repeat;
   background: center center;
   background-size: contain;
-  background-image: url(../images/icons/icon-quote.svg);
-  transform: translate(-50%, 0, 0);
+  background-image: url(/images/icons/icon-quote.svg);
+  transform: translate(-50%, 0);
   position: absolute;
   top: var(--vspace-1);
   left: 50%;
@@ -1850,6 +1847,7 @@ img,
   width: 100%;
   opacity: 1;
   overflow: hidden;
+  transition: all 0.6s 0.9s ease-in-out;
 }
 
 .no-js #preloader {
@@ -2064,8 +2062,10 @@ select {
   font-size: calc(var(--text-size) * 0.8889);
   line-height: var(--input-line-height);
   max-width: 100%;
-  background-color: var(--color-gray-3);
-  border: 1px solid transparent;
+  /*background-color: var(--color-gray-3);*/
+  background-color: var(--color-white);
+  /*border: 1px solid transparent;*/
+  border: 1px solid var(--color-black);
   transition: all 0.3s ease-in-out;
   border-radius: var(--border-radius);
 }
@@ -2080,7 +2080,6 @@ select {
   -moz-appearance: none;
   appearance: none;
   text-indent: 0.01px;
-  text-overflow: "";
   margin: 0;
   vertical-align: middle;
 }
@@ -2326,23 +2325,6 @@ button.btn--stroke:hover {
   background: var(--color-btn-stroke-hover) !important;
   border: 2px solid var(--color-btn-stroke-hover);
   color: var(--color-btn-stroke-hover-text);
-}
-
-.btn--hollow,
-button.btn--hollow {
-  background: transparent !important;
-  font-weight: 700;
-  border: 2px solid var(--color-btn-stroke);
-  color: var(--color-btn-stroke-text);
-}
-
-.btn--hollow:focus,
-button.btn--hollow:focus,
-.btn--hollow:hover,
-button.btn--hollow:hover {
-  background: var(--color-gray-5) !important;
-  border: 2px solid var(var(--color-gray-15));
-  color: var(var(--color-gray-15));
 }
 
 .btn--pill,
@@ -2874,12 +2856,11 @@ img.u-pull-left {
 
 /* responsive video container
  */
-.video-container {
-  --aspect-ratio: 16/9;
+ .video-container {
   position: relative;
   height: 0;
   overflow: hidden;
-  padding-bottom: calc(100% / (var(--aspect-ratio)));
+  padding-bottom: calc(100% / (16 / 9));
   max-width: 100%;
   border: 1px solid #ddd;
   border-radius: var(--border-radius);
@@ -5367,14 +5348,61 @@ body.search-is-visible .s-header__search-inner {
   }
 }
 
+/* ------------------------------------------------------------------- 
+ * Custom styling:
+ * BloggingVerse
+ * ------------------------------------------------------------------- */
+
+:root {
+  --animation-transition: all 0.2s ease-in-out;
+}
+
+.btn--hollow,
+button.btn--hollow,
+a.btn--hollow {
+  background-color: transparent !important;
+  font-weight: 700;
+  border: 2px solid var(--color-btn-stroke);
+  color: var(--color-black);
+  transition: var(--animation-transition);
+}
+
+.btn--hollow:focus,
+button.btn--hollow:focus,
+a.btn--hollow:focus,
+.btn--hollow:hover,
+button.btn--hollow:hover,
+a.btn--hollow:hover {
+  background-color: var(--color-white) !important;
+  border: 2px solid var(--color-1-light);
+  color: var(--color-1-light);
+  transition: var(--animation-transition);
+}
+
+.google-svg-icon {
+  fill: var(--color-black);
+  transition: var(--animation-transition);
+}
+
+a.btn--hollow:hover .google-svg-icon,
+a.btn--hollow:focus .google-svg-icon {
+  fill: var(--color-1-light);
+  transition: var(--animation-transition);
+}
+
 .signup-form {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.iWidth {
+.input-Width-adjust {
+  width: auto;
+}
 
+.error-page {
+  text-align: center;
+  text-wrap: normal;
 }
 
 @media screen and (max-width: 1240px) {
@@ -5383,7 +5411,7 @@ body.search-is-visible .s-header__search-inner {
     flex-direction: column;
   }
 
-  .iWidth {
-    width: 100%;
+  .input-Width-adjust {
+    width: 100% !important;
   }
 }

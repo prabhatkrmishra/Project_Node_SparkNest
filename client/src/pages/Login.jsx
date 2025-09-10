@@ -5,6 +5,8 @@ import "bootstrap/dist/css/bootstrap-utilities.css";
 import PreLoader from "./components/PreLoader";
 import Header from "./components/Header";
 
+import { sendLoginCred } from "../API";
+
 const Login = () => {
   const [userCred, setUserCred] = useState({
     useremail: "",
@@ -20,15 +22,22 @@ const Login = () => {
     });
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    try {
+      const response = await sendLoginCred(userCred);
+      console.log("Response from server:", response.data.receivedData);
+    } catch (error) {
+      console.error("There was an error!", error);
+    }
+    window.location.href = "/signup";
   };
 
   return (
     <div>
       <PreLoader />
       <Helmet>
-        <title>Login | BloggingVerse</title>
+        <title>Login : BloggingVerse</title>
       </Helmet>
       <div id="page" className="s-pagewrap">
         <Header />
@@ -68,9 +77,10 @@ const Login = () => {
                 >
                   <div>Log in with</div>
                   <svg
+                    className="google-svg-icon"
                     xmlns="http://www.w3.org/2000/svg"
-                    width="25px"
-                    height="25px"
+                    width="20px"
+                    height="20px"
                     viewBox="0 0 488 512"
                   >
                     <path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
@@ -103,7 +113,7 @@ const Login = () => {
                 </div>
               </div>
               {/*  <!-- OR END --> */}
-              <form onSubmit={handleSubmit} action="/login" method="POST">
+              <form onSubmit={handleSubmit}>
                 <div className="form-outline mb-4">
                   <label htmlFor="formEmail" style={{ marginBottom: "8px" }}>
                     Your Email
@@ -115,7 +125,6 @@ const Login = () => {
                     name="useremail"
                     placeholder="abcd@efg.ijk"
                     required=""
-                    value={userCred.useremail}
                     onChange={handleUserCred}
                   />
                 </div>
@@ -130,7 +139,6 @@ const Login = () => {
                     name="password"
                     placeholder="•••••••••••"
                     required=""
-                    value={userCred.password}
                     onChange={handleUserCred}
                   />
                 </div>
@@ -161,7 +169,7 @@ const Login = () => {
                 >
                   <span className="label-text" htmlFor="loginCheck">
                     Not have an account?{" "}
-                    <a className="label-text " href="/signup">
+                    <a className="label-text " href="/signup/new">
                       <u>Sign up</u>
                     </a>
                   </span>
