@@ -7,7 +7,7 @@ import MoveToEffect from "./components/effects/MoveToEffect";
 
 const About = () => {
   return (
-    <div>
+    <>
       <Helmet>
         <title>BloggingVerse - About</title>
       </Helmet>
@@ -86,7 +86,7 @@ const About = () => {
         <Footer />
       </div>
       <MoveToEffect />
-    </div>
+    </>
   );
 };
 

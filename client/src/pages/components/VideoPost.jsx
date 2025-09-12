@@ -7,7 +7,7 @@ import MoveToEffect from "./effects/MoveToEffect";
 
 const VideoPost = () => {
   return (
-    <div>
+    <>
       <Helmet>
         <title>BloggingVerse</title>
       </Helmet>
@@ -597,7 +597,7 @@ const VideoPost = () => {
         <Footer />
       </div>
       <MoveToEffect />
-    </div>
+    </>
   );
 };
 

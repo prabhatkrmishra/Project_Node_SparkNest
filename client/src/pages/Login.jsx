@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
+import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap-utilities.css";
 
 import PreLoader from "./components/PreLoader";
+import ErrorMessage from "./components/messageBox/ErrorMessage";
 import Header from "./components/Header";
 
 import { sendLoginCred } from "../API";
@@ -11,7 +14,18 @@ const Login = () => {
   const [userCred, setUserCred] = useState({
     useremail: "",
     password: "",
+    savesession: false,
   });
+  const [isError, setError] = useState(false);
+  const [errorMssg, SetErrorMssg] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const isLoggedIn = Cookies.get('isLoggedIn');
+    if (isLoggedIn) {
+       window.location.href = `/profile`
+    }
+  }, [navigate]);
 
   function handleUserCred(event) {
     setUserCred((preVal) => {
@@ -20,21 +34,52 @@ const Login = () => {
         [event.target.name]: event.target.value,
       };
     });
+    setError(false);
+    SetErrorMssg("");
   }
+
+  const handleCheckboxChange = (event) => {
+    setUserCred((preVal) => {
+      return {
+        ...preVal,
+        [event.target.name]: event.target.checked,
+      };
+    });
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       const response = await sendLoginCred(userCred);
-      console.log("Response from server:", response.data.receivedData);
+      
+      if (response.data.message) {
+        setError(true);
+        SetErrorMssg(response.data.message);
+      } else {
+        if (response.data.cookieAge && response.data.cookieAge !== false) {
+          // persistent cookie
+          const days = response.data.cookieAge / (1000 * 60 * 60 * 24);
+          Cookies.set('isLoggedIn', 'true', { expires: userCred.savesession ? days : null });
+          Cookies.set('user', JSON.stringify(response.data), { expires: days});
+        } else {
+          // session cookie
+          Cookies.set('isLoggedIn', 'true');
+          Cookies.set('user', JSON.stringify(response.data));
+        }
+        window.location.href = `/profile`;
+      }
     } catch (error) {
       console.error("There was an error!", error);
     }
-    window.location.href = "/signup";
   };
 
+  const googleAuth = () => {
+    window.location.href = "http://localhost:8080/auth/google";
+  };
+
+
   return (
-    <div>
+    <>
       <PreLoader />
       <Helmet>
         <title>Login : BloggingVerse</title>
@@ -72,7 +117,7 @@ const Login = () => {
               {/*  <!-- Google Button --> */}
               <div className="d-flex align-items-center justify-content-center">
                 <a
-                  href="/auth/google"
+                  onClick={googleAuth}
                   className="btn btn--hollow u-fullwidth d-flex gap-3 align-items-center justify-content-center"
                 >
                   <div>Log in with</div>
@@ -113,6 +158,7 @@ const Login = () => {
                 </div>
               </div>
               {/*  <!-- OR END --> */}
+              {<ErrorMessage isError={isError} errorMssg={errorMssg} />}
               <form onSubmit={handleSubmit}>
                 <div className="form-outline mb-4">
                   <label htmlFor="formEmail" style={{ marginBottom: "8px" }}>
@@ -146,8 +192,10 @@ const Login = () => {
                   <label className="u-add-bottom" style={{ margin: "0 0" }}>
                     <input
                       type="checkbox"
-                      value="false"
                       id="loginCheck"
+                      name="savesession"
+                      checked={userCred.savesession}
+                      onChange={handleCheckboxChange}
                       style={{ width: "15px", height: "15px" }}
                     />
                     <span className="label-text" htmlFor="loginCheck">
@@ -179,7 +227,7 @@ const Login = () => {
           </div>
         </section>
       </div>
-    </div>
+    </>
   );
 };
 

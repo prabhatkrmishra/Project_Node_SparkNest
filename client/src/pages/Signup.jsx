@@ -2,10 +2,11 @@ import { useState } from "react";
 import { Helmet } from "react-helmet";
 import "bootstrap/dist/css/bootstrap-utilities.css";
 
-import PreLoader from "./components/PreLoader";
-import Header from "./components/Header";
+import { checkEmail, sendSignupCred } from "../API";
 
-import { sendSignupCred } from "../API";
+import PreLoader from "./components/PreLoader";
+import ErrorMessage from "./components/messageBox/ErrorMessage";
+import Header from "./components/Header";
 
 const SignUp = () => {
   const [userData, setUserData] = useState({
@@ -13,7 +14,10 @@ const SignUp = () => {
     lname: "",
     email: "",
     password: "",
+    newsletter: false,
   });
+  const [emailExists, setEmailExists] = useState(false);
+  const [errorMssg, SetErrorMssg] = useState("");
 
   function handleUserData(event) {
     setUserData((preVal) => {
@@ -24,12 +28,41 @@ const SignUp = () => {
     });
   }
 
+  const handleCheckboxChange = (event) => {
+    setUserData((preVal) => {
+      return {
+        ...preVal,
+        [event.target.name]: event.target.checked,
+      };
+    });
+  };
+
+  const handleFocus = (e) => {
+    e.target.removeAttribute("readonly");
+  };
+
+  const handleEmailBlur = async () => {
+    const exists = await checkEmail(userData.email);
+    console.log(exists);
+    if (exists.data.message) {
+      setEmailExists(true);
+      SetErrorMssg(exists.data.message);
+    } else {
+      setEmailExists(false);
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (emailExists) {
+      return;
+    }
+
     try {
       const response = await sendSignupCred(userData);
-      console.log("Response from server:", response);
-      if(response.status == 200){
+      console.log(response.status);
+      if (response.status == 200) {
         alert("Signup successful! Login to continue");
         window.location.href = "/session/new";
       } else {
@@ -41,8 +74,12 @@ const SignUp = () => {
     }
   };
 
+  const googleAuth = () => {
+    window.location.href = "http://localhost:8080/auth/google";
+  };
+
   return (
-    <div>
+    <>
       <Helmet>
         <title>Signup : BloggingVerse</title>
       </Helmet>
@@ -86,7 +123,7 @@ const SignUp = () => {
               {/*  <!-- Google Button --> */}
               <div className="d-flex align-items-center justify-content-center mt-4">
                 <a
-                  href="/auth/google"
+                  onClick={googleAuth}
                   className="btn btn--hollow u-fullwidth d-flex gap-3  align-items-center justify-content-center"
                 >
                   <div>Sign Up with</div>
@@ -141,6 +178,8 @@ const SignUp = () => {
                       placeholder="First Name"
                       required=""
                       onChange={handleUserData}
+                      readOnly
+                      onFocus={handleFocus}
                     />
                   </div>
                   <div className="form-outline">
@@ -155,6 +194,8 @@ const SignUp = () => {
                       placeholder="Last Name"
                       required=""
                       onChange={handleUserData}
+                      readOnly
+                      onFocus={handleFocus}
                     />
                   </div>
                 </div>
@@ -163,21 +204,25 @@ const SignUp = () => {
                     Enter Email
                   </label>
                   <input
-                    className="u-fullwidth form-control form-control-lg"
+                    className="u-fullwidth"
                     type="email"
                     id="formEmail"
                     name="email"
                     placeholder="your@email.com"
                     required=""
                     onChange={handleUserData}
+                    onBlur={handleEmailBlur}
+                    readOnly
+                    onFocus={handleFocus}
                   />
                 </div>
+                <ErrorMessage isError={emailExists} errorMssg={errorMssg} />
                 <div className="form-outline mb-4">
                   <label htmlFor="formPassword" style={{ marginBottom: "8px" }}>
                     Enter Password
                   </label>
                   <input
-                    className="u-fullwidth form-control"
+                    className="u-fullwidth"
                     type="password"
                     id="formPassword"
                     name="password"
@@ -190,8 +235,10 @@ const SignUp = () => {
                   <label className="u-add-bottom" style={{ margin: "0 0" }}>
                     <input
                       type="checkbox"
-                      value="false"
                       id="newsletterSignup"
+                      name="newsletter"
+                      checked={userData.newsletter}
+                      onChange={handleCheckboxChange}
                       style={{ width: "15px", height: "15px" }}
                     />
                     <span className="label-text" htmlFor="newsletterSignup">
@@ -218,7 +265,7 @@ const SignUp = () => {
           </div>
         </section>
       </div>
-    </div>
+    </>
   );
 };
 

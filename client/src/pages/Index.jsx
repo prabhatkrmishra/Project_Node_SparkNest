@@ -9,7 +9,7 @@ import MoveToEffect from "./components/effects/MoveToEffect";
 
 const Index = () => {
   return (
-    <div>
+    <>
       <Helmet>
         <title>BloggingVerse</title>
       </Helmet>
@@ -776,7 +776,7 @@ const Index = () => {
       <MasonryEffect />
       <AnimateBricks />
       <MoveToEffect />
-    </div>
+    </>
   );
 };
 

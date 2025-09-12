@@ -7,7 +7,7 @@ import MoveToEffect from "./effects/MoveToEffect";
 
 const AudioPost = () => {
   return (
-    <div>
+    <>
       <Helmet>
         <title>BloggingVerse</title>
       </Helmet>
@@ -595,7 +595,7 @@ const AudioPost = () => {
         <Footer />
       </div>
       <MoveToEffect />
-    </div>
+    </>
   );
 };
 

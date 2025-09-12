@@ -1,6 +1,23 @@
+import { useState } from "react";
+import { Subscription } from "../../API";
 import BackToTop from "./effects/BackToTop";
 
 const Footer = () => {
+  const[email, setEmail] = useState("");
+
+  const handleEmail = (event) => {
+    setEmail(event.target.value);
+  }
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const response = await Subscription(email);
+    if (response.status === 200){
+      setEmail("");
+      alert('Subscribed newsletter !');
+    }
+  }
+
   return (
     <footer id="colophon" className="s-footer">
       <div className="row s-footer__subscribe">
@@ -13,17 +30,19 @@ const Footer = () => {
               type="email"
               name="EMAIL"
               id="mce-EMAIL"
+              value={email}
               className="u-fullwidth text-center"
               placeholder="Your Email Address"
               title="The domain portion of the email address is invalid (the portion after the @)."
               pattern="^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*(\.\w{2,})+$"
               required
+              onChange={handleEmail}
             />
             <input
               type="submit"
-              name="subscribe"
               value="Subscribe"
               className="btn--small btn--primary u-fullwidth"
+              onClick={handleSubmit} 
             />
             <div className="mc-status"></div>
           </form>

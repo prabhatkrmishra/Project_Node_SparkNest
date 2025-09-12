@@ -21,11 +21,11 @@ const Styles = () => {
     }
   `;
   return (
-    <div>
+    <>
       <Helmet>
-        <title>BloggingVerse - Styles</title>
+        <title>Styles : BloggingVerse</title>
       </Helmet>
-      <PreLoader/>
+      <PreLoader />
       <div id="page" className="s-pagewrap">
         <Header />
         <section id="content" className="s-content s-content--page">
@@ -278,8 +278,7 @@ const Styles = () => {
 
                   <div className="column lg-6 tab-12">
                     <h3 className="u-add-bottom">Buttons</h3>
-
-                    <p>
+                    <p className="d-flex flex-column">
                       <a className="btn btn--primary u-fullwidth" href="#0">
                         Primary Button
                       </a>
@@ -288,6 +287,26 @@ const Styles = () => {
                       </a>
                       <a className="btn btn--stroke u-fullwidth" href="#0">
                         Stroke Button
+                      </a>
+                      <a className="btn btn--pill u-fullwidth" href="#0">
+                        Pill Button
+                      </a>
+                      <a className="btn btn--pill-small u-halfwidth" href="#0">
+                        Pill Button
+                      </a>
+                      <a className="btn btn--circle" href="#0">
+                        <svg
+                          width="16px"
+                          height="16px"
+                          viewBox="0 0 16 16"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          role="img"
+                        >
+                          <circle cx="2" cy="11" r="1.5" fill="currentColor"></circle>
+                          <circle cx="14" cy="11" r="1.5" fill="currentColor"></circle>
+                          <circle cx="8" cy="11" r="1.5" fill="currentColor"></circle>
+                        </svg>
                       </a>
                     </p>
 
@@ -799,7 +818,7 @@ const Styles = () => {
       </div>
       <AlertBoxes />
       <MoveToEffect />
-    </div>
+    </>
   );
 };
 

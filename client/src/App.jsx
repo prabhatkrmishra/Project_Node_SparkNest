@@ -1,4 +1,4 @@
-import "./styles/styles.css"
+import "./styles/styles.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import About from "./pages/About";
 import Category from "./pages/Category";
@@ -7,6 +7,8 @@ import Contact from "./pages/Contact";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Profile from "./pages/Profile";
+import GoogleLogin from "./pages/components/GoogleLogin";
 import Article from "./pages/components/StandardPost";
 import Styles from "./pages/Styles";
 import Error from "./pages/Error";
@@ -24,6 +26,8 @@ function App() {
         <Route exact path="/contact" element={<Contact />} />
         <Route exact path="/session/new" element={<Login />} />
         <Route exact path="/signup/new" element={<Signup />} />
+        <Route exact path="/google/login" element={<GoogleLogin />} />
+        <Route exact path="/profile" element={<Profile />} />
         <Route exact path="/styles" element={<Styles />} />
         <Route path="*" element={<Error />} />
       </Routes>

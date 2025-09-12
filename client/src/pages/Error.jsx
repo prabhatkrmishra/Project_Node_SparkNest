@@ -4,7 +4,7 @@ import PreLoader from "./components/PreLoader";
 
 const Error = () => {
   return (
-    <div>
+    <>
       <Helmet>
         <title>404 : BloggingVerse</title>
       </Helmet>
@@ -17,7 +17,7 @@ const Error = () => {
           </div>
         </section>
       </div>
-    </div>
+    </>
   );
 };
 

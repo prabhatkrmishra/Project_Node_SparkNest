@@ -32,7 +32,7 @@ const Blogs = () => {
   }
 
   return (
-    <div>
+    <>
       <Helmet>
         <title>Blogs Type - {blog} : BloggingVerse</title>
       </Helmet>
@@ -682,7 +682,7 @@ const Blogs = () => {
         <AnimateBricks />
         <MoveToEffect />
       </div>
-    </div>
+    </>
   );
 };
 

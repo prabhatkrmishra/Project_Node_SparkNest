@@ -7,9 +7,9 @@ import MoveToEffect from "./effects/MoveToEffect";
 
 const StandardPost = () => {
   return (
-    <div>
+    <>
       <Helmet>
-        <title>BloggingVerse</title>
+        <title>Article : BloggingVerse</title>
       </Helmet>
       <PreLoader />
       <div id="page" className="s-pagewrap">
@@ -597,7 +597,7 @@ const StandardPost = () => {
         <Footer />
       </div>
       <MoveToEffect />
-    </div>
+    </>
   );
 };
 

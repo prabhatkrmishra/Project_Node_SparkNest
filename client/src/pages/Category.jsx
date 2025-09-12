@@ -31,7 +31,7 @@ const Category = () => {
   }
 
   return (
-    <div>
+    <>
       <Helmet>
         <title>Category - {category} : BloggingVerse</title>
       </Helmet>
@@ -681,7 +681,7 @@ const Category = () => {
         <AnimateBricks />
         <MoveToEffect />
       </div>
-    </div>
+    </>
   );
 };
 

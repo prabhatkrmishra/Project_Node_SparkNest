@@ -1,13 +1,17 @@
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
-import 'bootstrap/dist/css/bootstrap-utilities.css';
+import Cookies from "js-cookie";
+import "bootstrap/dist/css/bootstrap-utilities.css";
 
 import MobileMenu from "./effects/MobileMenu";
 import SearchEffect from "./effects/SearchEffect";
 
+import { LogOut } from "../../API";
+
 const Header = () => {
   const location = useLocation();
   const currentPath = location.pathname;
+  const isLoggedIn = Cookies.get("isLoggedIn");
 
   const isActivePath = (path) =>
     currentPath === path || currentPath.startsWith(path);
@@ -17,6 +21,18 @@ const Header = () => {
   const handleSearchChange = (event) => {
     setSearchValue(event.target.value);
   };
+
+  function logout() {
+    Cookies.remove("isLoggedIn");
+    Cookies.remove("user");
+    LogOut()
+      .then(() => {
+        window.location.href = "/";
+      })
+      .catch((error) => {
+        console.error("Error during logout:", error);
+      });
+  }
 
   return (
     <header id="masthead" className="s-header">
@@ -35,7 +51,6 @@ const Header = () => {
             <li className={currentPath === "/" ? "current-menu-item" : ""}>
               <a href="/">Home</a>
             </li>
-
             <li
               className={`has-children ${
                 isActivePath("/category") ? "current-menu-item" : ""
@@ -63,7 +78,6 @@ const Header = () => {
                 </li>
               </ul>
             </li>
-
             <li
               className={`has-children ${
                 isActivePath("/blog") ? "current-menu-item" : ""
@@ -82,22 +96,45 @@ const Header = () => {
                 </li>
               </ul>
             </li>
-
             <li className={currentPath === "/about" ? "current-menu-item" : ""}>
               <a href="/about">About</a>
             </li>
-
             <li
               className={currentPath === "/contact" ? "current-menu-item" : ""}
             >
               <a href="/contact">Contact</a>
             </li>
-
-            <li
-              className={currentPath === "/login" ? "current-menu-item" : ""}
-            >
-              <a className="text-dark-emphasis" href="/session/new">Log in</a>
-            </li>
+            {isLoggedIn ? (
+              <li
+                className={` has-children ${
+                  currentPath === "/profile" ? "current-menu-item" : ""
+                }`}
+              >
+                <a className="text-dark-emphasis" href="/profile">
+                  Profile
+                </a>
+                <ul className="sub-menu">
+                  <li>
+                    <a href="/profile/setting">
+                      Settings
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" onClick={logout}>
+                      Logout
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            ) : (
+              <li
+                className={currentPath === "/login" ? "current-menu-item" : ""}
+              >
+                <a className="text-dark-emphasis" href="/session/new">
+                  Log in
+                </a>
+              </li>
+            )}
           </ul>
         </nav>
       </div>
