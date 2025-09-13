@@ -1,22 +1,23 @@
 import { useState } from "react";
 import { Subscription } from "../../API";
-import BackToTop from "./effects/BackToTop";
+
+import ScrollUp from "./navigate/ScrollUp";
 
 const Footer = () => {
-  const[email, setEmail] = useState("");
+  const [email, setEmail] = useState("");
 
   const handleEmail = (event) => {
     setEmail(event.target.value);
-  }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const response = await Subscription(email);
-    if (response.status === 200){
+    if (response.status === 200) {
       setEmail("");
-      alert('Subscribed newsletter !');
+      alert("Subscribed newsletter !");
     }
-  }
+  };
 
   return (
     <footer id="colophon" className="s-footer">
@@ -42,7 +43,7 @@ const Footer = () => {
               type="submit"
               value="Subscribe"
               className="btn--small btn--primary u-fullwidth"
-              onClick={handleSubmit} 
+              onClick={handleSubmit}
             />
             <div className="mc-status"></div>
           </form>
@@ -51,7 +52,7 @@ const Footer = () => {
 
       <div className="row s-footer__main">
         <div className="column lg-5 md-6 tab-12 s-footer__about">
-          <h4>BloggingVerse</h4>
+          <h4>SparkNest</h4>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
@@ -66,22 +67,22 @@ const Footer = () => {
               <h4>Categories</h4>
               <ul className="link-list">
                 <li>
-                  <a href="/category?type=lifestyle">Lifestyle</a>
+                  <a href="/category/lifestyle">Lifestyle</a>
                 </li>
                 <li>
-                  <a href="/category?type=workplace">Workplace</a>
+                  <a href="/category/workplace">Workplace</a>
                 </li>
                 <li>
-                  <a href="/category?type=inspiration">Inspiration</a>
+                  <a href="/category/inspiration">Inspiration</a>
                 </li>
                 <li>
-                  <a href="/category?type=design">Design</a>
+                  <a href="/category/design">Design</a>
                 </li>
                 <li>
-                  <a href="/category?type=health">Health</a>
+                  <a href="/category/health">Health</a>
                 </li>
                 <li>
-                  <a href="/category?type=photography">Photography</a>
+                  <a href="/category/photography">Photography</a>
                 </li>
               </ul>
             </div>
@@ -92,10 +93,7 @@ const Footer = () => {
                   <a href="/">Home</a>
                 </li>
                 <li>
-                  <a href="/category?type=health">Categories</a>
-                </li>
-                <li>
-                  <a href="/blog?type=standard-post">Blog</a>
+                  <a href="/category/health">Categories</a>
                 </li>
                 <li>
                   <a href="/about">About</a>
@@ -180,31 +178,12 @@ const Footer = () => {
 
         <div className="column lg-5 md-6 tab-12">
           <div className="s-footer__copyright">
-            <span>&copy; {new Date().getFullYear()} BloggingVerse</span>
+            <span>&copy; {new Date().getFullYear()} SparkNest</span>
           </div>
         </div>
       </div>
-      <div className="ss-go-top">
-        <a className="smoothscroll" title="Back to Top" href="#root">
-          <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="1.5"
-              d="M17.25 10.25L12 4.75L6.75 10.25"
-            />
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="1.5"
-              d="M12 19.25V5.75"
-            />
-          </svg>
-        </a>
-      </div>
-      <BackToTop />
+
+      <ScrollUp />
     </footer>
   );
 };

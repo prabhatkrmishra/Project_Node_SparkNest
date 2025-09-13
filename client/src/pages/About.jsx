@@ -9,7 +9,7 @@ const About = () => {
   return (
     <>
       <Helmet>
-        <title>BloggingVerse - About</title>
+        <title>About : SparkNest</title>
       </Helmet>
       <PreLoader/>
       <div id="page" className="s-pagewrap">

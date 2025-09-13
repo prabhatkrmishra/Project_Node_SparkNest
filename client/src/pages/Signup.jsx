@@ -81,7 +81,7 @@ const SignUp = () => {
   return (
     <>
       <Helmet>
-        <title>Signup : BloggingVerse</title>
+        <title>Signup : SparkNest</title>
       </Helmet>
       <PreLoader />
       <div id="page" className="s-pagewrap">

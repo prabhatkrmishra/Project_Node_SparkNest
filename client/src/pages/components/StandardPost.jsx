@@ -9,7 +9,7 @@ const StandardPost = () => {
   return (
     <>
       <Helmet>
-        <title>Article : BloggingVerse</title>
+        <title>Article : SparkNest</title>
       </Helmet>
       <PreLoader />
       <div id="page" className="s-pagewrap">

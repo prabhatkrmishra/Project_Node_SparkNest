@@ -7,6 +7,7 @@ import { Strategy } from "passport-local";
 import GoogleStrategy from "passport-google-oauth2";
 import pg from "pg";
 import bcrypt from "bcrypt";
+import rateLimit from "express-rate-limit";
 
 const hostname = "localhost";
 const port = 8080;
@@ -16,16 +17,28 @@ const app = express();
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+env.config();
+
+const randomPass = process.env.RANDOM_PASS;
+const frontendAddress = process.env.FRONTEND_ADRESS;
+
+const allowedOrigins = [frontendAddress, "https://bunny-absolute-anemone.ngrok-free.app"];
 
 const corsOptions = {
-  origin: "http://localhost:5143",
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   methods: "GET,POST,PUT,PATCH,DELETE",
   allowedHeaders: "Content-Type,Authorization",
   credentials: true,
 };
 app.use(cors(corsOptions));
-
-env.config();
 
 app.use(
   session({
@@ -50,7 +63,11 @@ const db = new pg.Client({
 });
 db.connect();
 
-const randomPass = process.env.RANDOM_PASS;
+const CheckLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: "Too many requests, please try again later",
+});
 
 // Define Routes
 app.get("/", (req, res) => {
@@ -140,7 +157,7 @@ app.get("/auth/google/home", (req, res, next) => {
         };
 
         return res.redirect(
-          `http://localhost:5143/google/login?login='success'&saveData='true'&user=${encodeURIComponent(
+          `${frontendAddress}/google/login?login='success'&saveData='true'&user=${encodeURIComponent(
             JSON.stringify(userData)
           )}`
         );
@@ -160,7 +177,7 @@ app.post("/logout", (req, res) => {
   });
 });
 
-app.get("/checkemail/:email", async (req, res) => {
+app.get("/checkemail/:email", CheckLimiter, async (req, res) => {
   const email = req.params.email;
   try {
     const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [
@@ -195,15 +212,25 @@ async function newsLetterSubs(email, permission) {
   }
 }
 
+function getUserName(email) {
+  const atIndex = email.indexOf('@');
+  let localPart = email.slice(0, atIndex);
+  if (localPart.length > 49) {
+    localPart = localPart.slice(0, 49);
+  }
+  return localPart;
+}
+
 app.post("/signup", async (req, res) => {
   const { fname: firstname, lname: lastname, email, password } = req.body;
+  const username = getUserName(email);
 
   try {
     const hash = await bcrypt.hash(password, saltRounds);
 
     await db.query(
-      "INSERT INTO users (email, password, fname, lname) VALUES ($1, $2, $3, $4)",
-      [email, hash, firstname, lastname]
+      "INSERT INTO users (email, password, fname, lname, username) VALUES ($1, $2, $3, $4, $5)",
+      [email, hash, firstname, lastname, username]
     );
     newsLetterSubs(email, req.body.newsletter);
 
@@ -215,7 +242,7 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-app.post("/subscribe/newsletter", async (req, res) => {
+app.post("/subscribe/newsletter", CheckLimiter, async (req, res) => {
   const email = req.query.email;
 
   try {
@@ -278,6 +305,8 @@ passport.use(
       userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
     },
     async (accessToken, refreshToken, profile, cb) => {
+      const username = getUserName(profile.email);
+
       try {
         //console.log('Google profile:', profile);
 
@@ -288,8 +317,8 @@ passport.use(
         if (result.rows.length === 0) {
           //console.log('User not found, creating a new user.');
           const newUser = await db.query(
-            "INSERT INTO users (email, password, fname, lname) VALUES ($1, $2, $3, $4) RETURNING *",
-            [profile.email, randomPass, profile.given_name, profile.family_name]
+            "INSERT INTO users (email, password, fname, lname, username) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+            [profile.email, randomPass, profile.given_name, profile.family_name, username]
           );
           newsLetterSubs(profile.email, 'true');
 

@@ -23,7 +23,7 @@ const Styles = () => {
   return (
     <>
       <Helmet>
-        <title>Styles : BloggingVerse</title>
+        <title>Styles : SparkNest</title>
       </Helmet>
       <PreLoader />
       <div id="page" className="s-pagewrap">

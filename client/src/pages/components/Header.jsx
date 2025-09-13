@@ -22,6 +22,12 @@ const Header = () => {
     setSearchValue(event.target.value);
   };
 
+  function toggleMenu(event) {
+    event.preventDefault();
+    const parentLi = event.target.closest(".has-children");
+    parentLi.classList.toggle("active");
+  }
+
   function logout() {
     Cookies.remove("isLoggedIn");
     Cookies.remove("user");
@@ -38,15 +44,14 @@ const Header = () => {
     <header id="masthead" className="s-header">
       <div className="s-header__branding">
         <p className="site-title">
-          <a href="/">BloggingVerse.</a>
+          <a href="/">SparkNest</a>
         </p>
       </div>
       <div className="row s-header__navigation">
-        <nav className="s-header__nav-wrap">
+        <nav className="s-header__nav-wrap d-flex justify-content-center">
           <h3 className="s-header__nav-heading">Navigate to</h3>
           <ul
             className="s-header__nav"
-            style={currentPath === "/" ? { paddingLeft: "20px" } : {}}
           >
             <li className={currentPath === "/" ? "current-menu-item" : ""}>
               <a href="/">Home</a>
@@ -56,53 +61,37 @@ const Header = () => {
                 isActivePath("/category") ? "current-menu-item" : ""
               }`}
             >
-              <a>Categories</a>
+              <a href="#" onClick={toggleMenu}>
+                Categories
+              </a>
               <ul className="sub-menu">
                 <li>
-                  <a href="/category?type=design">Design</a>
+                  <a href="/category/health">Health</a>
                 </li>
                 <li>
-                  <a href="/category?type=lifestyle">Lifestyle</a>
+                  <a href="/category/lifestyle">Lifestyle</a>
                 </li>
                 <li>
-                  <a href="/category?type=inspiration">Inspiration</a>
+                  <a href="/category/inspiration">Inspiration</a>
                 </li>
                 <li>
-                  <a href="/category?type=workplace">Workplace</a>
+                  <a href="/category/photography">Photography</a>
                 </li>
                 <li>
-                  <a href="/category?type=health">Health</a>
+                  <a href="/category/workplace">Workplace</a>
                 </li>
                 <li>
-                  <a href="/category?type=photography">Photography</a>
+                  <a href="/category/design">Design</a>
+                </li>
+                <li>
+                  <a href="/category/categories">More...</a>
                 </li>
               </ul>
             </li>
             <li
-              className={`has-children ${
-                isActivePath("/blog") ? "current-menu-item" : ""
-              }`}
+              className={currentPath === "/create" ? "current-menu-item" : ""}
             >
-              <a>Blog</a>
-              <ul className="sub-menu">
-                <li>
-                  <a href="/blogs?type=standard-post">Standard Post</a>
-                </li>
-                <li>
-                  <a href="/blogs?type=video-post">Video Post</a>
-                </li>
-                <li>
-                  <a href="/blogs?type=audio-post">Audio Post</a>
-                </li>
-              </ul>
-            </li>
-            <li className={currentPath === "/about" ? "current-menu-item" : ""}>
-              <a href="/about">About</a>
-            </li>
-            <li
-              className={currentPath === "/contact" ? "current-menu-item" : ""}
-            >
-              <a href="/contact">Contact</a>
+              <a href="/create">Create</a>
             </li>
             {isLoggedIn ? (
               <li
@@ -110,17 +99,24 @@ const Header = () => {
                   currentPath === "/profile" ? "current-menu-item" : ""
                 }`}
               >
-                <a className="text-dark-emphasis" href="/profile">
-                  Profile
+                <a href="#" onClick={toggleMenu} className="text-dark-emphasis">
+                  User
                 </a>
                 <ul className="sub-menu">
                   <li>
-                    <a href="/profile/setting">
-                      Settings
-                    </a>
+                    <a href="/profile">Profile</a>
                   </li>
                   <li>
-                    <a href="#" onClick={logout}>
+                    <a href="/profile/setting">Settings</a>
+                  </li>
+                  <li>
+                    <a href="/about">About</a>
+                  </li>
+                  <li>
+                    <a href="/contact">Contact</a>
+                  </li>
+                  <li>
+                    <a href=" " onClick={logout}>
                       Logout
                     </a>
                   </li>
@@ -176,19 +172,19 @@ const Header = () => {
           </div>
         </div>
       </div>
-      <a className="s-header__menu-toggle" href="#0">
+      <a className="s-header__search-trigger" href=" ">
+      <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <path
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
+          d="M19.25 19.25L15.5 15.5M4.75 11C4.75 7.54822 7.54822 4.75 11 4.75C14.4518 4.75 17.25 7.54822 17.25 11C17.25 14.4518 14.4518 17.25 11 17.25C7.54822 17.25 4.75 14.4518 4.75 11Z"
+        ></path>
+      </svg>
+    </a>
+      <a className="s-header__menu-toggle" href=" ">
         <span>Menu</span>
-      </a>
-      <a className="s-header__search-trigger" href="#">
-        <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-          <path
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.5"
-            d="M19.25 19.25L15.5 15.5M4.75 11C4.75 7.54822 7.54822 4.75 11 4.75C14.4518 4.75 17.25 7.54822 17.25 11C17.25 14.4518 14.4518 17.25 11 17.25C7.54822 17.25 4.75 14.4518 4.75 11Z"
-          ></path>
-        </svg>
       </a>
       <MobileMenu />
       <SearchEffect />

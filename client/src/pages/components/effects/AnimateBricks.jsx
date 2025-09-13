@@ -1,38 +1,41 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from 'react';
 
 const AnimateBricks = () => {
-  useEffect(() => {
-    const animateBlocks = document.querySelectorAll("[data-animate-block]");
-    const pageWrap = document.querySelector(".s-pagewrap");
+  const animateBlocksRef = useRef(null);
+  const pageWrapRef = useRef(null);
 
-    if (!(pageWrap && animateBlocks)) return;
+  useEffect(() => {
+    animateBlocksRef.current = document.querySelectorAll('[data-animate-block]');
+    pageWrapRef.current = document.querySelector('.s-pagewrap');
+
+    const animateBlocks = animateBlocksRef.current;
+    const pageWrap = pageWrapRef.current;
+
+    if (!(pageWrap && animateBlocks.length > 0)) return;
 
     const doAnimate = (current) => {
-      const els = current.querySelectorAll("[data-animate-el]");
-      const p = new Promise((resolve) => {
-        els.forEach((el, index, array) => {
-          const dly = index * 200;
-          el.style.setProperty("--transition-delay", `${dly}ms`);
-          if (index === array.length - 1) resolve();
-        });
+      const els = current.querySelectorAll('[data-animate-el]');
+
+      els.forEach((el, index) => {
+        const dly = index * 200;
+        el.style.setProperty('--transition-delay', `${dly}ms`);
       });
 
-      p.then(() => {
-        current.classList.add("ss-animated");
-      });
+      current.classList.add('ss-animated');
+      current.offsetHeight;
     };
 
     const animateOnScroll = () => {
       const scrollY = window.scrollY;
+      const viewportHeight = window.innerHeight;
 
       animateBlocks.forEach((current) => {
-        const viewportHeight = window.innerHeight;
-        const triggerTop =
-          current.offsetTop + viewportHeight * 0.1 - viewportHeight;
+        const triggerTop = current.offsetTop + viewportHeight * 0.1 - viewportHeight;
         const blockHeight = current.offsetHeight;
         const blockSpace = triggerTop + blockHeight;
+
         const inView = scrollY > triggerTop && scrollY <= blockSpace;
-        const isAnimated = current.classList.contains("ss-animated");
+        const isAnimated = current.classList.contains('ss-animated');
 
         if (inView && !isAnimated) {
           doAnimate(current);
@@ -40,19 +43,22 @@ const AnimateBricks = () => {
       });
     };
 
-    if (pageWrap.classList.contains("ss-home")) {
-      window.addEventListener("scroll", animateOnScroll);
-    } else {
-      window.addEventListener("load", () => {
-        doAnimate(animateBlocks[0]);
+    const handleLoad = () => {
+      animateBlocks.forEach((block) => {
+        if (!block.classList.contains('ss-animated')) {
+          doAnimate(block);
+        }
       });
+    };
+
+    if (pageWrap.classList.contains('ss-home')) {
+      window.addEventListener('scroll', animateOnScroll);
+    } else {
+      handleLoad();
     }
 
     return () => {
-      window.removeEventListener("scroll", animateOnScroll);
-      window.removeEventListener("load", () => {
-        doAnimate(animateBlocks[0]);
-      });
+      window.removeEventListener('scroll', animateOnScroll);
     };
   }, []);
 

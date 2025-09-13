@@ -6,7 +6,7 @@ const Error = () => {
   return (
     <>
       <Helmet>
-        <title>404 : BloggingVerse</title>
+        <title>404 : SparkNest</title>
       </Helmet>
       <PreLoader />
       <div id="page" className="s-pagewrap">

@@ -9,7 +9,7 @@ const AudioPost = () => {
   return (
     <>
       <Helmet>
-        <title>BloggingVerse</title>
+        <title>SparkNest</title>
       </Helmet>
       <PreLoader />
       <div id="page" className="s-pagewrap">

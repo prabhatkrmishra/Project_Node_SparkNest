@@ -82,7 +82,7 @@ const Login = () => {
     <>
       <PreLoader />
       <Helmet>
-        <title>Login : BloggingVerse</title>
+        <title>Login : SparkNest</title>
       </Helmet>
       <div id="page" className="s-pagewrap">
         <Header />

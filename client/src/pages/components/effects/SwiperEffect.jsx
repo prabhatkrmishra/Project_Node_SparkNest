@@ -3,12 +3,17 @@ import Swiper from "swiper";
 import { Pagination, EffectFade } from "swiper/modules";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
+import "swiper/css";
 
 const SwiperEffect = () => {
   useEffect(() => {
+    const getSwiperDirection = () => {
+      return window.innerWidth > 1290 ? "vertical" : "horizontal";
+    };
+
     const swiper = new Swiper(".swiper-container", {
       modules: [Pagination, EffectFade],
-      direction: "vertical",
+      direction: getSwiperDirection(),
       loop: true,
       slidesPerView: 1,
       effect: "fade",
@@ -17,20 +22,31 @@ const SwiperEffect = () => {
         el: ".swiper-pagination",
         clickable: true,
         renderBullet: (index, className) => {
-          return '<span class="' + className + '">' + (index + 1) + "</span>";
+          return `<span class="${className}">${index + 1}</span>`;
         },
       },
       on: {
         init: () => {
-          document
-            .querySelector(".swiper-pagination")
-            .classList.remove("swiper-pagination-bullets");
+          const paginationEl = document.querySelector(".swiper-pagination");
+          if (paginationEl) {
+            paginationEl.classList.remove("swiper-pagination-bullets");
+          }
         },
       },
     });
 
+    const handleResize = () => {
+      const newDirection = getSwiperDirection();
+      if (swiper.params.direction !== newDirection) {
+        swiper.changeDirection(newDirection);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
     return () => {
-      swiper.destroy();
+      if (swiper) swiper.destroy(true, true);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 

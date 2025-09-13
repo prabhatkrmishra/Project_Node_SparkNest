@@ -9,7 +9,7 @@ const Contact = () => {
   return (
     <>
       <Helmet>
-        <title>BloggingVerse - Contact</title>
+        <title>Contact : SparkNest</title>
       </Helmet>
       <PreLoader/>
       <div id="page" className="s-pagewrap">
