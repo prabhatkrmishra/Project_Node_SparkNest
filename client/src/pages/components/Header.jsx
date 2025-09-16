@@ -9,6 +9,20 @@ import SearchEffect from "./effects/SearchEffect";
 import { LogOut } from "../../API";
 
 const Header = () => {
+  const logout = () => {
+    Cookies.remove("isLoggedIn");
+    Cookies.remove("user");
+    Cookies.remove("setProfile");
+    Cookies.remove("sessiondays");
+    LogOut()
+      .then(() => {
+        window.location.href = "/";
+      })
+      .catch((error) => {
+        console.error("Error during logout:", error);
+      });
+  };
+
   const location = useLocation();
   const currentPath = location.pathname;
   const isLoggedIn = Cookies.get("isLoggedIn");
@@ -22,23 +36,11 @@ const Header = () => {
     setSearchValue(event.target.value);
   };
 
-  function toggleMenu(event) {
+  const toggleMenu = (event) => {
     event.preventDefault();
     const parentLi = event.target.closest(".has-children");
     parentLi.classList.toggle("active");
-  }
-
-  function logout() {
-    Cookies.remove("isLoggedIn");
-    Cookies.remove("user");
-    LogOut()
-      .then(() => {
-        window.location.href = "/";
-      })
-      .catch((error) => {
-        console.error("Error during logout:", error);
-      });
-  }
+  };
 
   return (
     <header id="masthead" className="s-header">
@@ -48,11 +50,9 @@ const Header = () => {
         </p>
       </div>
       <div className="row s-header__navigation">
-        <nav className="s-header__nav-wrap d-flex justify-content-center">
+        <nav className="s-header__nav-wrap">
           <h3 className="s-header__nav-heading">Navigate to</h3>
-          <ul
-            className="s-header__nav"
-          >
+          <ul className="s-header__nav">
             <li className={currentPath === "/" ? "current-menu-item" : ""}>
               <a href="/">Home</a>
             </li>
@@ -99,7 +99,7 @@ const Header = () => {
                   currentPath === "/profile" ? "current-menu-item" : ""
                 }`}
               >
-                <a href="#" onClick={toggleMenu} className="text-dark-emphasis">
+                <a href="#" onClick={toggleMenu}>
                   User
                 </a>
                 <ul className="sub-menu">
@@ -173,16 +173,16 @@ const Header = () => {
         </div>
       </div>
       <a className="s-header__search-trigger" href=" ">
-      <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-        <path
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.5"
-          d="M19.25 19.25L15.5 15.5M4.75 11C4.75 7.54822 7.54822 4.75 11 4.75C14.4518 4.75 17.25 7.54822 17.25 11C17.25 14.4518 14.4518 17.25 11 17.25C7.54822 17.25 4.75 14.4518 4.75 11Z"
-        ></path>
-      </svg>
-    </a>
+        <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+          <path
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="1.5"
+            d="M19.25 19.25L15.5 15.5M4.75 11C4.75 7.54822 7.54822 4.75 11 4.75C14.4518 4.75 17.25 7.54822 17.25 11C17.25 14.4518 14.4518 17.25 11 17.25C7.54822 17.25 4.75 14.4518 4.75 11Z"
+          ></path>
+        </svg>
+      </a>
       <a className="s-header__menu-toggle" href=" ">
         <span>Menu</span>
       </a>

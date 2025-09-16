@@ -16,6 +16,7 @@ const GoogleLogin = () => {
       try {
         const parsedUserData = JSON.parse(decodeURIComponent(user));
         const days = parsedUserData.cookieAge / (1000 * 60 * 60 * 24);
+        Cookies.set('sessiondays', days.toString());
         Cookies.set("isLoggedIn", 'true', { expires: days });
         Cookies.set("user", JSON.stringify(parsedUserData), { expires: days });
         navigate("/profile");

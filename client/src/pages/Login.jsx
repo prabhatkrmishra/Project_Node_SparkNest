@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Helmet } from "react-helmet";
-import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
+import Cookies from "js-cookie";
 import "bootstrap/dist/css/bootstrap-utilities.css";
 
 import PreLoader from "./components/PreLoader";
@@ -18,14 +17,11 @@ const Login = () => {
   });
   const [isError, setError] = useState(false);
   const [errorMssg, SetErrorMssg] = useState("");
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    const isLoggedIn = Cookies.get('isLoggedIn');
-    if (isLoggedIn) {
-       window.location.href = `/profile`
-    }
-  }, [navigate]);
+  const isLoggedIn = Cookies.get("isLoggedIn") || null;
+  if (isLoggedIn) {
+    window.location.href = `/profile`;
+  }
 
   function handleUserCred(event) {
     setUserCred((preVal) => {
@@ -51,7 +47,7 @@ const Login = () => {
     event.preventDefault();
     try {
       const response = await sendLoginCred(userCred);
-      
+
       if (response.data.message) {
         setError(true);
         SetErrorMssg(response.data.message);
@@ -59,12 +55,15 @@ const Login = () => {
         if (response.data.cookieAge && response.data.cookieAge !== false) {
           // persistent cookie
           const days = response.data.cookieAge / (1000 * 60 * 60 * 24);
-          Cookies.set('isLoggedIn', 'true', { expires: userCred.savesession ? days : null });
-          Cookies.set('user', JSON.stringify(response.data), { expires: days});
+          Cookies.set("sessiondays", days.toString());
+          Cookies.set("isLoggedIn", "true", {
+            expires: userCred.savesession ? days : null,
+          });
+          Cookies.set("user", JSON.stringify(response.data), { expires: days });
         } else {
           // session cookie
-          Cookies.set('isLoggedIn', 'true');
-          Cookies.set('user', JSON.stringify(response.data));
+          Cookies.set("isLoggedIn", "true");
+          Cookies.set("user", JSON.stringify(response.data));
         }
         window.location.href = `/profile`;
       }
@@ -76,7 +75,6 @@ const Login = () => {
   const googleAuth = () => {
     window.location.href = "http://localhost:8080/auth/google";
   };
-
 
   return (
     <>
@@ -165,7 +163,7 @@ const Login = () => {
                     Your Email
                   </label>
                   <input
-                    className="u-fullwidth form-control form-control-lg"
+                    className="u-fullwidth"
                     type="email"
                     id="formEmail"
                     name="useremail"
@@ -179,7 +177,7 @@ const Login = () => {
                     Password
                   </label>
                   <input
-                    className="u-fullwidth form-control"
+                    className="u-fullwidth"
                     type="password"
                     id="formPassword"
                     name="password"

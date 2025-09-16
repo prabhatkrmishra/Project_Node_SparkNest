@@ -43,7 +43,6 @@ const SignUp = () => {
 
   const handleEmailBlur = async () => {
     const exists = await checkEmail(userData.email);
-    console.log(exists);
     if (exists.data.message) {
       setEmailExists(true);
       SetErrorMssg(exists.data.message);
@@ -61,7 +60,6 @@ const SignUp = () => {
 
     try {
       const response = await sendSignupCred(userData);
-      console.log(response.status);
       if (response.status == 200) {
         alert("Signup successful! Login to continue");
         window.location.href = "/session/new";
@@ -103,23 +101,8 @@ const SignUp = () => {
                 >
                   <u>Signup</u>
                 </h2>
-                {/*<div>
-                  <hr
-                    className="mt-4 mb-5 border border-secondary-subtle"
-                    style={{ borderColor: "#000000 !important" }}
-                  />
-                </div>*/}
               </div>
               {/*  <!-- Login with --> */}
-              {/*<div
-                  className="d-flex align-items-center justify-content-center"
-                  style={{ margintop: "10px" }}
-                >
-                  <p className="text-center fw-bold mx-3 mb-0 text-muted">
-                    Sign Up with
-                  </p>
-                </div>*/}
-              {/*  <!-- Login with end --> */}
               {/*  <!-- Google Button --> */}
               <div className="d-flex align-items-center justify-content-center mt-4">
                 <a
@@ -171,7 +154,7 @@ const SignUp = () => {
                       First Name
                     </label>
                     <input
-                      className="input-Width-adjust form-control form-control-lg"
+                      className="input-Width-adjust"
                       type="text"
                       id="fName"
                       name="fname"
@@ -187,7 +170,7 @@ const SignUp = () => {
                       Last Name
                     </label>
                     <input
-                      className="input-Width-adjust form-control form-control-lg"
+                      className="input-Width-adjust"
                       type="text"
                       id="lName"
                       name="lname"

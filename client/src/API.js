@@ -12,11 +12,23 @@ export const sendLoginCred = (loginCred) => {
 };
 
 export const checkEmail = (email) => {
-    return axios.get(`${WEB_URL}/checkemail/${email}`);
+    return axios.get(`${WEB_URL}/check/email/${email}`);
+};
+
+export const checkUserName = (uname) => {
+    return axios.get(`${WEB_URL}/check/username/${uname}`);
 };
 
 export const sendSignupCred = (signupCred) => {
     return axios.post(`${WEB_URL}/signup`, signupCred);
+};
+
+export const updateSignupDetails = (signupDetails) => {
+    return axios.patch(`${WEB_URL}/user/details`, signupDetails, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
 };
 
 export const LogOut = () => {

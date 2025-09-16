@@ -3,6 +3,19 @@ import Cookies from "js-cookie";
 import { Helmet } from "react-helmet";
 import { useParams, useNavigate } from "react-router-dom";
 
+import {
+  useFloating,
+  autoUpdate,
+  offset,
+  shift,
+  useDismiss,
+  useRole,
+  useClick,
+  useInteractions,
+  FloatingFocusManager,
+  useId,
+} from "@floating-ui/react";
+
 import { LogOut } from "../API";
 
 import PreLoader from "./components/PreLoader";
@@ -10,33 +23,38 @@ import Header from "./components/Header";
 import RenderBlogs from "./components/RenderBlogs";
 import MoveToEffect from "./components/effects/MoveToEffect";
 
-const allowedSections = ["blogs", "collections", "liked"];
-
 const Profile = () => {
-  const { section } = useParams();
-  const navigate = useNavigate();
-  const [highlighted, setHighlighted] = useState(section || "blogs");
-
   const logout = () => {
     Cookies.remove("isLoggedIn");
     Cookies.remove("user");
+    Cookies.remove("setProfile");
+    Cookies.remove("sessiondays");
     LogOut()
       .then(() => {
-        window.location.href = "/";
+        window.location.href = "/session/new";
       })
       .catch((error) => {
         console.error("Error during logout:", error);
       });
   };
 
+  const { section } = useParams();
+  const navigate = useNavigate();
+  const [highlighted, setHighlighted] = useState(section || "blogs");
+
+  const login = Cookies.get("isLoggedIn") || null;
   const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
-  if (!user) {
+  if (!user || !login) {
     logout();
-    window.location.href = "/error";
   }
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
+    if (user.username == null || user.region == null) {
+      Cookies.set("setProfile", "true");
+      window.location.href = "/profile/details";
+    }
+
+    const allowedSections = ["blogs", "collections", "liked"];
     if (!allowedSections.includes(section)) {
       navigate("/profile/blogs");
       setHighlighted("blogs");
@@ -54,12 +72,33 @@ const Profile = () => {
         element.style.paddingTop = "";
       }
     };
-  }, [section, navigate]);
+  }, [navigate, section, user.region, user.username]);
 
   const handleSectionChange = (newSection) => {
     setHighlighted(newSection);
     navigate(`/profile/${newSection}`);
   };
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const { refs, floatingStyles, context } = useFloating({
+    open: isOpen,
+    onOpenChange: setIsOpen,
+    middleware: [offset({ mainAxis: -25, crossAxis: 90 }), shift()],
+    whileElementsMounted: autoUpdate,
+  });
+
+  const click = useClick(context);
+  const dismiss = useDismiss(context);
+  const role = useRole(context);
+
+  const { getReferenceProps, getFloatingProps } = useInteractions([
+    click,
+    dismiss,
+    role,
+  ]);
+
+  const headingId = useId();
 
   return (
     <>
@@ -117,7 +156,7 @@ const Profile = () => {
                         alt="marker"
                         id="profilesvg"
                       />
-                      <p>Delhi, India</p>
+                      <p>{user.region}</p>
                     </div>
                   </div>
                 </div>
@@ -125,11 +164,15 @@ const Profile = () => {
               <div className="profileButtons">
                 <a
                   className="btn btn--pill-small profile-buttons-style"
-                  href="#0"
+                  href="/account/settings/profile"
                 >
-                  Edit Profile
+                  <span>Edit Profile</span>
                 </a>
-                <a className="btn btn--circle profile-buttons-style" href="#0">
+                <span
+                  className="btn btn--circle profile-buttons-style"
+                  ref={refs.setReference}
+                  {...getReferenceProps()}
+                >
                   <svg
                     width="16px"
                     height="16px"
@@ -147,7 +190,39 @@ const Profile = () => {
                       fill="currentColor"
                     ></circle>
                   </svg>
-                </a>
+                </span>
+                {isOpen && (
+                  <FloatingFocusManager context={context} modal={false}>
+                    <div
+                      className="dot-sub-menu"
+                      ref={refs.setFloating}
+                      style={floatingStyles}
+                      aria-labelledby={headingId}
+                      {...getFloatingProps()}
+                    >
+                      <div className="d-flex flex-column">
+                        <button
+                          className="btn btn--pill-small profile-buttons-svg-menu"
+                          onClick={() => navigate("/account/settings")}
+                        >
+                          <span>Settings</span>
+                        </button>
+                        <button
+                          className="btn btn--pill-small profile-buttons-svg-menu"
+                          onClick={logout}
+                        >
+                          <span>Logout</span>
+                        </button>
+                        <button
+                          className="btn btn--pill-small profile-buttons-svg-menu"
+                          onClick={() => navigate("/contact")}
+                        >
+                          Contact
+                        </button>
+                      </div>
+                    </div>
+                  </FloatingFocusManager>
+                )}
               </div>
             </div>
             <div className="d-flex flex-row gap-3 lg-12 profile-menu-buttons">

@@ -14,7 +14,7 @@ const Contact = () => {
       <PreLoader/>
       <div id="page" className="s-pagewrap">
         <Header />
-        <div id="content" className="s-content s-content--page">
+        <section id="content" className="s-content s-content--page">
           <div className="row entry-wrap">
             <div className="column lg-12">
               <article className="entry">
@@ -132,10 +132,10 @@ const Contact = () => {
               </article>
             </div>
           </div>
-        </div>
+        </section>
         <Footer />
-        <MoveToEffect />
       </div>
+      <MoveToEffect />
     </>
   );
 };
