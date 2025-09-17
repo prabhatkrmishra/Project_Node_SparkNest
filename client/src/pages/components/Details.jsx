@@ -4,8 +4,8 @@ import { Helmet } from "react-helmet";
 import Cookies from "js-cookie";
 
 import { checkUserName } from "../../API";
-import { updateSignupDetails } from "../../API";
-import { logout } from './auth';
+import { updateDetails } from "../../API";
+import logout from './auth';
 
 import PreLoader from "./PreLoader";
 import Header from "./Header";
@@ -24,7 +24,7 @@ const Details = () => {
   var user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : {};
   const days = Cookies.get("sessiondays") ? Number(Cookies.get("user")) : null;
   const [userData, setUserData] = useState({
-    email: user.email ? user.email : "",
+    id: user.id ? user.id : "",
     username: "",
     region: "",
   });
@@ -67,7 +67,7 @@ const Details = () => {
     }
 
     try {
-      const response = await updateSignupDetails(userData);
+      const response = await updateDetails(userData);
       if (response.status == 200) {
         user.username = userData.username;
         user.region = userData.region;
@@ -75,14 +75,18 @@ const Details = () => {
         Cookies.remove("setProfile");
         alert("User details update Successful");
         window.location.href = "/profile";
-      } else if (response.status == 500) { 
-        logout();
-      }
-      else {
+      } else {
         alert("Something went wrong !");
         window.location.href = "/";
       }
     } catch (error) {
+      if (
+        error.response.status == 403 || //Not Authenticated
+        error.response.status == 404 || //User not found
+        error.response.status == 500 //Server error
+      ) {
+        logout();
+      }
       console.error("There was an error during Signup!", error);
     }
   };

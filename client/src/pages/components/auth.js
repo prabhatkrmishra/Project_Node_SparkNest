@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 
 import { LogOut } from "../../API";
 
-export const logout = () => {
+const logout = () => {
   Cookies.remove("isLoggedIn");
   Cookies.remove("user");
   Cookies.remove("setProfile");
@@ -16,3 +16,5 @@ export const logout = () => {
       console.error("Error during logout:", error);
     });
 };
+
+export default logout;

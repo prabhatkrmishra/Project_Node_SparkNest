@@ -203,7 +203,7 @@ const Profile = () => {
                       <div className="d-flex flex-column">
                         <button
                           className="btn btn--pill-small profile-buttons-svg-menu"
-                          onClick={() => navigate("/account/settings")}
+                          onClick={() => {window.location.href = "/account/settings"}}
                         >
                           <span>Settings</span>
                         </button>
@@ -215,7 +215,7 @@ const Profile = () => {
                         </button>
                         <button
                           className="btn btn--pill-small profile-buttons-svg-menu"
-                          onClick={() => navigate("/contact")}
+                          onClick={() => {window.location.href = "/contact"}}
                         >
                           Contact
                         </button>

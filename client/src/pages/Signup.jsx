@@ -42,12 +42,16 @@ const SignUp = () => {
   };
 
   const handleEmailBlur = async () => {
-    const exists = await checkEmail(userData.email);
-    if (exists.data.message) {
-      setEmailExists(true);
-      SetErrorMssg(exists.data.message);
+    if (userData.email) {
+      const exists = await checkEmail(userData.email);
+      if (exists.data.message) {
+        setEmailExists(true);
+        SetErrorMssg(exists.data.message);
+      } else {
+        setEmailExists(false);
+      }
     } else {
-      setEmailExists(false);
+      alert("Email is empty");
     }
   };
 

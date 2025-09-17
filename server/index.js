@@ -8,11 +8,10 @@ import GoogleStrategy from "passport-google-oauth2";
 import pg from "pg";
 import bcrypt from "bcrypt";
 import rateLimit from "express-rate-limit";
-import axios from "axios";
 
 const hostname = "localhost";
 const port = 8080;
-const saltRounds = 15;
+const saltRounds = 10;
 
 const app = express();
 app.use(express.static("public"));
@@ -23,10 +22,7 @@ env.config();
 const randomPass = process.env.RANDOM_PASS;
 const frontendAddress = process.env.FRONTEND_ADRESS;
 
-const allowedOrigins = [
-  frontendAddress,
-  "https://bunny-absolute-anemone.ngrok-free.app",
-];
+const allowedOrigins = [frontendAddress];
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -68,10 +64,11 @@ const db = new pg.Client({
 db.connect();
 
 const CheckLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: "Too many requests, please try again later",
+  windowMs: 30 * 60 * 1000,
+  max: 100,
+  message: "Too many requests from this IP, please try again later.",
 });
+app.use(CheckLimiter);
 
 async function newsLetterSubs(email, permission) {
   const result = await db.query("SELECT * FROM subscription WHERE email = $1", [
@@ -86,20 +83,11 @@ async function newsLetterSubs(email, permission) {
   }
 }
 
-function getUserName(email) {
-  const atIndex = email.indexOf("@");
-  let localPart = email.slice(0, atIndex);
-  if (localPart.length > 49) {
-    localPart = localPart.slice(0, 49);
-  }
-  return localPart;
-}
-
 app.get("/", (req, res) => {
   res.json({ message: "SparkNest Backend Server" });
 });
 
-app.get("/check/email/:email", CheckLimiter, async (req, res) => {
+app.get("/check/email/:email", async (req, res) => {
   const email = req.params.email;
   try {
     const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [
@@ -108,7 +96,7 @@ app.get("/check/email/:email", CheckLimiter, async (req, res) => {
 
     if (checkResult.rows.length > 0) {
       res.json({
-        message: "User already exist !\nTry logging in",
+        message: "Email already exist !",
       });
     } else {
       res.json({
@@ -132,7 +120,7 @@ app.get("/check/username/:uname", async (req, res) => {
 
       if (checkResult.rows.length > 0) {
         res.json({
-          message: "Username already taken !\nTry something else",
+          message: "Username already taken !",
         });
       } else {
         res.json({
@@ -148,42 +136,104 @@ app.get("/check/username/:uname", async (req, res) => {
   }
 });
 
-app.patch("/user/details", CheckLimiter, async (req, res) => {
+app.patch("/user/details", async (req, res) => {
   if (req.isAuthenticated()) {
-    const { email, username, region } = req.body;
-
-    if (!username || !region) {
-      res.status(400).json({ message: "User Details are empty" });
-    }
-
-    const checkUsernameExist = await db.query(
-      "SELECT * FROM users WHERE username = $1",
-      [username]
-    );
-
-    if (checkUsernameExist.rows.length > 0) {
-      res.status(400).json({
-        message: "Username already exist in database",
-      });
-    }
-
     try {
-      await db.query(
-        "UPDATE users SET username=$1, region=$2 WHERE email=$3",
-        [ username, region , email ]
-      );
+      const id = parseInt(req.body.id, 10);
+      // Synced with React comonents
+      const { fname, lname, username, region, email, oldpassword, password } =
+        req.body;
+      const updatedDetails = new Map();
 
-      res.status(200).json({ message: "Details updated successfully." });
-    } catch (err) {
-      console.error("Error during user details update:", err);
-      res
-        .status(500)
-        .json({
-          message: "Internal Server Error, Error during user details update",
-        });
+      if (!id) {
+        return res
+          .status(400)
+          .json({ message: "Cannot update details, user ID is empty" });
+      }
+
+      if (fname) updatedDetails.set("fname", fname);
+      if (lname) updatedDetails.set("lname", lname);
+      if (username) updatedDetails.set("username", username);
+      if (region) updatedDetails.set("region", region);
+      if (email) updatedDetails.set("email", email);
+
+      if (password && oldpassword) {
+        const userQuery = await db.query(
+          "SELECT password FROM users WHERE id = $1",
+          [id]
+        );
+        if (userQuery.rows.length === 0) {
+          return res.status(404).json({ message: "User not found" });
+        }
+
+        const storedPasswordHash = userQuery.rows[0].password;
+        const isMatch = await bcrypt.compare(oldpassword, storedPasswordHash);
+        if (!isMatch) {
+          return res
+            .status(400)
+            .json({ message: "Old password is incorrect, cannot update" });
+        }
+
+        const hashedNewPassword = await bcrypt.hash(password, saltRounds);
+        updatedDetails.set("password", hashedNewPassword);
+      }
+
+      if (updatedDetails.size === 0) {
+        return res
+          .status(400)
+          .json({ message: "User details are empty, cannot update" });
+      }
+
+      if (updatedDetails.has("username")) {
+        const checkUsernameExist = await db.query(
+          "SELECT * FROM users WHERE username = $1",
+          [updatedDetails.get("username")]
+        );
+        if (checkUsernameExist.rows.length > 0) {
+          return res
+            .status(400)
+            .json({ message: "Username already exists, cannot update" });
+        }
+      }
+
+      if (updatedDetails.has("email")) {
+        const checkEmailExist = await db.query(
+          "SELECT * FROM users WHERE email = $1",
+          [updatedDetails.get("email")]
+        );
+        if (checkEmailExist.rows.length > 0) {
+          return res
+            .status(400)
+            .json({ message: "Email already exists, cannot update" });
+        }
+      }
+
+      const setClauses = [];
+      const values = [];
+      let index = 1;
+
+      updatedDetails.forEach((value, key) => {
+        // 'username' <- [key] = $'1' <- index
+        setClauses.push(`${key} = $${index}`);
+        values.push(value);
+        index++;
+      });
+      values.push(id);
+
+      const updateQuery = `UPDATE users SET ${setClauses.join(
+        ", "
+      )} WHERE id = $${index}`;
+      await db.query(updateQuery, values);
+
+      res.status(200).json({
+        message: "Update successful",
+      });
+    } catch (error) {
+      console.error("Error during user details update:", error);
+      res.status(500).json({ message: "Server error occurred", error });
     }
   } else {
-    res.status(500).send("Not Aunthenticated");
+    res.status(403).send("Not authenticated, cannot update");
   }
 });
 
@@ -327,7 +377,7 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-app.post("/subscribe/newsletter", CheckLimiter, async (req, res) => {
+app.post("/subscribe/newsletter", async (req, res) => {
   const email = req.query.email;
 
   try {
@@ -360,7 +410,7 @@ passport.use(
         const user = result.rows[0];
         const storedHashedPassword = user.password;
 
-        const matched = bcrypt.compareSync(password, storedHashedPassword);
+        const matched = await bcrypt.compare(password, storedHashedPassword);
 
         if (matched) {
           //console.log("Password matched for user:", user.email);
@@ -392,16 +442,16 @@ passport.use(
     async (accessToken, refreshToken, profile, cb) => {
       try {
         //console.log('Google profile:', profile);
-
         const result = await db.query("SELECT * FROM users WHERE email = $1", [
           profile.email,
         ]);
 
         if (result.rows.length === 0) {
           //console.log('User not found, creating a new user.');
+          const hash = await bcrypt.hash(randomPass, saltRounds); //Do not remove await
           const newUser = await db.query(
             "INSERT INTO users (email, password, fname, lname) VALUES ($1, $2, $3, $4) RETURNING *",
-            [profile.email, randomPass, profile.given_name, profile.family_name]
+            [profile.email, hash, profile.given_name, profile.family_name]
           );
           newsLetterSubs(profile.email, "true");
 
