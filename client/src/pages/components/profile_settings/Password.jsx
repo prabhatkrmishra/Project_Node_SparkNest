@@ -47,9 +47,9 @@ const Password = () => {
   };
 
   const clearPasswords = () => {
-    if (oldPasswordRef.current) oldPasswordRef.current.value = '';
-    if (newPasswordRef.current) newPasswordRef.current.value = '';
-    if (confirmPasswordRef.current) confirmPasswordRef.current.value = '';
+    if (oldPasswordRef.current) oldPasswordRef.current.value = "";
+    if (newPasswordRef.current) newPasswordRef.current.value = "";
+    if (confirmPasswordRef.current) confirmPasswordRef.current.value = "";
   };
 
   const handleSubmit = async (e) => {
@@ -105,9 +105,14 @@ const Password = () => {
         <ErrorMessage isError={isError} errorMssg={responseMssg} />
         <SuccessMessage isSuccess={isSuccess} successMssg={responseMssg} />
         <div>
-          <label htmlFor="pOldPass">Old Password</label>
+          <label
+            className="profile-label-styles"
+            htmlFor="pOldPass"
+          >
+            Old Password
+          </label>
           <input
-            className="u-fullwidth"
+            className="u-fullwidth profile-input-styles"
             type="password"
             id="pOldPass"
             name="oldpassword"
@@ -117,9 +122,14 @@ const Password = () => {
           />
         </div>
         <div>
-          <label htmlFor="pNewPass">New Password</label>
+          <label
+            className="profile-label-styles"
+            htmlFor="pNewPass"
+          >
+            New Password
+          </label>
           <input
-            className="u-fullwidth"
+            className="u-fullwidth profile-input-styles"
             type="password"
             id="pNewPass"
             name="newpassword"
@@ -129,9 +139,14 @@ const Password = () => {
           />
         </div>
         <div>
-          <label htmlFor="pNewPassConfirm">Confirm New Password</label>
+          <label
+            className="profile-label-styles"
+            htmlFor="pNewPassConfirm"
+          >
+            Confirm New Password
+          </label>
           <input
-            className="u-fullwidth"
+            className="u-fullwidth profile-input-styles"
             type="password"
             id="pNewPassConfirm"
             name="confirmpassword"
@@ -145,7 +160,10 @@ const Password = () => {
           isError={notMatch}
           errorMssg={"New Passwords does not match"}
         />
-        <button className="btn--primary u-quartorwidth" type="submit">
+        <button
+          className="btn--primary u-quartorwidth profile-button-styles"
+          type="submit"
+        >
           Update
         </button>
       </form>

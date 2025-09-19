@@ -5,6 +5,7 @@ import ScrollUp from "./navigate/ScrollUp";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
+  const subscribeNewsletter = {};
 
   const handleEmail = (event) => {
     setEmail(event.target.value);
@@ -12,7 +13,9 @@ const Footer = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const response = await Subscription(email);
+    subscribeNewsletter.email = email;
+    subscribeNewsletter.type = 'newsletter';
+    const response = await Subscription(subscribeNewsletter);
     if (response.status === 200) {
       setEmail("");
       alert("Subscribed newsletter !");

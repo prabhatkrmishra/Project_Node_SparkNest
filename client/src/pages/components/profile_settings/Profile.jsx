@@ -4,6 +4,8 @@ import Cookies from "js-cookie";
 import { updateDetails } from "../../../API";
 import logout from "../auth";
 
+import SuccessMessage from "../messageBox/SuccessMessage";
+
 const Profile = () => {
   const user = useRef(
     Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null
@@ -13,15 +15,15 @@ const Profile = () => {
     window.location.href == "/profile";
   }
 
-  const [updated, setUpdated] = useState(false);
+  const [updateCookie, setUpdateCookie] = useState(false);
   useEffect(() => {
-    if (updated) {
+    if (updateCookie) {
       user.current = Cookies.get("user")
         ? JSON.parse(Cookies.get("user"))
         : null;
     }
-    setUpdated(false);
-  }, [updated]);
+    setUpdateCookie(false);
+  }, [updateCookie]);
 
   const [newUserData, setUserData] = useState({
     fname: user.current.fname,
@@ -30,6 +32,8 @@ const Profile = () => {
   });
   const Id = user.current.id;
   const sanitizedData = {};
+  const [isUpdated, setIsUpdated] = useState(false);
+  const [responseMssg, SetResponseMssg] = useState("");
 
   const handleDataChange = (e) => {
     setUserData((preVal) => {
@@ -42,7 +46,7 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setIsUpdated(false);
     if (!newUserData.fname && !newUserData.lname && !newUserData.region) {
       alert("Input field is empty");
       return;
@@ -71,9 +75,12 @@ const Profile = () => {
         user.current.lname = newUserData.lname;
         user.current.region = newUserData.region;
         Cookies.set("user", JSON.stringify(user.current), { expires: days });
-        setUpdated(true);
-        alert("User details update Successful");
-        window.location.href = "profile";
+        setUpdateCookie(true);
+        SetResponseMssg(response.data.message);
+        setIsUpdated(true);
+        setTimeout(() => {
+          window.location.href = "profile";
+        }, 300);
       } else {
         alert("Something went wrong !");
         window.location.href = "/";
@@ -92,11 +99,12 @@ const Profile = () => {
   return (
     <>
       <form onSubmit={handleSubmit}>
+        <SuccessMessage isSuccess={isUpdated} successMssg={responseMssg} />
         <div className="u-fullwidth menu-section-profile">
           <div className="profile-input-names">
-            <label htmlFor="pfName">First Name</label>
+            <label className="profile-label-styles" htmlFor="pfName">First Name</label>
             <input
-              className="profile-input-name"
+              className="profile-input-name profile-input-styles"
               type="text"
               id="fName"
               name="fname"
@@ -107,9 +115,9 @@ const Profile = () => {
             />
           </div>
           <div className="profile-input-name">
-            <label htmlFor="plName">Last Name</label>
+            <label className="profile-label-styles" htmlFor="plName">Last Name</label>
             <input
-              className="profile-input-name"
+              className="profile-input-name profile-input-styles"
               type="text"
               id="lName"
               name="lname"
@@ -121,9 +129,9 @@ const Profile = () => {
           </div>
         </div>
         <div>
-          <label htmlFor="pRegion">Region</label>
+          <label className="profile-label-styles" htmlFor="pRegion">Region</label>
           <input
-            className="u-fullwidth"
+            className="u-fullwidth profile-input-styles"
             type="text"
             id="pRegion"
             name="region"
@@ -133,7 +141,7 @@ const Profile = () => {
             onChange={handleDataChange}
           />
         </div>
-        <button className="btn--primary u-quartorwidth" type="submit">
+        <button className="btn--primary u-quartorwidth profile-button-styles" type="submit">
           Update
         </button>
       </form>

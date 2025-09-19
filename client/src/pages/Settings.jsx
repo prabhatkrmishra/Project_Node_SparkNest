@@ -12,6 +12,7 @@ import General from "./components/profile_settings/General";
 import Notifications from "./components/profile_settings/Notifications";
 import Password from "./components/profile_settings/Password";
 import Profile from "./components/profile_settings/Profile";
+import DropDownMenu from "./components/profile_settings/settings_components/DropDownMenu";
 
 const Settings = () => {
   const logout = () => {
@@ -33,7 +34,7 @@ const Settings = () => {
   const pSection = section ? section : "general";
 
   const login = Cookies.get("isLoggedIn") || null;
-  if(login == null) {
+  if (login == null) {
     window.location.href = "/session/new";
   }
   const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
@@ -101,12 +102,12 @@ const Settings = () => {
         <Header />
         <section
           id="content"
-          className="s-content"
+          className="s-content d-flex justify-content-center"
           style={{ paddingTop: "130px" }}
         >
           <div className="row entry-wrap d-flex justify-content-center">
             <div className="lg-9">
-              <div className="entry__author-box-profile d-flex flex-row align-items-center">
+              <div className="entry__author-box-settings mainpage-settings-profile">
                 <div>
                   <figure className="entry__author-avatar profile-avatar-settings">
                     <img
@@ -121,19 +122,35 @@ const Settings = () => {
                   style={{ marginTop: "15px" }}
                 >
                   <h5
-                    className="entry__author-name"
+                    className="entry__author-name entry__author-name-settings"
                     style={{ marginBottom: "5px", fontSize: "3rem" }}
                   >
                     <a href="#0">
-                      <span>{user.fname} {user.lname}</span>
+                      <div className="settings-span">
+                        <span>{user.fname + " " + user.lname}</span>
+                      </div>
                     </a>
-                    <span style={{ marginBottom: "5rem" }}> {" / "} </span>
-                    <span>{selectedSection}</span>
+                    <div className="main-settings-name">
+                      <span
+                        style={{ marginBottom: "5rem", paddingLeft: "15px", paddingRight: "5px" }}
+                      >
+                        {" / "}
+                      </span>
+                      <span>
+                        {selectedSection}
+                      </span>
+                    </div>
                   </h5>
-                  <p style={{ margin: "0", fontSize: "1.8rem" }}>
+                  <p
+                    className="settings-span"
+                    style={{ margin: "0", fontSize: "1.8rem" }}
+                  >
                     {sectionInfo}
                   </p>
                 </div>
+              </div>
+              <div className="profile-hr-container profile-hr-container-settings">
+                <hr className="profile-hr profile-hr-settings" />
               </div>
               <div className="profile-settings-container">
                 <div className="profile-settings-menu-container">
@@ -193,19 +210,23 @@ const Settings = () => {
                       </span>
                     </li>
                   </ul>
+                  <DropDownMenu
+                    pSection={pSection}
+                    handleSectionChange={handleSectionChange}
+                  />
                 </div>
                 <div
                   className={`profile-settings-menu-section ${
                     fade ? "fade-in" : "fade-out"
                   }`}
                 >
-                  {pSection === "general" && <General/>}
-                  {pSection === "profile" && <Profile/>}
-                  {pSection === "password" && <Password/>}
+                  {pSection === "general" && <General />}
+                  {pSection === "profile" && <Profile />}
+                  {pSection === "password" && <Password />}
                   {pSection === "notifications" && (
-                    <Notifications pSection="notifications"/>
+                    <Notifications pSection="notifications" />
                   )}
-                  {pSection === "delete" && <DeleteAccount/>}
+                  {pSection === "delete" && <DeleteAccount />}
                 </div>
               </div>
             </div>

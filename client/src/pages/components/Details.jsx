@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Cookies from "js-cookie";
@@ -21,10 +21,10 @@ const Details = () => {
     }
   }, [navigate, setProfile]);
 
-  var user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : {};
+  const user = useRef (Cookies.get("user") ? JSON.parse(Cookies.get("user")) : {});
   const days = Cookies.get("sessiondays") ? Number(Cookies.get("user")) : null;
   const [userData, setUserData] = useState({
-    id: user.id ? user.id : "",
+    id: user.current.id ? user.current.id : "",
     username: "",
     region: "",
   });
@@ -69,9 +69,9 @@ const Details = () => {
     try {
       const response = await updateDetails(userData);
       if (response.status == 200) {
-        user.username = userData.username;
-        user.region = userData.region;
-        Cookies.set("user", JSON.stringify(user), { expires: days });
+        user.current.username = userData.username;
+        user.current.region = userData.region;
+        Cookies.set("user", JSON.stringify(user.current), { expires: days });
         Cookies.remove("setProfile");
         alert("User details update Successful");
         window.location.href = "/profile";

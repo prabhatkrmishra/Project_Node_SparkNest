@@ -8,6 +8,7 @@ import ErrorMessage from "./components/messageBox/ErrorMessage";
 import Header from "./components/Header";
 
 import { sendLoginCred } from "../API";
+import { WEB_URL } from "../API";
 
 const Login = () => {
   const [userCred, setUserCred] = useState({
@@ -73,7 +74,7 @@ const Login = () => {
   };
 
   const googleAuth = () => {
-    window.location.href = "http://localhost:8080/auth/google";
+    window.location.href = `${WEB_URL}/auth/google`;
   };
 
   return (

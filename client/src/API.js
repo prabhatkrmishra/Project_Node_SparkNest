@@ -3,9 +3,7 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 
 // local express server
-const WEB_URL = "http://localhost:8080";
-
-export const getMessage = () => axios.get(`${WEB_URL}/message`);
+export const WEB_URL = "http://localhost:8080";
 
 export const sendLoginCred = (loginCred) => {
   return axios.post(`${WEB_URL}/login`, loginCred, {
@@ -22,7 +20,11 @@ export const checkUserName = (uname) => {
 };
 
 export const sendSignupCred = (signupCred) => {
-  return axios.post(`${WEB_URL}/signup`, signupCred);
+  return axios.post(`${WEB_URL}/signup`, signupCred, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 };
 
 export const updateDetails = (details) => {
@@ -37,6 +39,35 @@ export const LogOut = () => {
   return axios.post(`${WEB_URL}/logout`, { withCredentials: true });
 };
 
-export const Subscription = (email) => {
-  return axios.post(`${WEB_URL}/subscribe/newsletter?email=${email}`);
+export const Subscription = (details) => {
+  return axios.post(`${WEB_URL}/subscribe/newsletter`, details, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+export const GetSubscription = (email) => {
+  return axios.get(`${WEB_URL}/get/subscription/${email}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+export const SetSubscription = (details) => {
+  return axios.patch(`${WEB_URL}/set/subscription`, details, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+export const DeleteUserAccount = (data) => {
+  return axios.delete(`${WEB_URL}/user/account/delete/yes`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: data,
+  });
 };

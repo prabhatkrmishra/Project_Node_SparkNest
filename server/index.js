@@ -9,7 +9,7 @@ import pg from "pg";
 import bcrypt from "bcrypt";
 import rateLimit from "express-rate-limit";
 
-const hostname = "localhost";
+const hostname = "0.0.0.0";
 const port = 8080;
 const saltRounds = 10;
 
@@ -64,22 +64,21 @@ const db = new pg.Client({
 db.connect();
 
 const CheckLimiter = rateLimit({
+  keyGenerator: (req) => req.ip,
   windowMs: 30 * 60 * 1000,
   max: 100,
   message: "Too many requests from this IP, please try again later.",
 });
 app.use(CheckLimiter);
 
-async function newsLetterSubs(email, permission) {
+async function newsLetterSubs(email, type, permission) {
   const result = await db.query("SELECT * FROM subscription WHERE email = $1", [
     email,
   ]);
 
   if (result.rows.length === 0) {
-    await db.query(
-      "INSERT INTO subscription (email, newsletter) VALUES ($1, $2)",
-      [email, permission]
-    );
+    const query = `INSERT INTO subscription (email, ${type}) VALUES ($1, $2)`;
+    await db.query(query, [email, permission]);
   }
 }
 
@@ -110,29 +109,97 @@ app.get("/check/email/:email", async (req, res) => {
 });
 
 app.get("/check/username/:uname", async (req, res) => {
-  if (req.isAuthenticated()) {
-    const uname = req.params.uname;
-    try {
-      const checkResult = await db.query(
-        "SELECT * FROM users WHERE username = $1",
-        [uname]
-      );
+  const uname = req.params.uname;
+  try {
+    const checkResult = await db.query(
+      "SELECT * FROM users WHERE username = $1",
+      [uname]
+    );
 
-      if (checkResult.rows.length > 0) {
-        res.json({
-          message: "Username already taken !",
-        });
-      } else {
-        res.json({
-          message: "",
-        });
+    if (checkResult.rows.length > 0) {
+      res.json({
+        message: "Username already taken !",
+      });
+    } else {
+      res.json({
+        message: "",
+      });
+    }
+  } catch (err) {
+    console.error("Error getting username:", err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+app.post("/subscribe/newsletter", async (req, res) => {
+  const email = req.body.email;
+  const type = req.body.type;
+
+  try {
+    newsLetterSubs(email, type, true);
+    return res.status(200).json({ message: "Subscription successful" });
+  } catch (err) {
+    console.error("Error during signup:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.get("/get/subscription/:email", async (req, res) => {
+  if (req.isAuthenticated()) {
+    const email = req.params.email;
+    if (email) {
+      try {
+        const result = await db.query(
+          `SELECT * FROM subscription WHERE email=$1`,
+          [email]
+        );
+
+        if (!result.rows.length) {
+          return res.status(404).json({ message: "User not found" });
+        }
+
+        return res.status(200).json(result.rows[0]);
+      } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Internal Server error" });
       }
-    } catch (err) {
-      console.error("Error getting username:", err);
-      res.status(500).send("Internal Server Error");
+    } else {
+      res.status(400).send("Request error, email is empty");
     }
   } else {
-    res.status(500).send("Not Aunthenticated");
+    res.status(403).send("Not authenticated to get subscription details");
+  }
+});
+
+app.patch("/set/subscription", async (req, res) => {
+  if (req.isAuthenticated()) {
+    const { email, newsletter } = req.body;
+
+    if (email) {
+      try {
+        const result = await db.query(
+          "SELECT * FROM subscription WHERE email = $1",
+          [email]
+        );
+        if (!result.rows.length) {
+          const query = `INSERT INTO subscription (email, newsletter) VALUES ($1, $2)`;
+          await db.query(query, [email, newsletter]);
+        } else {
+          const query = "UPDATE subscription SET newsletter=$1 WHERE email=$2";
+          await db.query(query, [newsletter, email]);
+        }
+        return res
+          .status(200)
+          .json({ message: "Subscriptions updated successfully" });
+      } catch (err) {
+        console.error("Error during subscripion update", err);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+    } else {
+      res.status(400).send("Request error, email is empty");
+    }
+  } else {
+    res.status(403).send("Not authenticated to update subscription details");
   }
 });
 
@@ -162,7 +229,7 @@ app.patch("/user/details", async (req, res) => {
           "SELECT password FROM users WHERE id = $1",
           [id]
         );
-        if (userQuery.rows.length === 0) {
+        if (!userQuery.rows.length) {
           return res.status(404).json({ message: "User not found" });
         }
 
@@ -220,20 +287,81 @@ app.patch("/user/details", async (req, res) => {
       });
       values.push(id);
 
-      const updateQuery = `UPDATE users SET ${setClauses.join(
-        ", "
-      )} WHERE id = $${index}`;
-      await db.query(updateQuery, values);
+      try {
+        const userQuery = await db.query("SELECT * FROM users WHERE id = $1", [
+          id,
+        ]);
+        if (userQuery.rows.length) {
+          const updateQuery = `UPDATE users SET ${setClauses.join(
+            ", "
+          )} WHERE id = $${index}`;
+          await db.query(updateQuery, values);
 
-      res.status(200).json({
-        message: "Update successful",
-      });
+          res.status(200).json({
+            message: "Update successful",
+          });
+        } else {
+          return res.status(404).json({ message: "User not found" });
+        }
+      } catch (error) {
+        console.error("Error during updating user details:", error);
+        res.status(500).json({ message: "Server error occurred", error });
+      }
     } catch (error) {
-      console.error("Error during user details update:", error);
+      console.error("Error during updating user details:", error);
       res.status(500).json({ message: "Server error occurred", error });
     }
   } else {
     res.status(403).send("Not authenticated, cannot update");
+  }
+});
+
+app.delete("/user/account/delete/yes", async (req, res) => {
+  if (req.isAuthenticated()) {
+    const { idtodelete, email, allowed } = req.body;
+
+    if (idtodelete && email && allowed) {
+      console.log(
+        `User with id:${idtodelete} has allowed to delete their account:${allowed}`
+      );
+      try {
+        const userResult = await db.query("SELECT * FROM users WHERE id = $1", [
+          idtodelete,
+        ]);
+        if (!userResult.rows.length) {
+          return res.status(200).json({
+            message: `User with id:${idtodelete} not present in database`,
+          });
+        } else {
+          const queryUsers = "DELETE FROM users WHERE id=$1";
+          await db.query(queryUsers, [idtodelete]);
+        }
+
+        const subscriptionResult = await db.query(
+          "SELECT * FROM subscription WHERE email = $1",
+          [email]
+        );
+        if (!subscriptionResult.rows.length) {
+          return res.status(200).json({
+            message: `User with email:${email} has not subscribed anything`,
+          });
+        } else {
+          const querySubscription = "DELETE FROM subscription WHERE email=$1";
+          await db.query(querySubscription, [email]);
+        }
+
+        return res.status(200).json({
+          message: `User with id:${idtodelete} removed from database`,
+        });
+      } catch (err) {
+        console.error("Error during removing error", err);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+    } else {
+      res.status(400).send("Request error, not allowed");
+    }
+  } else {
+    res.status(403).send("Not authenticated to delete user");
   }
 });
 
@@ -367,25 +495,13 @@ app.post("/signup", async (req, res) => {
       "INSERT INTO users (email, password, fname, lname) VALUES ($1, $2, $3, $4)",
       [email, hash, firstname, lastname]
     );
-    newsLetterSubs(email, req.body.newsletter);
+    newsLetterSubs(email, "newsletter", req.body.newsletter);
 
     // Respond with success
     res.status(200).json({ message: "User registered successfully." });
   } catch (err) {
     console.error("Error during signup:", err);
     res.status(500).json({ message: "Internal Server Error" });
-  }
-});
-
-app.post("/subscribe/newsletter", async (req, res) => {
-  const email = req.query.email;
-
-  try {
-    newsLetterSubs(email, true);
-    return res.status(200).json({ message: "Subscription successful" });
-  } catch (err) {
-    console.error("Error during signup:", err);
-    return res.status(500).json({ message: "Internal server error" });
   }
 });
 
@@ -441,27 +557,27 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, cb) => {
       try {
-        //console.log('Google profile:', profile);
+        //console.log("Google profile:", profile);
         const result = await db.query("SELECT * FROM users WHERE email = $1", [
           profile.email,
         ]);
 
         if (result.rows.length === 0) {
-          //console.log('User not found, creating a new user.');
+          //console.log("User not found, creating a new user.");
           const hash = await bcrypt.hash(randomPass, saltRounds); //Do not remove await
           const newUser = await db.query(
             "INSERT INTO users (email, password, fname, lname) VALUES ($1, $2, $3, $4) RETURNING *",
             [profile.email, hash, profile.given_name, profile.family_name]
           );
-          newsLetterSubs(profile.email, "true");
+          newsLetterSubs(profile.email, "newsletter", "true");
 
           return cb(null, newUser.rows[0]);
         } else {
-          //console.log('User found, returning existing user.');
+          //console.log("User found, returning existing user.");
           return cb(null, result.rows[0]);
         }
       } catch (err) {
-        console.error("Error during Google authentication:", err);
+        //console.error("Error during Google authentication:", err);
         return cb(err);
       }
     }

@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet";
 import "bootstrap/dist/css/bootstrap-utilities.css";
 
 import { checkEmail, sendSignupCred } from "../API";
+import { WEB_URL } from "../API";
 
 import PreLoader from "./components/PreLoader";
 import ErrorMessage from "./components/messageBox/ErrorMessage";
@@ -77,7 +78,7 @@ const SignUp = () => {
   };
 
   const googleAuth = () => {
-    window.location.href = "http://localhost:8080/auth/google";
+    window.location.href = `${WEB_URL}/auth/google`;
   };
 
   return (

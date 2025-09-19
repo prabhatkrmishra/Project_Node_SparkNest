@@ -6,25 +6,26 @@ import { updateDetails } from "../../../API";
 import logout from "../auth";
 
 import ErrorMessage from "../messageBox/ErrorMessage";
+import SuccessMessage from "../messageBox/SuccessMessage";
 
 const General = () => {
   const user = useRef(
     Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null
   );
   const days = Cookies.get("sessiondays") ? Number(Cookies.get("user")) : null;
-  if (user == null || days == null) {
+  if (user.current == null || days == null) {
     window.location.href == "/profile";
   }
-  const [updated, setUpdated] = useState(false);
+  const [updateCookie, setUpdateCookie] = useState(false);
 
   useEffect(() => {
-    if (updated) {
+    if (updateCookie) {
       user.current = Cookies.get("user")
         ? JSON.parse(Cookies.get("user"))
         : null;
     }
-    setUpdated(false);
-  }, [updated]);
+    setUpdateCookie(false);
+  }, [updateCookie]);
 
   const [newUserData, setUserData] = useState({
     username: user.current.username,
@@ -35,7 +36,9 @@ const General = () => {
 
   const [unameExists, setUnameExists] = useState(false);
   const [emailExists, setEmailExists] = useState(false);
+  const [isUpdated, setIsUpdated] = useState(false);
   const [errorMssg, SetErrorMssg] = useState("");
+  const [responseMssg, SetResponseMssg] = useState("");
 
   const handleChangeUsername = (e) => {
     setUserData((preVal) => {
@@ -44,7 +47,6 @@ const General = () => {
         [e.target.name]: e.target.value,
       };
     });
-
     setUnameExists(false);
   };
 
@@ -92,7 +94,7 @@ const General = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setIsUpdated(false);
     if (!newUserData.email || !newUserData.username) {
       alert("Username or Email is empty");
       return;
@@ -118,8 +120,9 @@ const General = () => {
           user.current.username = newUserData.username;
           user.current.email = newUserData.email;
           Cookies.set("user", JSON.stringify(user.current), { expires: days });
-          setUpdated(true);
-          alert("User details update Successful");
+          setUpdateCookie(true);
+          SetResponseMssg(response.data.message);
+          setIsUpdated(true);
         } else {
           alert("Something went wrong !");
           window.location.href = "/";
@@ -139,13 +142,15 @@ const General = () => {
   return (
     <>
       <form onSubmit={handleSubmit}>
+        <SuccessMessage isSuccess={isUpdated} successMssg={responseMssg} />
         <div style={{ marginBottom: "25px" }}>
-          <span className="profile-uid">User ID: {Id}</span>
+          <label className="profile-label-styles" htmlFor="uid">User ID</label>
+          <span className="profile-uid" id="uid">{Id}</span>
         </div>
         <div>
-          <label htmlFor="pUsername">Username</label>
+          <label className="profile-label-styles" htmlFor="pUsername">Username</label>
           <input
-            className="u-fullwidth"
+            className="u-fullwidth profile-input-styles"
             type="text"
             id="pUsername"
             name="username"
@@ -157,9 +162,9 @@ const General = () => {
         </div>
         <ErrorMessage isError={unameExists} errorMssg={errorMssg} />
         <div>
-          <label htmlFor="pEmail">Your email</label>
+          <label className="profile-label-styles" htmlFor="pEmail">Your email</label>
           <input
-            className="u-fullwidth"
+            className="u-fullwidth profile-input-styles"
             type="email"
             id="pEmail"
             name="email"
@@ -170,7 +175,7 @@ const General = () => {
           />
         </div>
         <ErrorMessage isError={emailExists} errorMssg={errorMssg} />
-        <button className="btn--primary u-quartorwidth" type="submit">
+        <button className="btn--primary u-quartorwidth profile-button-styles" type="submit">
           Update
         </button>
       </form>
