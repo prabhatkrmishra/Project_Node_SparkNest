@@ -5435,6 +5435,10 @@ body::-webkit-scrollbar {
   margin: 0 0 5px 5px !important;
 }
 
+.ql-snow .ql-picker-label {
+  display: flex !important;
+}
+
 .ql-formats {
   display: flex;
   flex-direction: row;
@@ -6059,6 +6063,27 @@ button.profile-buttons-highlight:hover {
     padding: 0 !important;
   }
 }
+
+/* ------------------------------------------------------------------- 
+ * Create Page
+ * SparkNest
+ * ------------------------------------------------------------------- */
+
+.create-input-title {
+  height: var(--input-height) !important;
+  --input-height: var(--vspace-2) !important;
+}
+
+.create-input-button {
+  height: var(--input-height) !important;
+}
+
+.create-input-button:active,
+.create-input-button:hover {
+  color: var(--color-black);
+  background: var(--color-white);
+}
+
 
 /* ------------------------------------------------------------------- 
  * Custom styling:

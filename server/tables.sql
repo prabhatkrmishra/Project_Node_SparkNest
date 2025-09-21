@@ -17,9 +17,11 @@ CREATE TABLE subscription (
 
 CREATE TABLE blogs (
     id SERIAL PRIMARY KEY,
-    email VARCHAR(255),
-    name VARCHAR(100),
-    title VARCHAR(100),
-    date DATE,
-    body TEXT
+    user_id INT REFERENCES users(id),
+    type VARCHAR(50),
+    heading VARCHAR(255) NOT NULL,
+    body TEXT NOT NULL,
+    image_url VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

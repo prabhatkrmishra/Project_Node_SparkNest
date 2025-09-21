@@ -1,4 +1,4 @@
-import { useState, useLayoutEffect, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { Helmet } from "react-helmet";
 import { useParams, useNavigate } from "react-router-dom";
@@ -43,25 +43,21 @@ const Profile = () => {
   const [highlighted, setHighlighted] = useState(section || "blogs");
 
   const login = Cookies.get("isLoggedIn") || null;
+  if (!login) {
+    navigate("/session/new");
+  }
   const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
-
-  useLayoutEffect(() => {
-    if (!login) {
-      window.location.href = "/session/new";
+  if (!user) {
+    logout();
+  }
+  if (user) {
+    if (user.username == null || user.region == null) {
+      Cookies.set("setProfile", "true");
+      navigate("/profile/details");
     }
-    if (!user) {
-      logout();
-    }
-  }, [login, navigate, user]);
+  }
 
   useEffect(() => {
-    if (user) {
-      if (user.username == null || user.region == null) {
-        Cookies.set("setProfile", "true");
-        window.location.href = "/profile/details";
-      }
-    }
-
     const allowedSections = ["blogs", "collections", "liked"];
     if (!allowedSections.includes(section)) {
       navigate("/profile/blogs");
@@ -80,15 +76,10 @@ const Profile = () => {
         element.style.paddingTop = "";
       }
     };
-  }, [navigate, section, user]);
+  }, [navigate, section]);
 
-  const handleSectionChange = (newSection) => {
-    setHighlighted(newSection);
-    navigate(`/profile/${newSection}`);
-  };
 
   const [isOpen, setIsOpen] = useState(false);
-
   const { refs, floatingStyles, context } = useFloating({
     open: isOpen,
     onOpenChange: setIsOpen,
@@ -105,15 +96,17 @@ const Profile = () => {
     dismiss,
     role,
   ]);
-
   const headingId = useId();
+
+  const handleSectionChange = (newSection) => {
+    setHighlighted(newSection);
+    navigate(`/profile/${newSection}`);
+  };
 
   return (
     <>
       <Helmet>
-        <title>
-          {user ? user.fname + user.lname : ""}
-        </title>
+        <title>{user ? user.fname + user.lname : ""}</title>
       </Helmet>
       <PreLoader />
       <div id="page" className="s-pagewrap">

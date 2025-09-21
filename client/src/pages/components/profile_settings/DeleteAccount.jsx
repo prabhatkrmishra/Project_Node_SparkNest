@@ -32,7 +32,6 @@ const DeleteAccount = () => {
         email: user.email,
         allowed: isConsentGiven,
       };
-      console.log(details);
       try {
         const response = await DeleteUserAccount(details);
         if (response.status == 200) {
