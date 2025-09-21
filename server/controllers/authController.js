@@ -75,7 +75,7 @@ export function login(req, res, next) {
         req.session.maxAge = null;
         //console.log("Session will expire when the browser is closed");
       }
-      res.json({
+      res.status(200).json({
         message: "",
         sessionId: req.sessionID,
         cookieAge: req.session.cookie.maxAge,
@@ -85,6 +85,7 @@ export function login(req, res, next) {
         lname: user.lname,
         username: user.username,
         region: user.region,
+        bio: user.bio
       });
     });
   })(req, res, next);
@@ -152,6 +153,7 @@ export const googleAuthCallback = (req, res) => {
         lname: user.lname,
         username: user.username,
         region: user.region,
+        bio: user.bio
       };
       return res.redirect(
         `${

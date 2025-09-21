@@ -7,8 +7,8 @@ import PreLoader from "./components/PreLoader";
 import ErrorMessage from "./components/messageBox/ErrorMessage";
 import Header from "./components/Header";
 
-import { sendLoginCred } from "../API";
-import { WEB_URL } from "../API";
+import { sendLoginCred } from "../api/API";
+import { WEB_URL } from "../api/API";
 
 const Login = () => {
   const [userCred, setUserCred] = useState({
@@ -48,19 +48,20 @@ const Login = () => {
     event.preventDefault();
     try {
       const response = await sendLoginCred(userCred);
-
-      if (response.data.message) {
-        setError(true);
-        SetErrorMssg(response.data.message);
-      } else {
+      if (response.status == 200) {
         if (response.data.cookieAge && response.data.cookieAge !== false) {
           // persistent cookie
           const days = response.data.cookieAge / (1000 * 60 * 60 * 24);
-          Cookies.set("sessiondays", days.toString());
+          Cookies.set("sessiondays", days.toString(), {
+            expires: userCred.savesession ? days : null,
+          });
           Cookies.set("isLoggedIn", "true", {
             expires: userCred.savesession ? days : null,
           });
-          Cookies.set("user", JSON.stringify(response.data), { expires: days });
+          const userData = response.data;
+          localStorage.setItem("userBio", userData.bio);
+          userData.bio = "";
+          Cookies.set("user", JSON.stringify(userData), { expires: days });
         } else {
           // session cookie
           Cookies.set("isLoggedIn", "true");
@@ -69,7 +70,13 @@ const Login = () => {
         window.location.href = `/profile`;
       }
     } catch (error) {
-      console.error("There was an error!", error);
+      if (error.response.data.message) {
+        setError(true);
+        SetErrorMssg(error.response.data.message);
+      } else {
+        setError(true);
+        SetErrorMssg("Something went wrong, refresh page");
+      }
     }
   };
 

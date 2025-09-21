@@ -1,18 +1,19 @@
-import { useEffect } from "react";
+import { useLayoutEffect, useRef } from "react";
 
 const BackToTop = () => {
-  useEffect(() => {
-    const pxShow = 900;
-    const goTopButton = document.querySelector(".ss-go-top");
+  const goTopButtonRef = useRef(null);
 
-    if (!goTopButton) return;
+  useLayoutEffect(() => {
+    const pxShow = 900;
+    goTopButtonRef.current = document.querySelector(".ss-go-top");
+    if (!goTopButtonRef.current) return;
 
     const handleScroll = () => {
       if (window.scrollY >= pxShow) {
-        if (!goTopButton.classList.contains("link-is-visible"))
-          goTopButton.classList.add("link-is-visible");
+        if (!goTopButtonRef.current.classList.contains("link-is-visible"))
+          goTopButtonRef.current.classList.add("link-is-visible");
       } else {
-        goTopButton.classList.remove("link-is-visible");
+        goTopButtonRef.current.classList.remove("link-is-visible");
       }
     };
 

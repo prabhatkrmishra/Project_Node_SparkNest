@@ -4,7 +4,7 @@ const ScrollUp = () => {
   return (
     <>
       <div className="ss-go-top">
-        <a className="smoothscroll" title="Back to Top" href="#root">
+        <a className="smoothscroll" title="Back to Top" href="#page">
           <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
             <path
               stroke="currentColor"

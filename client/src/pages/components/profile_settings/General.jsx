@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import Cookies from "js-cookie";
 
-import { checkUserName, checkEmail } from "../../../API";
-import { updateDetails } from "../../../API";
-import logout from "../auth";
+import { checkUserName, checkEmail } from "../../../api/API";
+import { updateDetails } from "../../../api/API";
+import logout from "../tools/auth";
 
 import ErrorMessage from "../messageBox/ErrorMessage";
 import SuccessMessage from "../messageBox/SuccessMessage";

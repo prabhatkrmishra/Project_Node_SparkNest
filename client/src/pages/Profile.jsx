@@ -16,32 +16,16 @@ import {
   useId,
 } from "@floating-ui/react";
 
-import { LogOut } from "../API";
+import logout from "./components/tools/auth";
 
 import PreLoader from "./components/PreLoader";
 import Header from "./components/Header";
-import RenderBlogs from "./components/RenderBlogs";
+import Footer from "./components/Footer";
+import GetPreviews from "./components/profile/GetPreviews";
 import MoveToEffect from "./components/effects/MoveToEffect";
 
 const Profile = () => {
-  const logout = () => {
-    Cookies.remove("isLoggedIn");
-    Cookies.remove("user");
-    Cookies.remove("setProfile");
-    Cookies.remove("sessiondays");
-    LogOut()
-      .then(() => {
-        window.location.href = "/session/new";
-      })
-      .catch((error) => {
-        console.error("Error during logout:", error);
-      });
-  };
-
-  const { section } = useParams();
   const navigate = useNavigate();
-  const [highlighted, setHighlighted] = useState(section || "blogs");
-
   const login = Cookies.get("isLoggedIn") || null;
   if (!login) {
     navigate("/session/new");
@@ -56,12 +40,28 @@ const Profile = () => {
       navigate("/profile/details");
     }
   }
+  const userBio = localStorage.getItem("userBio") || "";
+  const { section } = useParams();
+  const [highlighted, setHighlighted] = useState(section || "articles");
 
   useEffect(() => {
-    const allowedSections = ["blogs", "collections", "liked"];
+    const originalWarn = console.error;
+    console.error = (message, ...args) => {
+      if (message.includes("Warning: Cannot update a component")) {
+        return;
+      }
+      originalWarn(message, ...args);
+    };
+    return () => {
+      console.error = originalWarn;
+    };
+  }, []);
+
+  useEffect(() => {
+    const allowedSections = ["articles", "collections", "liked"];
     if (!allowedSections.includes(section)) {
-      navigate("/profile/blogs");
-      setHighlighted("blogs");
+      navigate("/profile/articles");
+      setHighlighted("articles");
     } else {
       setHighlighted(section);
     }
@@ -77,7 +77,6 @@ const Profile = () => {
       }
     };
   }, [navigate, section]);
-
 
   const [isOpen, setIsOpen] = useState(false);
   const { refs, floatingStyles, context } = useFloating({
@@ -163,6 +162,9 @@ const Profile = () => {
                     </div>
                   </div>
                 </div>
+                <div className="entry__author-box-profile-bio">
+                  <p className="profile-bio">{userBio}</p>
+                </div>
                 <div className="profileButtons">
                   <a
                     className="btn btn--pill-small profile-buttons-style"
@@ -245,11 +247,11 @@ const Profile = () => {
             <div className="d-flex flex-row gap-3 lg-12 profile-menu-buttons">
               <button
                 className={`btn btn--pill-small profile-buttons-style-menu ${
-                  highlighted === "blogs" ? "profile-buttons-highlight" : ""
+                  highlighted === "articles" ? "profile-buttons-highlight" : ""
                 }`}
-                onClick={() => handleSectionChange("blogs")}
+                onClick={() => handleSectionChange("articles")}
               >
-                My Blogs
+                My Articles
               </button>
               <button
                 className={`btn btn--pill-small profile-buttons-style-menu ${
@@ -274,10 +276,9 @@ const Profile = () => {
               <hr className="profile-hr" />
             </div>
           </div>
-          {highlighted === "blogs" && <RenderBlogs />}
-          {highlighted === "collections" && <RenderBlogs />}
-          {highlighted === "liked" && <RenderBlogs />}
+          {user && <GetPreviews renderCategory={highlighted} userId={user.id} />}
         </section>
+        <Footer />
       </div>
       <MoveToEffect />
     </>

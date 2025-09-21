@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import PreLoader from "./components/PreLoader";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import RenderBlogs from "./components/RenderBlogs";
+import RenderPreviews from "./components/RenderPreviews";
 import MoveToEffect from "./components/effects/MoveToEffect";
 
 const Blogs = () => {
@@ -53,7 +53,7 @@ const Blogs = () => {
               </div>
             </div>
           </div>
-          <RenderBlogs />
+          <RenderPreviews />
         </section>
         <Footer />
       </div>

@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Helmet } from "react-helmet";
 import "bootstrap/dist/css/bootstrap-utilities.css";
 
-import { checkEmail, sendSignupCred } from "../API";
-import { WEB_URL } from "../API";
+import { checkEmail, sendSignupCred } from "../api/API";
+import { WEB_URL } from "../api/API";
 
 import PreLoader from "./components/PreLoader";
 import ErrorMessage from "./components/messageBox/ErrorMessage";
@@ -27,6 +27,7 @@ const SignUp = () => {
         [event.target.name]: event.target.value,
       };
     });
+    setEmailExists(false);
   }
 
   const handleCheckboxChange = (event) => {

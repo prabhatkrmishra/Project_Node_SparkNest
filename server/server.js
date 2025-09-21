@@ -10,6 +10,10 @@ import { initializePassport } from "./config/passport.js";
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import subscriptionRoutes from "./routes/subscriptionRoutes.js";
+import articlesRouter from "./routes/articlesRoutes.js";
+import mediaRouter from "./routes/mediaRoutes.js";
+import categoriesRouter from "./routes/categoriesRoutes.js";
+import articlePreviewRouter from "./routes/articlePreviewRoutes.js";
 import { connectDB } from "./db/db.js";
 import config from "./config/config.js";
 
@@ -32,8 +36,8 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(
   session({
     secret: config.session.secret,
@@ -55,6 +59,10 @@ connectDB();
 app.use("/", authRoutes);
 app.use("/", userRoutes);
 app.use("/", subscriptionRoutes);
+app.use("/", articlesRouter);
+app.use("/", mediaRouter);
+app.use("/", categoriesRouter);
+app.use("/", articlePreviewRouter);
 
 // Home route
 app.get("/", (req, res) => {

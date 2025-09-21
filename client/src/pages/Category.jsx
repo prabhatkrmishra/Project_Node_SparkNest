@@ -1,31 +1,21 @@
 import { Helmet } from "react-helmet";
 import { useParams } from "react-router-dom";
 
+import { getArticlePreviewsCategory } from "../api/ARTICLESAPI";
+
 import PreLoader from "./components/PreLoader";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import RenderBlogs from "./components/RenderBlogs";
+import RenderPreviews from "./components/RenderPreviews";
 import MoveToEffect from "./components/effects/MoveToEffect";
 
 const Category = () => {
   const { type } = useParams();
   const categoryType = type ? type : "design";
+  const category = categoryType.charAt(0).toUpperCase() + categoryType.slice(1);
 
-  var category = "";
-  const validCategoryTypes = [
-    "design",
-    "lifestyle",
-    "inspiration",
-    "workplace",
-    "health",
-    "photography",
-  ];
-
-  if (validCategoryTypes.includes(categoryType)) {
-    category = categoryType.charAt(0).toUpperCase() + categoryType.slice(1);
-  } else {
-    return (window.location.href = "/error");
-  }
+  const url = getArticlePreviewsCategory(categoryType);
+  const ctype = 104;
 
   return (
     <>
@@ -51,7 +41,7 @@ const Category = () => {
               </div>
             </div>
           </div>
-          <RenderBlogs />
+          <RenderPreviews url={url} type={ctype}/>
         </section>
         <Footer />
       </div>

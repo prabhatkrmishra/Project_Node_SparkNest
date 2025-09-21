@@ -6,23 +6,9 @@ import "bootstrap/dist/css/bootstrap-utilities.css";
 import MobileMenu from "./effects/MobileMenu";
 import SearchEffect from "./effects/SearchEffect";
 
-import { LogOut } from "../../API";
+import logout from "../components/tools/auth";
 
 const Header = () => {
-  const logout = () => {
-    Cookies.remove("isLoggedIn");
-    Cookies.remove("user");
-    Cookies.remove("setProfile");
-    Cookies.remove("sessiondays");
-    LogOut()
-      .then(() => {
-        window.location.href = "/";
-      })
-      .catch((error) => {
-        console.error("Error during logout:", error);
-      });
-  };
-
   const location = useLocation();
   const currentPath = location.pathname;
   const isLoggedIn = Cookies.get("isLoggedIn");
@@ -89,7 +75,11 @@ const Header = () => {
               </ul>
             </li>
             <li
-              className={currentPath === "/create" ? "current-menu-item" : ""}
+              className={
+                currentPath === "/create" || currentPath === "/publish"
+                  ? "current-menu-item"
+                  : ""
+              }
             >
               <a href="/create">Create</a>
             </li>
@@ -107,7 +97,7 @@ const Header = () => {
                     <a href="/profile">Profile</a>
                   </li>
                   <li>
-                    <a href="/profile/setting">Settings</a>
+                    <a href="/account/settings">Settings</a>
                   </li>
                   <li>
                     <a href="/about">About</a>

@@ -10,7 +10,10 @@ import Profile from "./pages/Profile";
 import GoogleLogin from "./pages/components/GoogleLogin";
 import Details from "./pages/components/Details";
 import Settings from "./pages/Settings";
-import CreateBlog from "./pages/CreateBlog";
+import CreateArticle from "./pages/components/create/CreateArticle";
+import PublishArticle from "./pages/components/create/PublishArticle";
+import UpdateArticle from "./pages/components/update/UpdateArticle";
+import UpdatePublish from "./pages/components/update/UpdatePublish";
 import Article from "./pages/components/StandardPost";
 import Error from "./pages/Error";
 import Styles from "./pages/Styles";
@@ -20,10 +23,14 @@ function App() {
     <Router>
       <Routes>
         <Route exact path="/" element={<Index />} />
+        <Route exact path="/article/view/:selector" element={<Article />} />
         <Route exact path="/category/:type" element={<Category />} />
         <Route exact path="/category" element={<Category />} />
         <Route exact path="/category/categories" element={<Categories />} />
-        <Route exact path="/create" element={<CreateBlog />} />
+        <Route exact path="/create" element={<CreateArticle />} />
+        <Route exact path="/publish" element={<PublishArticle/>} />
+        <Route exact path="/article/edit" element={<UpdateArticle />} />
+        <Route exact path="/article/update/publish" element={<UpdatePublish />} />
         <Route exact path="/session/new" element={<Login />} />
         <Route exact path="/signup/new" element={<Signup />} />
         <Route exact path="/google/login" element={<GoogleLogin />} />
@@ -36,9 +43,6 @@ function App() {
         <Route exact path="/contact" element={<Contact />} />
         <Route exact path="/styles" element={<Styles />} />
         <Route path="*" element={<Error />} />
-
-        <Route exact path="/category/article" element={<Article />} />
-        <Route exact path="/blogs/article" element={<Article />} />
       </Routes>
     </Router>
   );

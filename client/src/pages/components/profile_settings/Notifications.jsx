@@ -1,9 +1,9 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 
-import logout from "../auth";
-import { GetSubscription } from "../../../API";
-import { SetSubscription } from "../../../API";
+import logout from "../tools/auth";
+import { GetSubscription } from "../../../api/API";
+import { SetSubscription } from "../../../api/API";
 
 import SuccessMessage from "../messageBox/SuccessMessage";
 

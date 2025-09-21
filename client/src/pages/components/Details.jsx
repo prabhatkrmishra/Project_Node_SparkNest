@@ -3,9 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Cookies from "js-cookie";
 
-import { checkUserName } from "../../API";
-import { updateDetails } from "../../API";
-import logout from './auth';
+import { checkUserName, updateDetails } from "../../api/API";
+import logout from "./tools/auth";
 
 import PreLoader from "./PreLoader";
 import Header from "./Header";
@@ -13,7 +12,9 @@ import ErrorMessage from "./messageBox/ErrorMessage";
 
 const Details = () => {
   const navigate = useNavigate();
-  const setProfile = Cookies.get("setProfile") ? Cookies.get("setProfile") : null;
+  const setProfile = Cookies.get("setProfile")
+    ? Cookies.get("setProfile")
+    : null;
 
   useEffect(() => {
     if (setProfile == null) {
@@ -21,27 +22,40 @@ const Details = () => {
     }
   }, [navigate, setProfile]);
 
-  const user = useRef (Cookies.get("user") ? JSON.parse(Cookies.get("user")) : {});
+  const user = useRef(
+    Cookies.get("user") ? JSON.parse(Cookies.get("user")) : {}
+  );
   const days = Cookies.get("sessiondays") ? Number(Cookies.get("user")) : null;
   const [userData, setUserData] = useState({
     id: user.current.id ? user.current.id : "",
     username: "",
     region: "",
+    bio: "",
   });
   const [unameExists, setUnameExists] = useState(false);
   const [errorMssg, SetErrorMssg] = useState("");
+  const [charCount, setCharCount] = useState(0);
+  const maxCharLimit = 150;
 
   const handleFocus = (e) => {
     e.target.removeAttribute("readonly");
   };
 
   function handleUserData(event) {
+    if (event.target.name === "bio" && event.target.value.length > maxCharLimit)
+      return;
+
     setUserData((preVal) => {
       return {
         ...preVal,
         [event.target.name]: event.target.value,
       };
     });
+
+    if (event.target.name === "bio") {
+      setCharCount(event.target.value.length);
+    }
+
     setUnameExists(false);
   }
 
@@ -71,7 +85,9 @@ const Details = () => {
       if (response.status == 200) {
         user.current.username = userData.username;
         user.current.region = userData.region;
+        user.current.bio = "";
         Cookies.set("user", JSON.stringify(user.current), { expires: days });
+        localStorage.setItem("userBio", userData.bio);
         Cookies.remove("setProfile");
         alert("User details update Successful");
         window.location.href = "/profile";
@@ -142,10 +158,41 @@ const Details = () => {
                     required
                     value={userData.region}
                     onChange={handleUserData}
-                    onBlur={handleBlur}
                     readOnly
                     onFocus={handleFocus}
                   />
+                </div>
+                <div
+                  className="form-outline mb-4"
+                  style={{ position: "relative" }}
+                >
+                  <label htmlFor="inputBio" style={{ marginBottom: "8px" }}>
+                    Your Bio
+                  </label>
+                  <textarea
+                    className="u-fullwidth"
+                    placeholder="Max 150 characters"
+                    id="inputBio"
+                    name="bio"
+                    required
+                    value={userData.bio}
+                    onChange={handleUserData}
+                    readOnly
+                    onFocus={handleFocus}
+                  ></textarea>
+                  <p
+                    style={{
+                      position: "absolute",
+                      padding: "0 10px 0 5px",
+                      right: "1px",
+                      bottom: "1px",
+                      fontSize: "12px",
+                      marginBottom: "0",
+                      color: charCount > maxCharLimit ? "red" : "gray",
+                    }}
+                  >
+                    {maxCharLimit - charCount} characters remaining
+                  </p>
                 </div>
                 <button type="submit" className="btn--primary u-fullwidth mb-5">
                   Set Details

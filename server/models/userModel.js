@@ -4,16 +4,28 @@ import { getDBClient } from "../db/db.js";
 import { hashPassword } from "../services/bcryptService.js";
 
 /**
+ * Get existing id.
+ *
+ * @param {number} id - The user's unique id.
+ * @returns {Promise<boolean>} - id exist : True or false
+ */
+export async function getUserById(id) {
+  const db = getDBClient();
+  const query = "SELECT id FROM users WHERE id = $1";
+  const result = await db.query(query, [id]);
+  return result.rows.length > 0 ? true : false;
+}
+
+/**
  * Get existing email.
  *
  * @param {string} email - The user's email address.
- * @returns {Promise<Object|null>} - The user object or null if not found.
+ * @returns {Promise<boolean>} - email exist : True or false
  */
 export async function getUserByEmail(email) {
   const db = getDBClient();
-  const result = await db.query("SELECT email FROM users WHERE email = $1", [
-    email,
-  ]);
+  const query = "SELECT email FROM users WHERE email = $1";
+  const result = await db.query(query, [email]);
   return result.rows.length > 0 ? true : false;
 }
 
@@ -21,39 +33,52 @@ export async function getUserByEmail(email) {
  * Get existing username.
  *
  * @param {string} username - The user's username.
- * @returns {Promise<Object|null>} - The user object or null if not found.
+ * @returns {Promise<boolean>} - username exist : True or false
  */
 export async function getUserByUsername(username) {
   const db = getDBClient();
-  const result = await db.query("SELECT username FROM users WHERE username = $1", [
-    username,
-  ]);
+  const query = "SELECT username FROM users WHERE username = $1";
+  const result = await db.query(query, [username]);
   return result.rows.length > 0 ? true : false;
 }
 
 /**
- * Get a user details by id.
+ * Get all user details by id.
  *
  * @param {number} id - The user's ID.
  * @returns {Promise<Object|null>} - The user object or null if not found.
  */
 export async function getUserDetailId(id) {
   const db = getDBClient();
-  const result = await db.query("SELECT * FROM users WHERE id = $1", [id]);
+  const query = "SELECT * FROM users WHERE id = $1";
+  const result = await db.query(query, [id]);
   return result.rows.length > 0 ? result.rows[0] : null;
 }
 
 /**
- * Get a user details by id.
+ * Get a user details by email.
  *
- * @param {string} email - The user's ID.
+ * @param {string} email - The user's email.
  * @returns {Promise<Object|null>} - The user object or null if not found.
  */
 export async function getUserDetailEmail(email) {
   const db = getDBClient();
-  const result = await db.query("SELECT * FROM users WHERE email = $1", [
-    email,
-  ]);
+  const query = "SELECT * FROM users WHERE email = $1";
+  const result = await db.query(query, [email]);
+  return result.rows.length > 0 ? result.rows[0] : null;
+}
+
+/**
+ * Get specific user details by id.
+ *
+ * @param {number} id - The user's ID.
+ * @param {string} col - The user's column.
+ * @returns {Promise<Object|null>} - The user object or null if not found.
+ */
+export async function getUserDetail(id, col) {
+  const db = getDBClient();
+  const query = `SELECT ${col} FROM users WHERE id = $1`;
+  const result = await db.query(query, [id]);
   return result.rows.length > 0 ? result.rows[0] : null;
 }
 
@@ -65,11 +90,14 @@ export async function getUserDetailEmail(email) {
  */
 export async function createUser(userData) {
   const db = getDBClient();
-  const { email, password, fname, lname } = userData;
-  const result = await db.query(
-    "INSERT INTO users (email, password, fname, lname) VALUES ($1, $2, $3, $4) RETURNING *",
-    [email, password, fname, lname]
-  );
+  const query =
+    "INSERT INTO users (email, password, fname, lname) VALUES ($1, $2, $3, $4) RETURNING *";
+  const result = await db.query(query, [
+    userData.email,
+    userData.password,
+    userData.fname,
+    userData.lname,
+  ]);
   return result.rows[0];
 }
 
@@ -95,8 +123,8 @@ export async function CreateGoogleUser(profile) {
  * Update user details.
  *
  * @param {number} id - The user's ID.
- * @param {Map} updatedDetails - The updated user data object.
- * @returns {Promise<void>}
+ * @param {Map} updatedDetails - The updated user data map.
+ * @returns {Promise<boolean>} - Updated ? true : false
  */
 export async function updateUser(id, updatedDetails) {
   const db = getDBClient();
@@ -115,9 +143,14 @@ export async function updateUser(id, updatedDetails) {
   const query = `UPDATE users SET ${setClauses.join(
     ", "
   )} WHERE id = $${index}`;
-  await db.query(query, values);
 
-  return true;
+  try {
+    const result = await db.query(query, values);
+    return result.rowCount > 0;
+  } catch (error) {
+    console.error("Error updating User:", error);
+    return false;
+  }
 }
 
 /**
@@ -128,5 +161,6 @@ export async function updateUser(id, updatedDetails) {
  */
 export async function deleteUser(id) {
   const db = getDBClient();
-  await db.query("DELETE FROM users WHERE id = $1", [id]);
+  const query = "DELETE FROM users WHERE id = $1";
+  await db.query(query, [id]);
 }

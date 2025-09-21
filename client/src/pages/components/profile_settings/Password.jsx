@@ -1,8 +1,8 @@
 import { useState, useRef } from "react";
 import Cookies from "js-cookie";
 
-import { updateDetails } from "../../../API";
-import logout from "../auth";
+import { updateDetails } from "../../../api/API";
+import logout from "../tools/auth";
 
 import ErrorMessage from "../messageBox/ErrorMessage";
 import SuccessMessage from "../messageBox/SuccessMessage";

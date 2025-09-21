@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import Cookies from "js-cookie";
 
-import { updateDetails } from "../../../API";
-import logout from "../auth";
+import { updateDetails } from "../../../api/API";
+import logout from "../tools/auth";
 
 import SuccessMessage from "../messageBox/SuccessMessage";
 
@@ -10,6 +10,7 @@ const Profile = () => {
   const user = useRef(
     Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null
   );
+  const userBio = localStorage.getItem("userBio") || "";
   const days = Cookies.get("sessiondays") ? Number(Cookies.get("user")) : null;
   if (user == null || days == null) {
     window.location.href == "/profile";
@@ -29,19 +30,26 @@ const Profile = () => {
     fname: user.current.fname,
     lname: user.current.lname,
     region: user.current.region,
+    bio: userBio,
   });
   const Id = user.current.id;
   const sanitizedData = {};
   const [isUpdated, setIsUpdated] = useState(false);
   const [responseMssg, SetResponseMssg] = useState("");
+  const [charCount, setCharCount] = useState(0);
+  const maxCharLimit = 150;
 
   const handleDataChange = (e) => {
+    if (e.target.name === "bio" && e.target.value.length > maxCharLimit) return;
     setUserData((preVal) => {
       return {
         ...preVal,
         [e.target.name]: e.target.value,
       };
     });
+    if (e.target.name === "bio") {
+      setCharCount(e.target.value.length);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -55,7 +63,8 @@ const Profile = () => {
     if (
       newUserData.fname === user.current.fname &&
       newUserData.lname === user.current.lname &&
-      newUserData.region === user.current.region
+      newUserData.region === user.current.region &&
+      newUserData.bio === user.current.bio
     ) {
       return;
     }
@@ -67,6 +76,8 @@ const Profile = () => {
       sanitizedData.lname = newUserData.lname;
     if (newUserData.region !== user.current.region)
       sanitizedData.region = newUserData.region;
+    if (newUserData.bio !== user.current.bio)
+      sanitizedData.bio = newUserData.bio;
 
     try {
       const response = await updateDetails(sanitizedData);
@@ -74,7 +85,9 @@ const Profile = () => {
         user.current.fname = newUserData.fname;
         user.current.lname = newUserData.lname;
         user.current.region = newUserData.region;
+        user.current.bio = "";
         Cookies.set("user", JSON.stringify(user.current), { expires: days });
+        localStorage.setItem("userBio", newUserData.bio);
         setUpdateCookie(true);
         SetResponseMssg(response.data.message);
         setIsUpdated(true);
@@ -102,7 +115,9 @@ const Profile = () => {
         <SuccessMessage isSuccess={isUpdated} successMssg={responseMssg} />
         <div className="u-fullwidth menu-section-profile">
           <div className="profile-input-names">
-            <label className="profile-label-styles" htmlFor="pfName">First Name</label>
+            <label className="profile-label-styles" htmlFor="pfName">
+              First Name
+            </label>
             <input
               className="profile-input-name profile-input-styles"
               type="text"
@@ -115,7 +130,9 @@ const Profile = () => {
             />
           </div>
           <div className="profile-input-name">
-            <label className="profile-label-styles" htmlFor="plName">Last Name</label>
+            <label className="profile-label-styles" htmlFor="plName">
+              Last Name
+            </label>
             <input
               className="profile-input-name profile-input-styles"
               type="text"
@@ -129,7 +146,9 @@ const Profile = () => {
           </div>
         </div>
         <div>
-          <label className="profile-label-styles" htmlFor="pRegion">Region</label>
+          <label className="profile-label-styles" htmlFor="pRegion">
+            Region
+          </label>
           <input
             className="u-fullwidth profile-input-styles"
             type="text"
@@ -141,7 +160,37 @@ const Profile = () => {
             onChange={handleDataChange}
           />
         </div>
-        <button className="btn--primary u-quartorwidth profile-button-styles" type="submit">
+        <div style={{ position: "relative" }}>
+          <label className="profile-label-styles" htmlFor="pBio">
+            Bio
+          </label>
+          <textarea
+            className="u-fullwidth"
+            placeholder="Your Bio"
+            id="pBio"
+            name="bio"
+            required
+            value={newUserData.bio}
+            onChange={handleDataChange}
+          ></textarea>
+          <p
+            style={{
+              position: "absolute",
+              padding: "0 10px 0 5px",
+              right: "1px",
+              bottom: "1px",
+              fontSize: "12px",
+              marginBottom: "0",
+              color: charCount > maxCharLimit ? "red" : "gray",
+            }}
+          >
+            {maxCharLimit - charCount} characters remaining
+          </p>
+        </div>
+        <button
+          className="btn--primary u-quartorwidth profile-button-styles"
+          type="submit"
+        >
           Update
         </button>
       </form>

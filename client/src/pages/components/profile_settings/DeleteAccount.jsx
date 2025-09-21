@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Cookies from "js-cookie";
 
-import { DeleteUserAccount } from "../../../API";
+import { DeleteUserAccount } from "../../../api/API";
 
-import logout from "../auth";
+import logout from "../tools/auth";
 
 const DeleteAccount = () => {
   const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;

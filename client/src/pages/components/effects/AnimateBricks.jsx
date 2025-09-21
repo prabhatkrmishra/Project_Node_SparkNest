@@ -60,7 +60,7 @@ const AnimateBricks = () => {
     return () => {
       window.removeEventListener('scroll', animateOnScroll);
     };
-  }, []);
+  },[]);
 
   return null;
 };

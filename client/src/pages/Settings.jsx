@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 
-import { LogOut } from "../API";
+import logout from "./components/tools/auth";
 
 import PreLoader from "./components/PreLoader";
 import Header from "./components/Header";
@@ -15,19 +15,6 @@ import Profile from "./components/profile_settings/Profile";
 import DropDownMenu from "./components/profile_settings/settings_components/DropDownMenu";
 
 const Settings = () => {
-  const logout = () => {
-    Cookies.remove("isLoggedIn");
-    Cookies.remove("user");
-    Cookies.remove("setProfile");
-    Cookies.remove("sessiondays");
-    LogOut()
-      .then(() => {
-        window.location.href = "/session/new";
-      })
-      .catch((error) => {
-        console.error("Error during logout:", error);
-      });
-  };
 
   const { section } = useParams();
   const navigate = useNavigate();
@@ -125,7 +112,7 @@ const Settings = () => {
                     className="entry__author-name entry__author-name-settings"
                     style={{ marginBottom: "5px", fontSize: "3rem" }}
                   >
-                    <a href="#0">
+                    <a href="/profile">
                       <div className="settings-span">
                         <span>{user.fname + " " + user.lname}</span>
                       </div>

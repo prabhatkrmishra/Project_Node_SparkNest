@@ -106,7 +106,7 @@ export async function updateUserDetails(req, res) {
 
   const { id, ...updatedData } = req.body;
   const idnum = parseInt(id, 10);
-  const { fname, lname, username, region, email, oldpassword, password } =
+  const { fname, lname, username, region, bio, email, oldpassword, password } =
     updatedData;
   const updatedDetails = new Map();
 
@@ -114,6 +114,7 @@ export async function updateUserDetails(req, res) {
   if (lname) updatedDetails.set("lname", lname);
   if (username) updatedDetails.set("username", username);
   if (region) updatedDetails.set("region", region);
+  if (bio) updatedDetails.set("bio", bio);
   if (email) updatedDetails.set("email", email);
 
   if (password && oldpassword) {
@@ -151,7 +152,6 @@ export async function updateUserDetails(req, res) {
   }
 
   if (updatedDetails.has("email")) {
-    console.log(updatedDetails.get("email"));
     const checkEmailExist = await getUserByEmail(updatedDetails.get("email"));
     if (checkEmailExist) {
       return res
@@ -162,7 +162,6 @@ export async function updateUserDetails(req, res) {
 
   try {
     const existingUser = await getUserDetailId(idnum);
-    console.log(existingUser);
     if (!existingUser) {
       return res
         .status(400)
@@ -227,5 +226,7 @@ export async function deleteUserAccount(req, res) {
       console.error("Error during account deletion:", error);
       res.status(500).json({ message: "Internal Server Error" });
     }
+  } else {
+    res.status(400).json({ message: "Cannot delete, Not allowed" });
   }
 }

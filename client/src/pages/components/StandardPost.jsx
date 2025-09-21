@@ -1,11 +1,76 @@
+import { useRef } from "react";
 import { Helmet } from "react-helmet";
+import { useParams } from "react-router-dom";
+import { format } from "date-fns";
+import { useState, useEffect } from "react";
+import Quill from "quill";
+import "quill/dist/quill.snow.css";
+import hljs from "highlight.js";
+import "highlight.js/styles/default.css";
+import katex from "katex";
+import "katex/dist/katex.min.css";
+
+import { viewArticle } from "../../api/API";
 
 import PreLoader from "./PreLoader";
 import Header from "./Header";
 import Footer from "./Footer";
 import MoveToEffect from "./effects/MoveToEffect";
 
+window.katex = katex;
+
 const StandardPost = () => {
+  const { selector } = useParams();
+  const [article, setArticle] = useState({});
+  const [prevArticle, setPrevArticle] = useState({});
+  const [nextArticle, setNextArticle] = useState({});
+  const [date, setDate] = useState("");
+
+  useEffect(() => {
+    const fetchArticle = async () => {
+      const response = await viewArticle(selector);
+      try {
+        if (response.status == 200) {
+          setArticle(response.data.article);
+          setPrevArticle(response.data.prev);
+          setNextArticle(response.data.next);
+        }
+      } catch (error) {
+        if (error.response.status) {
+          alert("Error: " + error.response.status);
+        }
+      }
+    };
+
+    fetchArticle();
+    setDate(article.created_date);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selector]);
+
+  useEffect(() => {
+    if (article.created_date) {
+      const modDate = format(new Date(article.created_date), "MMMM dd, yyyy");
+      setDate(modDate);
+    }
+  }, [article.created_date]);
+
+  const editorRef = useRef(null);
+  const quillRef = useRef(null);
+
+  useEffect(() => {
+    const quill = new Quill(editorRef.current, {
+      readOnly: true,
+      modules: {
+        syntax: { hljs },
+        toolbar: false,
+      },
+      theme: "snow",
+    });
+
+    quillRef.current = quill;
+    quillRef.current.root.innerHTML = article.article_body;
+  }, [article]);
+
   return (
     <>
       <Helmet>
@@ -19,9 +84,7 @@ const StandardPost = () => {
             <div className="column lg-12">
               <article className="entry format-standard">
                 <header className="entry__header">
-                  <h1 className="entry__title">
-                    Understanding and Using Negative Space.
-                  </h1>
+                  <h1 className="entry__title">{article.article_title}</h1>
 
                   <div className="entry__meta">
                     <div className="entry__meta-author">
@@ -48,7 +111,7 @@ const StandardPost = () => {
                           d="M6.8475 19.25H17.1525C18.2944 19.25 19.174 18.2681 18.6408 17.2584C17.8563 15.7731 16.068 14 12 14C7.93201 14 6.14367 15.7731 5.35924 17.2584C4.82597 18.2681 5.70558 19.25 6.8475 19.25Z"
                         ></path>
                       </svg>
-                      <a href="#">Naruto Uzumaki</a>
+                      <a href="#">{article.fname + " " + article.lname}</a>
                     </div>
                     <div className="entry__meta-date">
                       <svg
@@ -70,7 +133,7 @@ const StandardPost = () => {
                           d="M12 8V12L14 14"
                         ></path>
                       </svg>
-                      August 15, 2021
+                      {date}
                     </div>
                     <div className="entry__meta-cat">
                       <svg
@@ -95,184 +158,58 @@ const StandardPost = () => {
                         ></path>
                       </svg>
 
-                      <span className="cat-links">
-                        <a href="#0">Inspiration</a>
-                        <a href="#0">Design</a>
-                      </span>
+                      {article.article_categories && (
+                        <span className="cat-links">
+                          {article.article_categories[0] && (
+                            <a
+                              href={`/category/${article.article_categories[0]}`}
+                            >
+                              {article.article_categories[0]}
+                            </a>
+                          )}
+                          {article.article_categories[0] && (
+                            <a
+                              href={`/category/${article.article_categories[1]}`}
+                            >
+                              {article.article_categories &&
+                                article.article_categories[1]}
+                            </a>
+                          )}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </header>
 
-                <div className="entry__media">
+                { article.article_images && <div className="entry__media">
                   <figure className="featured-image">
                     <img
-                      src="/images/thumbs/single/standard-1200.jpg"
-                      srcSet="/images/thumbs/single/standard-2400.jpg 2400w, 
-                                              /images/thumbs/single/standard-1200.jpg 1200w, 
-                                              /images/thumbs/single/standard-600.jpg 600w"
+                      src={`${article.article_images[1]}`}
+                      srcSet={`${article.article_images[2]} 2400w,
+                                              ${article.article_images[1]} 1200w, 
+                                              ${article.article_images[0]} 600w`}
                       sizes="(max-width: 2400px) 100vw, 2400px"
                       alt=""
                     />
                   </figure>
-                </div>
+                </div> }
 
                 <div className="content-primary">
                   <div className="entry__content">
-                    <p className="lead">
-                      Duis ex ad cupidatat tempor Excepteur cillum cupidatat
-                      fugiat nostrud cupidatat dolor sunt sint sit nisi est eu
-                      exercitation incididunt adipisicing veniam velit id fugiat
-                      enim mollit amet anim veniam dolor dolor irure velit
-                      commodo cillum sit nulla ullamco magna amet magna
-                      cupidatat qui labore cillum cillum cupidatat fugiat
-                      nostrud.{" "}
-                    </p>
+                    <div className="ql-viewer" id="editor" ref={editorRef}></div>
 
-                    <p className="drop-cap">
-                      Eligendi quam at quis. Sit vel neque quam consequuntur
-                      expedita quisquam. Incidunt quae qui error. Rerum non
-                      facere mollitia ut magnam laboriosam. Quisquam neque quia
-                      ex eligendi repellat illum quibusdam aut. Architecto quam
-                      consequuntur totam ratione reprehenderit est praesentium
-                      impedit maiores incididunt adipisicing veniam velit .
-                    </p>
-
-                    <p>
-                      Duis ex ad cupidatat tempor Excepteur cillum cupidatat
-                      fugiat nostrud cupidatat dolor sunt sint sit nisi est eu
-                      exercitation incididunt adipisicing veniam velit id fugiat
-                      enim mollit amet anim veniam dolor dolor irure velit
-                      commodo cillum sit nulla ullamco magna amet magna
-                      cupidatat qui labore cillum sit in tempor veniam consequat
-                      non laborum adipisicing aliqua ea nisi sint ut quis
-                      proident ullamco ut dolore culpa occaecat ut laboris in
-                      sit minim cupidatat ut dolor voluptate enim veniam
-                      consequat occaecat fugiat in adipisicing in amet Ut nulla
-                      nisi non ut enim aliqua laborum mollit quis nostrud sed
-                      sed.
-                    </p>
-
-                    <figure className="alignwide">
-                      <img
-                        src="/images/sample-1200.jpg"
-                        srcSet="/images/sample-2400.jpg 2400w, 
-                                                  /images/sample-1200.jpg 1200w, 
-                                                  /images/sample-600.jpg 600w"
-                        sizes="(max-width: 2400px) 100vw, 2400px"
-                        alt=""
-                      />
-                    </figure>
-
-                    <p>
-                      Duis ex ad cupidatat tempor Excepteur cillum cupidatat
-                      fugiat nostrud cupidatat dolor sunt sint sit nisi est eu
-                      exercitation incididunt adipisicing veniam velit id fugiat
-                      enim mollit amet anim veniam dolor dolor irure velit
-                      commodo cillum sit nulla ullamco magna amet magna
-                      cupidatat qui labore cillum sit in tempor veniam consequat
-                      non laborum adipisicing aliqua ea nisi sint ut quis
-                      proident ullamco ut dolore culpa occaecat ut laboris in
-                      sit minim cupidatat ut dolor voluptate enim veniam
-                      consequat occaecat fugiat in adipisicing in amet Ut nulla
-                      nisi non ut enim aliqua laborum mollit quis nostrud sed
-                      sed.
-                    </p>
-
-                    <h2>Large Heading</h2>
-
-                    <p>
-                      Harum quidem rerum facilis est et expedita distinctio. Nam
-                      libero tempore, cum soluta nobis est eligendi optio cumque
-                      nihil impedit quo minus{" "}
-                      <a href="http://#">omnis voluptas assumenda est</a>
-                      id quod maxime placeat facere possimus, omnis dolor
-                      repellendus. Temporibus autem quibusdam et aut officiis
-                      debitis aut rerum necessitatibus saepe eveniet ut et.
-                    </p>
-
-                    <blockquote>
-                      <p>
-                        For God so loved the world, that he gave his only Son,
-                        that whoever believes in him should not perish but have
-                        eternal life. For God did not send his Son into the
-                        world to condemn the world, but in order that the world
-                        might be saved through him.
+                    {article.article_categories && (
+                      <p className="entry__tags">
+                        <strong>Tags:</strong>
+                        <span className="entry__tag-list">
+                          {article.article_categories.map((category, index) => (
+                            <a key={index} href={`/category/${category}`}>
+                              {category}
+                            </a>
+                          ))}
+                        </span>
                       </p>
-                      <cite>John 3:16-17 ESV</cite>
-                    </blockquote>
-
-                    <p>
-                      Odio dignissimos ducimus qui blanditiis praesentium
-                      voluptatum deleniti atque corrupti dolores et quas
-                      molestias excepturi sint occaecati cupiditate non
-                      provident, similique sunt in culpa. Aenean eu leo quam.
-                      Pellentesque ornare sem lacinia quam venenatis vestibulum.
-                      Nulla vitae elit libero, a pharetra augue laboris in sit
-                      minim cupidatat ut dolor voluptate enim veniam consequat
-                      occaecat fugiat in adipisicing in amet Ut nulla nisi non
-                      ut enim aliqua laborum mollit quis nostrud sed sed..
-                    </p>
-
-                    <h3>Smaller Heading</h3>
-
-                    <p>
-                      Quidem rerum facilis est et expedita distinctio. Nam
-                      libero tempore, cum soluta nobis est eligendi optio cumque
-                      nihil impedit quo minus id quod maxime placeat facere
-                      possimus, omnis voluptas assumenda est, omnis dolor
-                      repellendus.
-                    </p>
-
-                    <p>
-                      Quidem rerum facilis est et expedita distinctio. Nam
-                      libero tempore, cum soluta nobis est eligendi optio cumque
-                      nihil impedit quo minus id quod maxime placeat facere
-                      possimus, omnis voluptas assumenda est, omnis dolor
-                      repellendus.
-                    </p>
-
-                    <p>
-                      Odio dignissimos ducimus qui blanditiis praesentium
-                      voluptatum deleniti atque corrupti dolores et quas
-                      molestias excepturi sint occaecati cupiditate non
-                      provident, similique sunt in culpa.
-                    </p>
-
-                    <ul>
-                      <li>
-                        Donec nulla non metus auctor fringilla.
-                        <ul>
-                          <li>Lorem ipsum dolor sit amet.</li>
-                          <li>Lorem ipsum dolor sit amet.</li>
-                          <li>Lorem ipsum dolor sit amet.</li>
-                        </ul>
-                      </li>
-                      <li>Donec nulla non metus auctor fringilla.</li>
-                      <li>Donec nulla non metus auctor fringilla.</li>
-                    </ul>
-
-                    <p>
-                      Odio dignissimos ducimus qui blanditiis praesentium
-                      voluptatum deleniti atque corrupti dolores et quas
-                      molestias excepturi sint occaecati cupiditate non
-                      provident, similique sunt in culpa. Aenean eu leo quam.
-                      Pellentesque ornare sem lacinia quam venenatis vestibulum.
-                      Nulla vitae elit libero, a pharetra augue laboris in sit
-                      minim cupidatat ut dolor voluptate enim veniam consequat
-                      occaecat fugiat in adipisicing in amet Ut nulla nisi non
-                      ut enim aliqua laborum mollit quis nostrud sed sed.
-                    </p>
-
-                    <p className="entry__tags">
-                      <strong>Tags:</strong>
-
-                      <span className="entry__tag-list">
-                        <a href="#0">orci</a>
-                        <a href="#0">lectus</a>
-                        <a href="#0">varius</a>
-                        <a href="#0">turpis</a>
-                      </span>
-                    </p>
+                    )}
 
                     <div className="entry__author-box">
                       <figure className="entry__author-avatar">
@@ -284,30 +221,51 @@ const StandardPost = () => {
                       </figure>
                       <div className="entry__author-info">
                         <h5 className="entry__author-name">
-                          <a href="#0">Naruto Uzumaki</a>
+                          <a href="#">
+                            {article.fname
+                              ? article.fname + " " + article.lname
+                              : "No Name"}
+                          </a>
                         </h5>
-                        <p>
-                          Pellentesque ornare sem lacinia quam venenatis
-                          vestibulum. Nulla vitae elit libero, a pharetra augue
-                          laboris in sit minim cupidatat ut dolor voluptate enim
-                          veniam consequat occaecat.
-                        </p>
+                        <p>{article.bio ? article.bio : "No Bio"}</p>
                       </div>
                     </div>
                   </div>
 
                   <div className="post-nav">
                     <div className="post-nav__prev">
-                      <a href="single-standard.html" rel="prev">
-                        <span>Prev</span>
-                        The Pomodoro Technique Really Works.
-                      </a>
+                      {prevArticle.id && (
+                        <a
+                          href={
+                            prevArticle.id
+                              ? `/article/view/${prevArticle.id}`
+                              : "#"
+                          }
+                          rel="prev"
+                        >
+                          <span>Prev</span>
+                          {prevArticle.title
+                            ? prevArticle.title
+                            : "No Previous article"}
+                        </a>
+                      )}
                     </div>
                     <div className="post-nav__next">
-                      <a href="single-standard.html" rel="next">
-                        <span>Next</span>
-                        How Imagery Drives User Experience.
-                      </a>
+                      {nextArticle.id && (
+                        <a
+                          href={
+                            nextArticle.id
+                              ? `/article/view/${nextArticle.id}`
+                              : "#"
+                          }
+                          rel="next"
+                        >
+                          <span>Next</span>
+                          {nextArticle.title
+                            ? nextArticle.title
+                            : "No Next article"}
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>

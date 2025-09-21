@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Subscription } from "../../API";
+import { Subscription } from "../../api/API";
 
 import ScrollUp from "./navigate/ScrollUp";
 
