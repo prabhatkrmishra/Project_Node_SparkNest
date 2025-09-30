@@ -183,7 +183,7 @@ const Details = () => {
           style={{ paddingTop: "130px" }}
         >
           <div className="row d-flex justify-content-center mb-lg-5">
-            <div className="column lg-6 tab-12">
+            <div className="column lg-6 tab-12 profile-avatar-selection">
               <div className="image-selector">
                 <h5>Select an Avatar</h5>
                 <div className="avatar-grid">
@@ -206,7 +206,7 @@ const Details = () => {
               </div>
               <div style={{ margin: "20px 0", textAlign: "center" }}>OR</div>
               <div className="image-selector">
-                <h5>Upload your Image</h5>
+                <h5 className="special-h5">Upload your Image</h5>
                 <input
                   type="file"
                   className="upload-custom-avatar"
@@ -214,7 +214,7 @@ const Details = () => {
                   onChange={handleImageChange}
                 />
                 {selectedImage && (
-                  <div className="image-selector" style={{ marginTop: "32px" }}>
+                  <div className="image-selector selected-image">
                     <h5>Selected Image</h5>
                     <img
                       src={selectedImage}

@@ -147,7 +147,7 @@ const Profile = () => {
                         {user ? user.fname + " " + user.lname : ""}
                       </a>
                     </h5>
-                    <div className="d-flex flex-row gap-5 profil-info">
+                    <div className="profil-info">
                       <div className="d-flex flex-row gap-2 entry__author-detail-profile">
                         <img
                           width="20"
@@ -196,19 +196,19 @@ const Profile = () => {
                     >
                       <circle
                         cx="2"
-                        cy="9"
+                        cy="8"
                         r="1.5"
                         fill="currentColor"
                       ></circle>
                       <circle
                         cx="8"
-                        cy="9"
+                        cy="8"
                         r="1.5"
                         fill="currentColor"
                       ></circle>
                       <circle
                         cx="14"
-                        cy="9"
+                        cy="8"
                         r="1.5"
                         fill="currentColor"
                       ></circle>

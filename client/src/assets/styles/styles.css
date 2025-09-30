@@ -4464,7 +4464,7 @@ h2.hero__entry-title {
   }
 
   .hero__entry-text-inner {
-    bottom: 20%;
+    bottom: 10%;
     max-width: 460px;
   }
 
@@ -5433,17 +5433,21 @@ body::-webkit-scrollbar {
 /* ------------------------------------------------------------------- 
  * Setting Details page
  * ------------------------------------------------------------------- */
-.avatar-grid {
+div.avatar-grid {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
+  gap: 10px;
 }
 
 div.image-selector h5 {
   text-align: center;
-  margin-top: 0 !important;
-  margin-bottom: 16px !important;
+  margin: 0;
+}
+
+h5.special-h5 {
+  margin-top: 22px !important;
 }
 
 div.image-selector {
@@ -5452,13 +5456,20 @@ div.image-selector {
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
+  gap: 20px;
 }
 
 div.image-selector img {
   border-radius: 50%;
+  margin: 0 !important;
+}
+
+div.selected-image {
+  margin-top: 4%;
 }
 
 input.upload-custom-avatar {
+  margin-top: 10px !important;
   margin-bottom: 0 !important;
   width: 240px !important;
 }
@@ -5487,6 +5498,12 @@ div.settings-image {
 
 div.settings-image h5 {
   margin-top: 0 !important;
+}
+
+@media screen and (max-width: 800px) {
+  div.profile-avatar-selection {
+    margin-bottom: 32px;
+  }
 }
 
 /* ------------------------------------------------------------------- 
@@ -5813,9 +5830,8 @@ div.menu-section-profile {
   font-size: 1.7rem;
 }
 
-.show.dropdown,
-.dropdown {
-  display: none !important;
+div.settings-navigation-dropdown {
+  display: none;
 }
 
 .btn:active,
@@ -5887,9 +5903,8 @@ div.menu-section-profile {
     display: none;
   }
 
-  .show.dropdown,
-  .dropdown {
-    display: block;
+  div.settings-navigation-dropdown {
+    display: block !important;
   }
 
   .entry__author-box-profile {
@@ -5930,6 +5945,29 @@ div.menu-section-profile {
 
   div.menu-section-profile {
     gap: 0;
+  }
+
+  div.profile-avatar-buttons {
+    width: 80%;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  div.profil-info {
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center;
+    gap: 10px;
+  }
+
+  div.profileButtons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  div.profile-avatar-buttons {
+    width: 70%;
   }
 }
 
@@ -6052,6 +6090,8 @@ div.menu-section-profile {
 .profil-info {
   display: flex;
   justify-content: flex-start;
+  flex-direction: row;
+  gap: 30px;
 }
 
 .profile-name-height {
@@ -6207,6 +6247,16 @@ button.profile-buttons-highlight:hover {
 
   .entry__author-box-settings {
     padding: 0 !important;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .profile-name-height {
+    font-size: 3rem !important;
+  }
+
+  p.profile-bio {
+    text-wrap: wrap;
   }
 }
 
@@ -6387,7 +6437,6 @@ textarea.info-input {
 }
 
 .dropdown-menu {
-  display: block !important;
   padding: 0 !important;
   border: none;
   width: 100%;
@@ -6420,7 +6469,7 @@ textarea.info-input {
 div.entry__author-box.customize-author-box {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   padding-top: 32px !important;
   padding-bottom: 32px !important;
   border-top: 1px solid var(--color-border);
@@ -6448,7 +6497,7 @@ div.tags-save-like {
   position: relative;
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
 }
 
 div.save-like {

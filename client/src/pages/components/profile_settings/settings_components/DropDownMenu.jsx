@@ -3,7 +3,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 const DropDownMenu = (prop) => {
   return (
     <>
-      <Dropdown>
+      <Dropdown className="settings-navigation-dropdown">
         <Dropdown.Toggle
           className="dropdown-section-settings-width"
           variant="success"
