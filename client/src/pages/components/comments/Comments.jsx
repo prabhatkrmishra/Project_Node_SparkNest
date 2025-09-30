@@ -115,9 +115,6 @@ const Comments = ({ articleId }) => {
     return count;
   };
 
-  const [addComment, setAddComment] = useState(false);
-  const toggleAddComment = () => setAddComment(!addComment);
-
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState({
     user_id: user ? user.id : "",
@@ -126,6 +123,17 @@ const Comments = ({ articleId }) => {
     email: user ? user.email : "",
     body: "",
   });
+  const [addComment, setAddComment] = useState(false);
+  const [replyComment, setReplyComment] = useState(false);
+  const toggleAddComment = () => {
+    setAddComment(!addComment);
+    setReplyComment(false);
+    setNewComment({
+      ...newComment,
+      body: "",
+      parent_comment_id: null,
+    });
+  };
 
   useEffect(() => {
     const getComments = async () => {
@@ -149,7 +157,21 @@ const Comments = ({ articleId }) => {
   const handleReply = (parentId) => {
     setNewComment({ ...newComment, parent_comment_id: parentId });
     setAddComment(true);
+    setReplyComment(true);
   };
+
+  useEffect(() => {
+    if (replyComment) {
+      const scrollToCommentBox = setTimeout(() => {
+        const element = document.getElementById("comment-box");
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 100);
+  
+      return () => clearTimeout(scrollToCommentBox);
+    }
+  }, [replyComment, addComment]);
 
   const [deleted, setDeleted] = useState(false);
   const handleDelete = (commentId) => {
@@ -195,10 +217,11 @@ const Comments = ({ articleId }) => {
           transition={Fade}
           show={addComment}
           onClose={toggleAddComment}
+          id="comment-box"
         >
           <Toast.Header>
             <div>
-              <h3>Add Comment</h3>
+              <h3>{replyComment ? `Reply to comment` : `Add Comment`}</h3>
             </div>
           </Toast.Header>
           <Toast.Body>

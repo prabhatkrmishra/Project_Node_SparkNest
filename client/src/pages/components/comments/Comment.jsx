@@ -1,9 +1,13 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Popover from "react-bootstrap/Popover";
 
-// eslint-disable-next-line react/prop-types
-const Comment = ({ comment, depth = 0, onReply, handleDelete, currentUser }) => {
+const Comment = ({
+  comment,
+  depth = 0,
+  onReply,
+  handleDelete,
+  currentUser,
+}) => {
   // eslint-disable-next-line react/prop-types
   const { id, name, body, avatar, updated_at } = comment;
 
@@ -16,16 +20,6 @@ const Comment = ({ comment, depth = 0, onReply, handleDelete, currentUser }) => 
 
   // eslint-disable-next-line react/prop-types
   const children = comment.children || [];
-
-  const popover = (
-    <Popover id="popover-basic">
-      <Popover.Header as="h3">Reply to comment</Popover.Header>
-      <Popover.Body>
-        Add comment below comment section 
-        and click on ADD COMMENT to reply
-      </Popover.Body>
-    </Popover>
-  );
 
   return (
     <li className={`depth-${depth} comment`}>
@@ -46,20 +40,14 @@ const Comment = ({ comment, depth = 0, onReply, handleDelete, currentUser }) => 
               <span>{new Date(updated_at).toLocaleDateString()}</span>
             </div>
             {!enableDelete && (
-              <OverlayTrigger
-                trigger="click"
-                placement="right"
-                overlay={popover}
-              >
-                <div className="comment__reply">
-                  <span
-                    className="comment-reply-link"
-                    onClick={() => onReply(id)}
-                  >
-                    Reply
-                  </span>
-                </div>
-              </OverlayTrigger>
+              <div className="comment__reply">
+                <span
+                  className="comment-reply-link"
+                  onClick={() => onReply(id)}
+                >
+                  Reply
+                </span>
+              </div>
             )}
             {enableDelete && (
               <div className="comment__reply">
