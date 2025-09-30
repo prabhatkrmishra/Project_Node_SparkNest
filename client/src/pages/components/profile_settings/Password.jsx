@@ -24,7 +24,6 @@ const Password = () => {
     confirmpassword: "",
   });
   const Id = user.id;
-  const sanitizedData = {};
 
   const oldPasswordRef = useRef(null);
   const newPasswordRef = useRef(null);
@@ -69,12 +68,13 @@ const Password = () => {
       return;
     }
 
-    sanitizedData.id = Id;
-    sanitizedData.oldpassword = newUserData.oldpassword;
-    sanitizedData.password = newUserData.confirmpassword;
+    const formData = new FormData();
+    formData.append("id", Id);
+    formData.append("oldpassword", newUserData.oldpassword);
+    formData.append("password", newUserData.confirmpassword);
 
     try {
-      const response = await updateDetails(sanitizedData);
+      const response = await updateDetails(formData);
       if (response.status == 200) {
         SetResponseMssg(response.data.message);
         setSuccess(true);

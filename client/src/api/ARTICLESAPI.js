@@ -1,8 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import axios from "axios";
-import { WEB_URL as URL } from "./API";
-
-const WEB_URL = URL;
+import { WEB_URL } from "./API";
 
 export const getArticlePreviews = () => {
   return (`${WEB_URL}/article/previews`);

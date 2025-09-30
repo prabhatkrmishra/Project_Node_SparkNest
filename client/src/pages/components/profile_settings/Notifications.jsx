@@ -66,7 +66,9 @@ const Notifications = (prop) => {
 
     if (!userData.email) return;
 
-    sanitizedData.email = userData.email;
+    
+    const formData = new FormData();
+    formData.append("email", userData.email);
     if (responseData.current.data) {
       if (userData.newsletter === responseData.current.data.newsletter) return null;
     }
@@ -75,9 +77,10 @@ const Notifications = (prop) => {
       if (userData.newsletter === errorData.current.newsletter) return null;
     }
     sanitizedData.newsletter = userData.newsletter;
+    formData.append("newsletter", userData.newsletter);
 
     try {
-      const response = await SetSubscription(sanitizedData);
+      const response = await SetSubscription(formData);
       if (response.status == 200) {
         SetResponseMssg(response.data.message);
         setIsUpdated(true);

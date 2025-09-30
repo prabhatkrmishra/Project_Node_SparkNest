@@ -56,6 +56,19 @@ export async function getUserDetailId(id) {
 }
 
 /**
+ * Get all user details by id.
+ *
+ * @param {number} id - The user's ID.
+ * @returns {Promise<Object|null>} - The user object or null if not found.
+ */
+export async function getUserDetailPublic(id) {
+  const db = getDBClient();
+  const query = "SELECT fname, lname, username, region, bio, avatar FROM users WHERE id = $1";
+  const result = await db.query(query, [id]);
+  return result.rows.length > 0 ? result.rows[0] : null;
+}
+
+/**
  * Get a user details by email.
  *
  * @param {string} email - The user's email.

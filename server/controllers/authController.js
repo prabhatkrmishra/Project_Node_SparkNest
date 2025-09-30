@@ -85,7 +85,8 @@ export function login(req, res, next) {
         lname: user.lname,
         username: user.username,
         region: user.region,
-        bio: user.bio
+        bio: user.bio,
+        avatar: user.avatar
       });
     });
   })(req, res, next);
@@ -153,7 +154,8 @@ export const googleAuthCallback = (req, res) => {
         lname: user.lname,
         username: user.username,
         region: user.region,
-        bio: user.bio
+        bio: user.bio,
+        avatar: user.avatar
       };
       return res.redirect(
         `${

@@ -1,8 +1,8 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useParams } from "react-router-dom";
 import { format } from "date-fns";
-import { useState, useEffect } from "react";
+
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import hljs from "highlight.js";
@@ -16,6 +16,7 @@ import PreLoader from "./PreLoader";
 import Header from "./Header";
 import Footer from "./Footer";
 import MoveToEffect from "./effects/MoveToEffect";
+import Comments from "./comments/Comments";
 
 window.katex = katex;
 
@@ -181,22 +182,28 @@ const StandardPost = () => {
                   </div>
                 </header>
 
-                { article.article_images && <div className="entry__media">
-                  <figure className="featured-image">
-                    <img
-                      src={`${article.article_images[1]}`}
-                      srcSet={`${article.article_images[2]} 2400w,
+                {article.article_images && (
+                  <div className="entry__media">
+                    <figure className="featured-image">
+                      <img
+                        src={`${article.article_images[1]}`}
+                        srcSet={`${article.article_images[2]} 2400w,
                                               ${article.article_images[1]} 1200w, 
                                               ${article.article_images[0]} 600w`}
-                      sizes="(max-width: 2400px) 100vw, 2400px"
-                      alt=""
-                    />
-                  </figure>
-                </div> }
+                        sizes="(max-width: 2400px) 100vw, 2400px"
+                        alt=""
+                      />
+                    </figure>
+                  </div>
+                )}
 
                 <div className="content-primary">
                   <div className="entry__content">
-                    <div className="ql-viewer" id="editor" ref={editorRef}></div>
+                    <div
+                      className="ql-viewer"
+                      id="editor"
+                      ref={editorRef}
+                    ></div>
 
                     {article.article_categories && (
                       <p className="entry__tags">
@@ -211,15 +218,15 @@ const StandardPost = () => {
                       </p>
                     )}
 
-                    <div className="entry__author-box">
-                      <figure className="entry__author-avatar">
+                    <div className="entry__author-box customize-author-box">
+                      <figure className="entry__author-avatar customize-article-avatar">
                         <img
                           alt=""
-                          src="/images/avatars/user-06.jpg"
+                          src={`${article ? article.avatar : ""}`}
                           className="avatar"
                         />
                       </figure>
-                      <div className="entry__author-info">
+                      <div className="entry__author-info customize-author-info">
                         <h5 className="entry__author-name">
                           <a href="#">
                             {article.fname
@@ -271,284 +278,7 @@ const StandardPost = () => {
                 </div>
               </article>
 
-              <div className="comments-wrap">
-                <div id="comments">
-                  <div className="large-12">
-                    <h3>5 Comments</h3>
-
-                    <ol className="commentlist">
-                      <li className="depth-1 comment">
-                        <div className="comment__avatar">
-                          <img
-                            className="avatar"
-                            src="/images/avatars/user-01.jpg"
-                            alt=""
-                            width="50"
-                            height="50"
-                          />
-                        </div>
-
-                        <div className="comment__content">
-                          <div className="comment__info">
-                            <div className="comment__author">Itachi Uchiha</div>
-
-                            <div className="comment__meta">
-                              <div className="comment__time">Aug 15, 2021</div>
-                              <div className="comment__reply">
-                                <a className="comment-reply-link" href="#0">
-                                  Reply
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="comment__text">
-                            <p>
-                              Adhuc quaerendum est ne, vis ut harum tantas
-                              noluisse, id suas iisque mei. Nec te inani
-                              ponderum vulputate, facilisi expetenda has et.
-                              Iudico dictas scriptorem an vim, ei alia mentitum
-                              est, ne has voluptua praesent.
-                            </p>
-                          </div>
-                        </div>
-                      </li>
-
-                      <li className="thread-alt depth-1 comment">
-                        <div className="comment__avatar">
-                          <img
-                            className="avatar"
-                            src="/images/avatars/user-04.jpg"
-                            alt=""
-                            width="50"
-                            height="50"
-                          />
-                        </div>
-
-                        <div className="comment__content">
-                          <div className="comment__info">
-                            <div className="comment__author">John Doe</div>
-
-                            <div className="comment__meta">
-                              <div className="comment__time">Aug 14, 2021</div>
-                              <div className="comment__reply">
-                                <a className="comment-reply-link" href="#0">
-                                  Reply
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="comment__text">
-                            <p>
-                              Sumo euismod dissentiunt ne sit, ad eos iudico
-                              qualisque adversarium, tota falli et mei. Esse
-                              euismod urbanitas ut sed, et duo scaevola pericula
-                              splendide. Primis veritus contentiones nec ad, nec
-                              et tantas semper delicatissimi.
-                            </p>
-                          </div>
-                        </div>
-
-                        <ul className="children">
-                          <li className="depth-2 comment">
-                            <div className="comment__avatar">
-                              <img
-                                className="avatar"
-                                src="/images/avatars/user-03.jpg"
-                                alt=""
-                                width="50"
-                                height="50"
-                              />
-                            </div>
-
-                            <div className="comment__content">
-                              <div className="comment__info">
-                                <div className="comment__author">
-                                  Kakashi Hatake
-                                </div>
-
-                                <div className="comment__meta">
-                                  <div className="comment__time">
-                                    Aug 14, 2021
-                                  </div>
-                                  <div className="comment__reply">
-                                    <a className="comment-reply-link" href="#0">
-                                      Reply
-                                    </a>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="comment__text">
-                                <p>
-                                  Duis sed odio sit amet nibh vulputate cursus a
-                                  sit amet mauris. Morbi accumsan ipsum velit.
-                                  Duis sed odio sit amet nibh vulputate cursus a
-                                  sit amet mauris
-                                </p>
-                              </div>
-                            </div>
-
-                            <ul className="children">
-                              <li className="depth-3 comment">
-                                <div className="comment__avatar">
-                                  <img
-                                    className="avatar"
-                                    src="/images/avatars/user-04.jpg"
-                                    alt=""
-                                    width="50"
-                                    height="50"
-                                  />
-                                </div>
-
-                                <div className="comment__content">
-                                  <div className="comment__info">
-                                    <div className="comment__author">
-                                      John Doe
-                                    </div>
-
-                                    <div className="comment__meta">
-                                      <div className="comment__time">
-                                        Aug 14, 2021
-                                      </div>
-                                      <div className="comment__reply">
-                                        <a
-                                          className="comment-reply-link"
-                                          href="#0"
-                                        >
-                                          Reply
-                                        </a>
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <div className="comment__text">
-                                    <p>
-                                      Investigationes demonstraverunt lectores
-                                      legere me lius quod ii legunt saepius.
-                                      Claritas est etiam processus dynamicus,
-                                      qui sequitur mutationem consuetudium
-                                      lectorum.
-                                    </p>
-                                  </div>
-                                </div>
-                              </li>
-                            </ul>
-                          </li>
-                        </ul>
-                      </li>
-
-                      <li className="depth-1 comment">
-                        <div className="comment__avatar">
-                          <img
-                            className="avatar"
-                            src="/images/avatars/user-02.jpg"
-                            alt=""
-                            width="50"
-                            height="50"
-                          />
-                        </div>
-
-                        <div className="comment__content">
-                          <div className="comment__info">
-                            <div className="comment__author">
-                              Shikamaru Nara
-                            </div>
-
-                            <div className="comment__meta">
-                              <div className="comment__time">Aug 13, 2021</div>
-                              <div className="comment__reply">
-                                <a className="comment-reply-link" href="#0">
-                                  Reply
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="comment__text">
-                            <p>
-                              Typi non habent claritatem insitam; est usus
-                              legentis in iis qui facit eorum claritatem.
-                            </p>
-                          </div>
-                        </div>
-                      </li>
-                    </ol>
-                  </div>
-                </div>
-
-                <div className="comment-respond">
-                  <div id="respond">
-                    <h3>
-                      Add Comment
-                      <span>Your email address will not be published.</span>
-                    </h3>
-
-                    <form
-                      name="contactForm"
-                      id="contactForm"
-                      method="post"
-                      action=""
-                      autoComplete="off"
-                    >
-                      <fieldset className="row">
-                        <div className="column lg-6 tab-12 form-field">
-                          <input
-                            name="cName"
-                            id="cName"
-                            className="u-fullwidth h-remove-bottom"
-                            placeholder="Your Name"
-                            defaultValue=""
-                            type="text"
-                          />
-                        </div>
-
-                        <div className="column lg-6 tab-12 form-field">
-                          <input
-                            name="cEmail"
-                            id="cEmail"
-                            className="u-fullwidth h-remove-bottom"
-                            placeholder="Your Email"
-                            defaultValue=""
-                            type="text"
-                          />
-                        </div>
-
-                        <div className="column lg-12 form-field">
-                          <input
-                            name="cWebsite"
-                            id="cWebsite"
-                            className="u-fullwidth h-remove-bottom"
-                            placeholder="Website"
-                            defaultValue=""
-                            type="text"
-                          />
-                        </div>
-
-                        <div className="column lg-12 message form-field">
-                          <textarea
-                            name="cMessage"
-                            id="cMessage"
-                            className="u-fullwidth"
-                            placeholder="Your Message"
-                          ></textarea>
-                        </div>
-
-                        <div className="column lg-12">
-                          <input
-                            name="submit"
-                            id="submit"
-                            className="btn btn--primary btn-wide btn--large u-fullwidth"
-                            value="Add Comment"
-                            type="submit"
-                          />
-                        </div>
-                      </fieldset>
-                    </form>
-                  </div>
-                </div>
-              </div>
+              <Comments articleId={selector}/>
             </div>
           </div>
         </section>

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import Cookies from "js-cookie";
 
 import { updateDetails } from "../../../api/API";
+import updateProfile from "../UpdateProfile";
 import logout from "../tools/auth";
 
 import SuccessMessage from "../messageBox/SuccessMessage";
@@ -15,6 +16,14 @@ const Profile = () => {
   if (user == null || days == null) {
     window.location.href == "/profile";
   }
+
+  const profileAvatar = useRef(null);
+  useEffect(() => {
+    if (!localStorage.getItem("avatar")) {
+      updateProfile();
+    }
+  }, []);
+  profileAvatar.current = localStorage.getItem("avatar") || "";
 
   const [updateCookie, setUpdateCookie] = useState(false);
   useEffect(() => {
@@ -33,11 +42,10 @@ const Profile = () => {
     bio: userBio,
   });
   const Id = user.current.id;
-  const sanitizedData = {};
   const [isUpdated, setIsUpdated] = useState(false);
   const [responseMssg, SetResponseMssg] = useState("");
   const [charCount, setCharCount] = useState(0);
-  const maxCharLimit = 150;
+  const maxCharLimit = 200;
 
   const handleDataChange = (e) => {
     if (e.target.name === "bio" && e.target.value.length > maxCharLimit) return;
@@ -49,6 +57,21 @@ const Profile = () => {
     });
     if (e.target.name === "bio") {
       setCharCount(e.target.value.length);
+    }
+  };
+
+  const [selectedImage, setSelectedImage] = useState(null);
+  useEffect(() => {
+    setSelectedImage(profileAvatar.current);
+  }, []);
+
+  const [selectedFile, setSelectedFile] = useState(null);
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setSelectedImage(imageUrl);
+      setSelectedFile(file);
     }
   };
 
@@ -69,23 +92,24 @@ const Profile = () => {
       return;
     }
 
-    sanitizedData.id = Id;
+    const formData = new FormData();
+    formData.append("id", Id);
     if (newUserData.fname !== user.current.fname)
-      sanitizedData.fname = newUserData.fname;
+      formData.append("fname", newUserData.fname);
     if (newUserData.lname !== user.current.lname)
-      sanitizedData.lname = newUserData.lname;
+      formData.append("lname", newUserData.lname);
     if (newUserData.region !== user.current.region)
-      sanitizedData.region = newUserData.region;
+      formData.append("region", newUserData.region);
     if (newUserData.bio !== user.current.bio)
-      sanitizedData.bio = newUserData.bio;
+      formData.append("bio", newUserData.bio);
+    if (selectedFile) formData.append("avatar_image", selectedFile);
 
     try {
-      const response = await updateDetails(sanitizedData);
+      const response = await updateDetails(formData);
       if (response.status == 200) {
         user.current.fname = newUserData.fname;
         user.current.lname = newUserData.lname;
         user.current.region = newUserData.region;
-        user.current.bio = "";
         Cookies.set("user", JSON.stringify(user.current), { expires: days });
         localStorage.setItem("userBio", newUserData.bio);
         setUpdateCookie(true);
@@ -113,6 +137,26 @@ const Profile = () => {
     <>
       <form onSubmit={handleSubmit}>
         <SuccessMessage isSuccess={isUpdated} successMssg={responseMssg} />
+        <div className="settings-image-selector">
+          {selectedImage && (
+            <div className="settings-image-avatar">
+              <img
+                src={selectedImage}
+                alt="Selected"
+                style={{ width: "100px", height: "100px" }}
+              />
+            </div>
+          )}
+          <div className="settings-image">
+            <h5>Update profile avatar</h5>
+            <input
+              type="file"
+              className="upload-custom-avatar"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+          </div>
+        </div>
         <div className="u-fullwidth menu-section-profile">
           <div className="profile-input-names">
             <label className="profile-label-styles" htmlFor="pfName">

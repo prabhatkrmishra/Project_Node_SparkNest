@@ -9,6 +9,7 @@ const logout = () => {
   Cookies.remove("setProfile");
   Cookies.remove("sessiondays");
   localStorage.removeItem("userBio");
+  localStorage.removeItem("avatar");
 
   LogOut()
     .then(() => {

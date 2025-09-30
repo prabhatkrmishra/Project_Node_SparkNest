@@ -30,8 +30,8 @@ export const sendSignupCred = (signupCred) => {
 export const updateDetails = (details) => {
   return axios.patch(`${WEB_URL}/user/details`, details, {
     headers: {
-      "Content-Type": "application/json",
-    },
+      'Content-Type': 'multipart/form-data',
+    }
   });
 };
 
@@ -43,6 +43,14 @@ export const DeleteUserAccount = (data) => {
     data: data,
   });
 };
+
+export const GetUserPublic = (id) => {
+  return axios.get(`${WEB_URL}/public/user/${id}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
 
 export const LogOut = () => {
   return axios.post(`${WEB_URL}/logout`, { withCredentials: true });

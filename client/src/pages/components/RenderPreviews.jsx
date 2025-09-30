@@ -13,16 +13,19 @@ import logout from "../components/tools/auth";
 
 const RenderPreviews = ({ url, type }) => {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
   const login = Cookies.get("isLoggedIn") || null;
-  if (!login) {
-    navigate("/session/new");
-  }
   const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
-  if (!user) {
-    logout();
+
+  if (type != 100) {
+    if (!login) {
+      navigate("/session/new");
+    }
+    if (!user) {
+      logout();
+    }
   }
 
+  const [searchParams, setSearchParams] = useSearchParams();
   const pageParam = parseInt(searchParams.get("page")) || 1;
   const [articles, setArticles] = useState([]);
   const [currentPage, setCurrentPage] = useState(pageParam);
@@ -41,7 +44,6 @@ const RenderPreviews = ({ url, type }) => {
           { withCredentials: true }
         );
         setArticles(response.data.articles);
-        console.log(response.data.articles);
         setTotalPages(response.data.totalPages);
       } catch (error) {
         if (error.response.status === 403) {
@@ -108,7 +110,7 @@ const RenderPreviews = ({ url, type }) => {
                   previewTitle={article.preview_title}
                   previewSubtitle={article.preview_subtitle}
                   categories={article.categories}
-                  viewedBy={user.id}
+                  viewedBy={user ? user.id : null}
                   createdBy={article.creator_uid}
                   hasAccess={accessWD}
                   articles={articles}

@@ -10,6 +10,8 @@ import PreLoader from "./PreLoader";
 import Header from "./Header";
 import ErrorMessage from "./messageBox/ErrorMessage";
 
+import { setItem } from "./tools/IndexDBstorage";
+
 const Details = () => {
   const navigate = useNavigate();
   const setProfile = Cookies.get("setProfile")
@@ -31,11 +33,12 @@ const Details = () => {
     username: "",
     region: "",
     bio: "",
+    avatar: "",
   });
   const [unameExists, setUnameExists] = useState(false);
   const [errorMssg, SetErrorMssg] = useState("");
   const [charCount, setCharCount] = useState(0);
-  const maxCharLimit = 150;
+  const maxCharLimit = 200;
 
   const handleFocus = (e) => {
     e.target.removeAttribute("readonly");
@@ -73,6 +76,49 @@ const Details = () => {
     }
   };
 
+  const [avatars, setAvatars] = useState([]);
+  const [avatar, setAvatar] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [notChoosen, setNotChoosen] = useState(false);
+
+  useEffect(() => {
+    const fetchAvatars = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/images/avatars");
+        const data = await response.json();
+        setAvatars(data.avatars);
+      } catch (error) {
+        console.error("Error fetching avatars:", error);
+      }
+    };
+    fetchAvatars();
+  }, []);
+
+  const handleAvatarSelect = (avatarUrl) => {
+    setAvatar(avatarUrl);
+    setSelectedImage("");
+    setSelectedFile(null);
+    setUserData((preVal) => {
+      return {
+        ...preVal,
+        avatar: avatarUrl,
+      };
+    });
+    setNotChoosen(false);
+  };
+
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setSelectedImage(imageUrl);
+      setAvatar("");
+      setNotChoosen(false);
+      setSelectedFile(file);
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -80,14 +126,30 @@ const Details = () => {
       return;
     }
 
+    if (!avatar && !selectedImage) {
+      SetErrorMssg("No avatar selected or uploaded");
+      setNotChoosen(true);
+      return;
+    }
+
     try {
-      const response = await updateDetails(userData);
+      const formData = new FormData();
+      formData.append("id", userData.id);
+      formData.append("username", userData.username);
+      formData.append("region", userData.region);
+      formData.append("bio", userData.bio);
+      if(userData.avatar) formData.append("avatar", userData.avatar);
+      if(selectedFile) formData.append("avatar_image", selectedFile);
+
+      const response = await updateDetails(formData);
       if (response.status == 200) {
         user.current.username = userData.username;
         user.current.region = userData.region;
+        user.current.avatar = "";
         user.current.bio = "";
         Cookies.set("user", JSON.stringify(user.current), { expires: days });
         localStorage.setItem("userBio", userData.bio);
+        setItem("avatar", userData.avatar || selectedImage);
         Cookies.remove("setProfile");
         alert("User details update Successful");
         window.location.href = "/profile";
@@ -121,6 +183,61 @@ const Details = () => {
           style={{ paddingTop: "130px" }}
         >
           <div className="row d-flex justify-content-center mb-lg-5">
+            <div className="column lg-6 tab-12">
+              <div className="image-selector">
+                <h5>Select an Avatar</h5>
+                <div className="avatar-grid">
+                  {avatars.map((avatarUrl, index) => (
+                    <img
+                      key={index}
+                      src={avatarUrl}
+                      alt={`Avatar ${index + 1}`}
+                      onClick={() => handleAvatarSelect(avatarUrl)}
+                      style={{
+                        cursor: "pointer",
+                        margin: "5px",
+                        display: "block",
+                        width: "80px",
+                        height: "80px",
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div style={{ margin: "20px 0", textAlign: "center" }}>OR</div>
+              <div className="image-selector">
+                <h5>Upload your Image</h5>
+                <input
+                  type="file"
+                  className="upload-custom-avatar"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
+                {selectedImage && (
+                  <div className="image-selector" style={{ marginTop: "32px" }}>
+                    <h5>Selected Image</h5>
+                    <img
+                      src={selectedImage}
+                      alt="Selected"
+                      style={{ width: "100px", height: "100px" }}
+                    />
+                  </div>
+                )}
+              </div>
+              {avatar && (
+                <div className="image-selector" style={{ marginTop: "32px" }}>
+                  <h5>Selected Avatar:</h5>
+                  <img
+                    src={avatar}
+                    alt="Selected Avatar"
+                    style={{ width: "100px", height: "100px" }}
+                  />
+                </div>
+              )}
+              <div className="upload-avatar-error-div">
+                <ErrorMessage isError={notChoosen} errorMssg={errorMssg} />
+              </div>
+            </div>
             <div
               className="column lg-6 tab-12"
               style={{ paddingBottom: "50px" }}

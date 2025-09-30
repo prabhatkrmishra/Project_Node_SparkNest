@@ -11,7 +11,7 @@ export async function checkArticle(id) {
   const query = "SELECT user_id FROM articles WHERE id = $1";
   const result = await db.query(query, [id]);
 
-  return (result.rows.length > 0 ? result.rows[0] : null);
+  return result.rows.length > 0 ? result.rows[0] : null;
 }
 
 /**
@@ -37,7 +37,8 @@ export async function getArticle(id) {
         u.fname,
         u.lname,
         u.username,
-        u.bio
+        u.bio,
+        u.avatar
       FROM
         articles a
       JOIN
@@ -55,10 +56,10 @@ export async function getArticle(id) {
     )
     SELECT 
       sa.*,
-      (SELECT id FROM articles WHERE id = $1 - 1) AS prev_id,
-      (SELECT title FROM articles WHERE id = $1 - 1) AS prev_title,
-      (SELECT id FROM articles WHERE id = $1 + 1) AS next_id,
-      (SELECT title FROM articles WHERE id = $1 + 1) AS next_title
+        (SELECT id FROM articles WHERE created_at < sa.created_date ORDER BY created_at DESC LIMIT 1) AS prev_id,
+        (SELECT title FROM articles WHERE created_at < sa.created_date ORDER BY created_at DESC LIMIT 1) AS prev_title,
+        (SELECT id FROM articles WHERE created_at > sa.created_date ORDER BY created_at ASC LIMIT 1) AS next_id,
+        (SELECT title FROM articles WHERE created_at > sa.created_date ORDER BY created_at ASC LIMIT 1) AS next_title
     FROM 
       selected_article sa;
   `;
@@ -110,7 +111,7 @@ export async function fetchTheArticle(id) {
   `;
 
   const result = await db.query(query, [id]);
-  return (result.rows.length > 0 ? result.rows[0] : null);
+  return result.rows.length > 0 ? result.rows[0] : null;
 }
 
 /**

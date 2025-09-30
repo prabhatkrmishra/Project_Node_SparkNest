@@ -3,11 +3,13 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
     fname VARCHAR(50),
     lname VARCHAR(50),
     username VARCHAR(50) UNIQUE,
-    country VARCHAR(2),
+    region VARCHAR(50),
+    avatar TEXT,
+    password VARCHAR(100) NOT NULL,
+    bio VARCHAR(201),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -118,3 +120,45 @@ CREATE TABLE article_images (
   featured TEXT[],
   thumbs TEXT[]
 );
+
+/*****************************************************************/
+/*              TABLE FOR STORING COMMENTS FOR ARTICLES          */
+
+CREATE TABLE comments (
+  id SERIAL PRIMARY KEY,
+  article_id INT REFERENCES articles(id) ON DELETE CASCADE,
+  user_id INT REFERENCES users(id) ON DELETE CASCADE,
+  parent_comment_id INT REFERENCES comments(id) ON DELETE CASCADE,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  body TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+/*
+ * Trigger function to update the updated_at
+ * column before each UPDATE operation for comments.
+ */
+CREATE OR REPLACE FUNCTION update_comment_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+/*
+ * Trigger that calls the above function
+ * whenever a row in the comments table is updated.
+ */
+CREATE TRIGGER update_comment_timestamp
+BEFORE UPDATE ON comments
+FOR EACH ROW
+EXECUTE FUNCTION update_comment_timestamp();
+
+/*
+ * Indexes for performance
+ */
+CREATE INDEX idx_comments_article_id ON comments(article_id);
+CREATE INDEX idx_comments_parent_comment_id ON comments(parent_comment_id);

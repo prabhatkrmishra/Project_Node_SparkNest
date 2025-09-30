@@ -6,11 +6,13 @@ import {
   getUserByEmail,
   getUserByUsername,
   getUserDetailId,
+  getUserDetailPublic,
   updateUser,
   deleteUser,
 } from "../models/userModel.js";
 import { verifyPassword, hashPassword } from "../services/bcryptService.js";
 import { getSubscriptionByEmail, deleteSubscription } from "../models/subscriptionModel.js";
+import { processAndSaveAvatarImage } from "../services/imagesServices.js";
 
 /**
  * Check for existing email
@@ -86,6 +88,27 @@ export async function getUserDetails(req, res) {
 }
 
 /**
+ * Get user details for public purpose
+ *
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ */
+export async function getUserPublic(req, res) {
+  const { id } = req.params;
+
+  try {
+    const user = await getUserDetailPublic(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error getting user details:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+/**
  * Update user details.
  *
  * @param {Object} req - The request object.
@@ -106,9 +129,17 @@ export async function updateUserDetails(req, res) {
 
   const { id, ...updatedData } = req.body;
   const idnum = parseInt(id, 10);
-  const { fname, lname, username, region, bio, email, oldpassword, password } =
-    updatedData;
-  const updatedDetails = new Map();
+  const {
+    fname,
+    lname,
+    username,
+    region,
+    bio,
+    email,
+    avatar,
+    oldpassword,
+    password} = updatedData;
+    const updatedDetails = new Map();
 
   if (fname) updatedDetails.set("fname", fname);
   if (lname) updatedDetails.set("lname", lname);
@@ -116,6 +147,18 @@ export async function updateUserDetails(req, res) {
   if (region) updatedDetails.set("region", region);
   if (bio) updatedDetails.set("bio", bio);
   if (email) updatedDetails.set("email", email);
+
+  if (avatar) updatedDetails.set("avatar", avatar);
+  if (!avatar) {
+    const imageFile = req.file;
+    if(imageFile) {
+      const imagePath = await processAndSaveAvatarImage(
+        imageFile,
+        idnum,
+      );
+      updatedDetails.set("avatar", imagePath.avatar);
+    }
+  }
 
   if (password && oldpassword) {
     const user = await getUserDetailId(idnum);

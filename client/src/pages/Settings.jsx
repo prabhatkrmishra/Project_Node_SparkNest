@@ -14,6 +14,8 @@ import Password from "./components/profile_settings/Password";
 import Profile from "./components/profile_settings/Profile";
 import DropDownMenu from "./components/profile_settings/settings_components/DropDownMenu";
 
+import updateProfile from "./components/UpdateProfile";
+
 const Settings = () => {
 
   const { section } = useParams();
@@ -28,6 +30,16 @@ const Settings = () => {
   if (login && user == null) {
     logout();
   }
+
+  const [profileAvatar, setProfileAvatar] = useState(null);
+  useEffect(() => {
+    const updateUser = async () => {
+      await updateProfile();
+      const avatar = localStorage.getItem('avatar');
+      setProfileAvatar(avatar);
+    };
+    updateUser();
+  }, []);
 
   const [fade, setFade] = useState(false);
 
@@ -99,7 +111,7 @@ const Settings = () => {
                   <figure className="entry__author-avatar profile-avatar-settings">
                     <img
                       alt=""
-                      src="/images/avatars/user-06.jpg"
+                      src={profileAvatar}
                       className="avatar avatar-settings"
                     />
                   </figure>

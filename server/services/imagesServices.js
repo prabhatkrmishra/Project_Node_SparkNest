@@ -133,7 +133,7 @@ export const processAndSaveBase64Image = async (base64Image, userId) => {
  * @param {Object} imageFile - The image file object from multer
  * @param {number} userId - The ID of the user uploading the image
  * @param {number} articleId - The Article id for preview image
- * @returns {Promise<Object>} - An array containing paths (600, 1200, and 2000x2600).
+ * @returns {Promise<Object|null>} - An array containing paths (600, 1200, and 2000x2600).
  *
  * This function:
  * 1. Takes the uploaded image file (stored temporarily by multer).
@@ -255,7 +255,7 @@ export const processAndSavePreviewImage = async (
     };
   } catch (error) {
     console.error("Error processing and saving preview image:", error);
-    throw new Error("Failed to process and save preview image.");
+    return null;
   }
 };
 
@@ -287,5 +287,61 @@ export const removeImages = async (userId, articleId) => {
   } catch (error) {
     console.error("Error deleting folder:", error);
     throw new Error("Failed to delete images.");
+  }
+};
+
+/**
+ * Processes and saves the uploaded preview image in multiple resolutions.
+ *
+ * @param {Object} imageFile - The image file object from multer
+ * @param {number} userId - The ID of the user uploading the image
+ * @returns {Promise<Object|null>} - path of avatar image.
+ *
+ */
+export const processAndSaveAvatarImage = async (
+  imageFile,
+  userId
+) => {
+  try {
+    const basePath = path.join(
+      process.cwd(),
+      "..",
+      "..",
+      "data",
+      "images",
+      userId.toString(),
+      "profile",
+    );
+
+    if (!fs.existsSync(basePath)) {
+      fs.mkdirSync(basePath, { recursive: true });
+    }
+
+    const profileAvatar = `${userId}-avatar.jpg`;
+    const profileAvatarPath = path.join(basePath, profileAvatar);
+
+    sharp.cache(false);
+    await sharp(imageFile.path)
+        .resize(100, 100)
+        .toFormat("jpeg")
+        .jpeg({ quality: 90 })
+        .toFile(profileAvatarPath);
+
+    // Delete original image
+    try {
+      await fsPromises.unlink(imageFile.path);
+      console.log("Temporary file deleted successfully.");
+    } catch (err) {
+      console.error("Error deleting temporary file:", err);
+    }
+
+    const imagePath = `${config.backendAddress}/custom/avatars/${userId}/${profileAvatar}`;
+
+    return {
+      avatar: imagePath
+    };
+  } catch (error) {
+    console.error("Error processing and saving avatar image:", error);
+    return null;
   }
 };

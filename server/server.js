@@ -7,6 +7,9 @@ import cors from "cors";
 import session from "express-session";
 import passport from "passport";
 import { initializePassport } from "./config/passport.js";
+import { connectDB } from "./db/db.js";
+import config from "./config/config.js";
+
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import subscriptionRoutes from "./routes/subscriptionRoutes.js";
@@ -14,8 +17,7 @@ import articlesRouter from "./routes/articlesRoutes.js";
 import mediaRouter from "./routes/mediaRoutes.js";
 import categoriesRouter from "./routes/categoriesRoutes.js";
 import articlePreviewRouter from "./routes/articlePreviewRoutes.js";
-import { connectDB } from "./db/db.js";
-import config from "./config/config.js";
+import commentRouter from "./routes/commentRoutes.js";
 
 const app = express();
 
@@ -63,6 +65,7 @@ app.use("/", articlesRouter);
 app.use("/", mediaRouter);
 app.use("/", categoriesRouter);
 app.use("/", articlePreviewRouter);
+app.use("/", commentRouter);
 
 // Home route
 app.get("/", (req, res) => {

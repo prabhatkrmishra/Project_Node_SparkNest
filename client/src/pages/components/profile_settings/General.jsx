@@ -32,7 +32,6 @@ const General = () => {
     email: user.current.email,
   });
   const Id = user.current.id;
-  const sanitizedData = {};
 
   const [unameExists, setUnameExists] = useState(false);
   const [emailExists, setEmailExists] = useState(false);
@@ -108,14 +107,15 @@ const General = () => {
     }
 
     if (!unameExists && !emailExists) {
-      sanitizedData.id = Id;
+      const formData = new FormData();
+      formData.append("id", Id);
       if (newUserData.email !== user.current.email)
-        sanitizedData.email = newUserData.email;
+        formData.append("email", newUserData.email);
       if (newUserData.username !== user.current.username)
-        sanitizedData.username = newUserData.username;
+        formData.append("username", newUserData.username);
 
       try {
-        const response = await updateDetails(sanitizedData);
+        const response = await updateDetails(formData);
         if (response.status == 200) {
           user.current.username = newUserData.username;
           user.current.email = newUserData.email;
@@ -135,6 +135,7 @@ const General = () => {
         ) {
           logout();
         }
+       else console.log(error);
       }
     }
   };
@@ -144,11 +145,17 @@ const General = () => {
       <form onSubmit={handleSubmit}>
         <SuccessMessage isSuccess={isUpdated} successMssg={responseMssg} />
         <div style={{ marginBottom: "25px" }}>
-          <label className="profile-label-styles" htmlFor="uid">User ID</label>
-          <span className="profile-uid" id="uid">{Id}</span>
+          <label className="profile-label-styles" htmlFor="uid">
+            User ID
+          </label>
+          <span className="profile-uid" id="uid">
+            {Id}
+          </span>
         </div>
         <div>
-          <label className="profile-label-styles" htmlFor="pUsername">Username</label>
+          <label className="profile-label-styles" htmlFor="pUsername">
+            Username
+          </label>
           <input
             className="u-fullwidth profile-input-styles"
             type="text"
@@ -162,7 +169,9 @@ const General = () => {
         </div>
         <ErrorMessage isError={unameExists} errorMssg={errorMssg} />
         <div>
-          <label className="profile-label-styles" htmlFor="pEmail">Your email</label>
+          <label className="profile-label-styles" htmlFor="pEmail">
+            Your email
+          </label>
           <input
             className="u-fullwidth profile-input-styles"
             type="email"
@@ -175,7 +184,10 @@ const General = () => {
           />
         </div>
         <ErrorMessage isError={emailExists} errorMssg={errorMssg} />
-        <button className="btn--primary u-quartorwidth profile-button-styles" type="submit">
+        <button
+          className="btn--primary u-quartorwidth profile-button-styles"
+          type="submit"
+        >
           Update
         </button>
       </form>

@@ -24,6 +24,8 @@ import Footer from "./components/Footer";
 import GetPreviews from "./components/profile/GetPreviews";
 import MoveToEffect from "./components/effects/MoveToEffect";
 
+import updateProfile from "./components/UpdateProfile";
+
 const Profile = () => {
   const navigate = useNavigate();
   const login = Cookies.get("isLoggedIn") || null;
@@ -40,6 +42,17 @@ const Profile = () => {
       navigate("/profile/details");
     }
   }
+
+  const [profileAvatar, setProfileAvatar] = useState(null);
+  useEffect(() => {
+    const updateUser = async () => {
+      await updateProfile();
+      const avatar = localStorage.getItem("avatar");
+      setProfileAvatar(avatar);
+    };
+    updateUser();
+  }, []);
+
   const userBio = localStorage.getItem("userBio") || "";
   const { section } = useParams();
   const [highlighted, setHighlighted] = useState(section || "articles");
@@ -125,11 +138,7 @@ const Profile = () => {
               <div className="profile-avatar-buttons">
                 <div className="entry__author-box-profile">
                   <figure className="entry__author-avatar-profile">
-                    <img
-                      alt=""
-                      src="/images/avatars/user-06.jpg"
-                      className="avatar"
-                    />
+                    <img alt="" src={profileAvatar} className="avatar" />
                   </figure>
                   <div className="entry__author-info-profile">
                     <h5 className="entry__author-name-profile">
@@ -276,7 +285,9 @@ const Profile = () => {
               <hr className="profile-hr" />
             </div>
           </div>
-          {user && <GetPreviews renderCategory={highlighted} userId={user.id} />}
+          {user && (
+            <GetPreviews renderCategory={highlighted} userId={user.id} />
+          )}
         </section>
         <Footer />
       </div>
