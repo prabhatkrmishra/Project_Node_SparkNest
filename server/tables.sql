@@ -162,3 +162,45 @@ EXECUTE FUNCTION update_comment_timestamp();
  */
 CREATE INDEX idx_comments_article_id ON comments(article_id);
 CREATE INDEX idx_comments_parent_comment_id ON comments(parent_comment_id);
+
+/*****************************************************************/
+/*                  TABLE FOR SAVED ARTICLES                     */
+
+CREATE TABLE saved_articles (
+  id SERIAL PRIMARY KEY,
+  user_id INT REFERENCES users(id) ON DELETE CASCADE,
+  article_id INT REFERENCES articles(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(user_id, article_id)
+);
+
+/* Indexes for performance */
+CREATE INDEX idx_saved_articles_user_id ON saved_articles(user_id);
+CREATE INDEX idx_saved_articles_article_id ON saved_articles(article_id);
+
+/*****************************************************************/
+/*                  TABLE FOR LIKED ARTICLES                     */
+
+CREATE TABLE liked_articles (
+  id SERIAL PRIMARY KEY,
+  user_id INT REFERENCES users(id) ON DELETE CASCADE,
+  article_id INT REFERENCES articles(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(user_id, article_id)
+);
+
+/* Indexes for performance */
+CREATE INDEX idx_liked_articles_user_id ON liked_articles(user_id);
+CREATE INDEX idx_liked_articles_article_id ON liked_articles(article_id);
+
+/*****************************************************************/
+/*                 TABLE FOR FEATURED ARTICLES                  */
+
+CREATE TABLE featured_articles (
+    id SERIAL PRIMARY KEY,
+    article_id INT REFERENCES articles(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+/* Adding an index for performance */
+CREATE INDEX idx_featured_article_id ON featured_articles(article_id);

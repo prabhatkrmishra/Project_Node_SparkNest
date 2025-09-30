@@ -16,6 +16,7 @@ import PreLoader from "./PreLoader";
 import Header from "./Header";
 import Footer from "./Footer";
 import MoveToEffect from "./effects/MoveToEffect";
+import Main from "./save_and_like/Main";
 import Comments from "./comments/Comments";
 
 window.katex = katex;
@@ -205,18 +206,23 @@ const StandardPost = () => {
                       ref={editorRef}
                     ></div>
 
-                    {article.article_categories && (
-                      <p className="entry__tags">
-                        <strong>Tags:</strong>
-                        <span className="entry__tag-list">
-                          {article.article_categories.map((category, index) => (
-                            <a key={index} href={`/category/${category}`}>
-                              {category}
-                            </a>
-                          ))}
-                        </span>
-                      </p>
-                    )}
+                    <div className="tags-save-like">
+                      {article.article_categories && (
+                        <p className="entry__tags">
+                          <strong>Tags:</strong>
+                          <span className="entry__tag-list">
+                            {article.article_categories.map(
+                              (category, index) => (
+                                <a key={index} href={`/category/${category}`}>
+                                  {category}
+                                </a>
+                              )
+                            )}
+                          </span>
+                        </p>
+                      )}
+                      <Main articleId={selector}/>
+                    </div>
 
                     <div className="entry__author-box customize-author-box">
                       <figure className="entry__author-avatar customize-article-avatar">
@@ -278,7 +284,7 @@ const StandardPost = () => {
                 </div>
               </article>
 
-              <Comments articleId={selector}/>
+              <Comments articleId={selector} />
             </div>
           </div>
         </section>

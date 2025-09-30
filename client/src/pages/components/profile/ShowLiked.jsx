@@ -1,9 +1,9 @@
-import { getProfileArticlePreviews } from "../../../api/ARTICLESAPI";
+import { getAllLiked } from "../../../api/ARTICLESAPI";
 
 import RenderPreviews from "../RenderPreviews";
 
 const ShowLiked = (prop) => {
-  const url = getProfileArticlePreviews(prop.uid);
+  const url = getAllLiked(prop.uid);
   const type = 102;
 
   return (

@@ -4,6 +4,20 @@ import config from "../config/config.js";
 const defaultAvatar = `${config.backendAddress}/get/default/default_avatar.jpg`;
 
 /**
+ * Check if comment exist and return uid of that comment.
+ *
+ * @param {number} id - The cpmment ID.
+ * @returns {Promise<Object|null>}
+ */
+export async function checkComment(id) {
+  const db = getDBClient();
+  const query = "SELECT user_id FROM comments WHERE id = $1";
+  const result = await db.query(query, [id]);
+
+  return result.rows.length > 0 ? result.rows[0] : null;
+}
+
+/**
  * Fetch all comments for a specific article.
  *
  * @param {number} article_id - The ID of the article for which comments are to be fetched.

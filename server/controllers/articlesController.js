@@ -18,10 +18,10 @@ import {
   saveImage,
   replaceImages,
   processAndSavePreviewImage,
-  removeImages
+  removeImages,
 } from "../services/imagesServices.js";
 
-import { inserImagestPath} from "../models/articleImagesModel.js";
+import { inserImagestPath } from "../models/articleImagesModel.js";
 
 import {
   checkArticlePreview,
@@ -191,6 +191,13 @@ export async function updateArticle(req, res) {
       .json({ message: "Not authenticated to update article" });
   }
 
+  const current_uid = req.session.passport ? req.session.passport.user : null;
+  if (!current_uid) {
+    return res.status(200).json({
+      message: `Done !`,
+    });
+  }
+
   const {
     article_id,
     article_title,
@@ -228,6 +235,12 @@ export async function updateArticle(req, res) {
       .json({ message: "Article not found, cannot update" });
   }
 
+  if (current_uid != article.user_id) {
+    return res.status(400).json({
+      message: `Not authorized to update article`,
+    });
+  }
+
   const articlePreview = await checkArticlePreview(preview_id);
   if (!articlePreview) {
     return res
@@ -255,11 +268,9 @@ export async function updateArticle(req, res) {
       updatedArticlePreview
     );
     if (!previewUpdated) {
-      return res
-        .status(500)
-        .json({
-          message: "Cannot update article preview, internal server error",
-        });
+      return res.status(500).json({
+        message: "Cannot update article preview, internal server error",
+      });
     }
 
     if (imageFile) {
@@ -292,11 +303,19 @@ export async function updateArticle(req, res) {
  * @param {Object} res - The response object.
  */
 export async function deleteArticle(req, res) {
-  /*if (!req.isAuthenticated()) {
+ if (!req.isAuthenticated()) {
     return res
       .status(403)
       .json({ message: "Not authenticated to delete article" });
-  }*/
+  }
+
+  const current_uid = req.session.passport ? req.session.passport.user : null;
+  if (!current_uid) {
+    return res.status(200).json({
+      message: `Done !`,
+    });
+  }
+
   const { id } = req.body;
 
   if (id) {
@@ -308,13 +327,18 @@ export async function deleteArticle(req, res) {
         });
       }
 
+      if (current_uid != articleExist.user_id) {
+        return res.status(400).json({
+          message: `Not authorized to delete article`,
+        });
+      }
+
       try {
         await dropArticle(id);
         await removeImages(articleExist.user_id, id);
         return res.status(200).json({
           message: `Article with id:${id} removed from database`,
         });
-
       } catch (error) {
         return res.status(500).json({
           message: `cannot delete Article with id:${id}`,

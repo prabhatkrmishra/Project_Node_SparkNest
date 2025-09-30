@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useEffect } from "react";
 import Swiper from "swiper";
 import { Pagination, EffectFade } from "swiper/modules";
@@ -5,7 +6,7 @@ import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 import "swiper/css";
 
-const SwiperEffect = () => {
+const SwiperEffect = ({ imagesLoaded }) => {
   useEffect(() => {
     const getSwiperDirection = () => {
       return window.innerWidth > 1290 ? "vertical" : "horizontal";
@@ -14,7 +15,7 @@ const SwiperEffect = () => {
     const swiper = new Swiper(".swiper-container", {
       modules: [Pagination, EffectFade],
       direction: getSwiperDirection(),
-      loop: true,
+      loop: false,
       slidesPerView: 1,
       effect: "fade",
       speed: 2000,
@@ -48,7 +49,7 @@ const SwiperEffect = () => {
       if (swiper) swiper.destroy(true, true);
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [imagesLoaded]);
 
   return null;
 };

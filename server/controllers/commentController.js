@@ -1,4 +1,5 @@
 import {
+  checkComment,
   getComment,
   setComment,
   patchComment,
@@ -102,9 +103,27 @@ export const deleteComment = async (req, res) => {
       .json({ message: "Not authenticated to update comments" });
   }
 
+  const current_uid = req.session.passport ? req.session.passport.user : null;
+  if (!current_uid) {
+    return res.status(200).json({
+      message: `Done !`,
+    });
+  }
+
   const { comment_id } = req.params;
 
   try {
+    const exist = await checkComment(comment_id);
+    if(!exist) {
+      res.status(400).send(`Comment with ${comment_id} does not exist`);
+    }
+
+    if (current_uid != exist.user_id) {
+      return res.status(400).json({
+        message: `Not authorized to delete comment`,
+      });
+    }
+
     const result = await dropComment(comment_id);
     if (result) {
       res.status(200).send("Comment deleted successfully.");

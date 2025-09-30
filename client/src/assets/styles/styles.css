@@ -4001,9 +4001,10 @@ body.search-is-visible .s-header__search-inner {
   position: absolute;
   z-index: 2;
   max-width: 680px;
+  top: 12%;
   left: 52%;
   right: 5%;
-  bottom: 10%;
+  bottom: 2%;
   padding: var(--vspace-1) 4rem var(--vspace-2) 4rem;
   margin: auto;
   text-align: center;
@@ -4052,6 +4053,10 @@ body.search-is-visible .s-header__search-inner {
   letter-spacing: -0.015em;
   margin-top: 0;
   margin-bottom: var(--vspace-1_5);
+}
+
+h2.hero__entry-title {
+  max-height: 315px !important;
 }
 
 .hero__entry-title a {
@@ -6429,6 +6434,41 @@ figure.entry__author-avatar.customize-article-avatar {
 
 div.entry__author-info.customize-author-info {
   margin-left: 25px !important;
+}
+
+p.entry__tags strong {
+  margin: 5px 0 5px 0;
+}
+
+p.entry__tags > span.entry__tag-list > a {
+  margin: 5px 0 5px 5px;
+}
+
+div.tags-save-like {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+div.save-like {
+  position: absolute;
+  right: 1px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+span.enabled-span {
+  cursor: pointer;
+}
+
+span.disabled-save-article,
+span.enabled-save-article,
+span.disabled-like-article,
+span.enabled-like-article {
+  cursor: pointer;
 }
 
 /*

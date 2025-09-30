@@ -31,6 +31,8 @@ const PublishArticle = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [charCount, setCharCount] = useState(0);
+  const maxCharLimit = 46;
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
@@ -117,15 +119,22 @@ const PublishArticle = () => {
   const body = useRef("");
   const [info, setInfo] = useState("");
 
+  const trimTitle = (input) => {
+    if (input.length > 45) {
+      return input.substring(0, 45);
+    }
+    return input;
+  };
+
   const trimInfo = (input) => {
-    if (input.length > 200) {
-      return input.substring(0, 200) + "...";
+    if (input.length > 210) {
+      return input.substring(0, 210);
     }
     return input;
   };
 
   useEffect(() => {
-    setTitle(localStorage.getItem("articleTitle"));
+    setTitle(trimTitle(localStorage.getItem("articleTitle")));
     setInfo(trimInfo(data.body_text));
 
     const loadContent = async () => {
@@ -135,10 +144,13 @@ const PublishArticle = () => {
   }, [data]);
 
   const handleTitleChange = (e) => {
+    if(e.target.value.length > maxCharLimit) return;
     setTitle(e.target.value);
+    setCharCount(e.target.value.length);
   };
 
   const handleInfoChange = (e) => {
+    if(e.target.value.length > 210) return;
     setInfo(e.target.value);
   };
 
@@ -339,24 +351,44 @@ const PublishArticle = () => {
               </div>
               <div className="column lg-5">
                 <div>
-                  <label htmlFor="previewTitle" style={{ marginBottom: "8px" }}>
-                    Preview Title
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Preview Title"
-                    id="previewTitle"
-                    className="title-input"
-                    value={title}
-                    onChange={handleTitleChange}
-                    required
-                  />
+                  <div style={{ position: "relative" }}>
+                    <label
+                      htmlFor="previewTitle"
+                      style={{ marginBottom: "8px" }}
+                    >
+                      Preview Title
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Preview Title"
+                      id="previewTitle"
+                      className="title-input"
+                      value={title}
+                      onChange={handleTitleChange}
+                      required
+                    />
+                    <p
+                      style={{
+                        position: "absolute",
+                        padding: "0 1px 0 5px",
+                        top: "66px",
+                        right: "1px",
+                        bottom: "1px",
+                        fontSize: "12px",
+                        marginBottom: "0",
+                        color: charCount > maxCharLimit ? "red" : "gray",
+                      }}
+                    >
+                      {maxCharLimit - charCount} characters remaining
+                    </p>
+                  </div>
+
                   <label htmlFor="previewInfo" style={{ marginBottom: "8px" }}>
                     Preview Info
                   </label>
                   <textarea
                     className="info-input"
-                    placeholder="Preview Info"
+                    placeholder="Preview Info Max(210 characters)"
                     id="previewInfo"
                     value={info}
                     onChange={handleInfoChange}

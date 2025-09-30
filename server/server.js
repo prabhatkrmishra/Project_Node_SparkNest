@@ -9,6 +9,7 @@ import passport from "passport";
 import { initializePassport } from "./config/passport.js";
 import { connectDB } from "./db/db.js";
 import config from "./config/config.js";
+import cron from 'node-cron';
 
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
@@ -18,6 +19,10 @@ import mediaRouter from "./routes/mediaRoutes.js";
 import categoriesRouter from "./routes/categoriesRoutes.js";
 import articlePreviewRouter from "./routes/articlePreviewRoutes.js";
 import commentRouter from "./routes/commentRoutes.js";
+import savedArticlesRouter from './routes/savedArticlesRoutes.js';
+import likedArticlesRouter from './routes/likedArticlesRoutes.js';
+import featuredArticlesRouter from './routes/featuredArticlesRoutes.js';
+import { updateFeaturedArticles } from './models/featuredArticlesModel.js';
 
 const app = express();
 
@@ -66,10 +71,22 @@ app.use("/", mediaRouter);
 app.use("/", categoriesRouter);
 app.use("/", articlePreviewRouter);
 app.use("/", commentRouter);
+app.use("/", savedArticlesRouter);
+app.use("/", likedArticlesRouter);
+app.use("/", featuredArticlesRouter);
 
-// Home route
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to the Blog Website API" });
+});
+
+(async () => {
+  await updateFeaturedArticles();
+})();
+
+cron.schedule('0 0 * * 0', async () => {
+  console.log('Updating featured articles...');
+  await updateFeaturedArticles();
+  console.log('Featured articles updated successfully.');
 });
 
 // Start server

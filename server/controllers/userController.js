@@ -121,10 +121,23 @@ export async function updateUserDetails(req, res) {
       .json({ message: "Not authenticated to update user details" });
   }
 
+  const current_uid = req.session.passport ? req.session.passport.user : null;
+  if (!current_uid) {
+    return res.status(200).json({
+      message: `Done !`,
+    });
+  }
+
   if (!req.body.id) {
     return res
       .status(400)
       .json({ message: "Cannot update details, user ID is empty" });
+  }
+
+  if (req.body.id != current_uid) {
+    return res.status(400).json({
+      message: `Not authorized to Update user data!`,
+    });
   }
 
   const { id, ...updatedData } = req.body;
@@ -235,6 +248,25 @@ export async function deleteUserAccount(req, res) {
     return res
       .status(403)
       .json({ message: "Not authenticated to delete user" });
+  }
+
+  const current_uid = req.session.passport ? req.session.passport.user : null;
+  if (!current_uid) {
+    return res.status(200).json({
+      message: `Done !`,
+    });
+  }
+
+  if(!req.body.idtodelete) {
+    return res.status(400).json({
+      message: `Cannot delete user, user id is empty`,
+    });
+  }
+
+  if (req.body.idtodelete != current_uid) {
+    return res.status(400).json({
+      message: `Not authorized to delete !`,
+    });
   }
 
   const { idtodelete, email, allowed } = req.body;

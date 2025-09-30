@@ -288,7 +288,7 @@ const Details = () => {
                   </label>
                   <textarea
                     className="u-fullwidth"
-                    placeholder="Max 150 characters"
+                    placeholder="Max 200 characters"
                     id="inputBio"
                     name="bio"
                     required
