@@ -6446,6 +6446,7 @@ textarea.info-input {
 }
 
 .dropdown-menu-active {
+  display: block;
   padding: 10px !important;
   margin: 10px 0 !important;
   border: 1px solid black;

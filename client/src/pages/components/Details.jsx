@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Cookies from "js-cookie";
 
-import { checkUserName, updateDetails } from "../../api/API";
+import { WEB_URL, checkUserName, updateDetails } from "../../api/API";
 import logout from "./tools/auth";
 
 import PreLoader from "./PreLoader";
@@ -85,7 +85,7 @@ const Details = () => {
   useEffect(() => {
     const fetchAvatars = async () => {
       try {
-        const response = await fetch("http://localhost:8080/images/avatars");
+        const response = await fetch(`${WEB_URL}/images/avatars`);
         const data = await response.json();
         setAvatars(data.avatars);
       } catch (error) {

@@ -4,6 +4,7 @@ axios.defaults.withCredentials = true;
 
 // Server location
 export const WEB_URL = "http://localhost:8080";
+//export const WEB_URL = "https://sparknest.run.place/api";
 
 export const sendLoginCred = (loginCred) => {
   return axios.post(`${WEB_URL}/login`, loginCred, {

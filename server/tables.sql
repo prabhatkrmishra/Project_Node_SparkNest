@@ -1,3 +1,17 @@
+CREATE DATABASE sparknest;
+CREATE USER pkm774 WITH ENCRYPTED PASSWORD 'pass';
+ALTER USER pkm774 CREATEDB;
+GRANT ALL PRIVILEGES ON DATABASE sparknest TO pkm774;
+/*sudo find /etc/postgresql -name pg_hba.conf*/
+/*sudo nano /etc/postgresql/16/main/pg_hba.conf*/
+/*local   all             all                                     md5*/
+/*sudo service postgresql restart*/
+/*psql -U pkm774 -d sparknest;*/
+/*exit*/
+/*sudo -u postgres psql*/
+/*\c sparknest*/
+GRANT ALL PRIVILEGES ON SCHEMA public TO pkm774;
+
 /*****************************************************************/
 /*                  TABLE FOR STORING USERS                   */
 CREATE TABLE users (
@@ -116,7 +130,7 @@ CREATE INDEX idx_articles_categories_article_category ON articles_categories(art
 CREATE TABLE article_images (
   id SERIAL PRIMARY KEY,
   article_id INT REFERENCES articles(id) ON DELETE CASCADE,
-  masonary TEXT[],
+  masonry TEXT[],
   featured TEXT[],
   thumbs TEXT[]
 );
