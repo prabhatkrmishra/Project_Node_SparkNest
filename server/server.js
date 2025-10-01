@@ -9,7 +9,7 @@ import passport from "passport";
 import { initializePassport } from "./config/passport.js";
 import { connectDB } from "./db/db.js";
 import config from "./config/config.js";
-import cron from 'node-cron';
+import cron from "node-cron";
 
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
@@ -19,10 +19,11 @@ import mediaRouter from "./routes/mediaRoutes.js";
 import categoriesRouter from "./routes/categoriesRoutes.js";
 import articlePreviewRouter from "./routes/articlePreviewRoutes.js";
 import commentRouter from "./routes/commentRoutes.js";
-import savedArticlesRouter from './routes/savedArticlesRoutes.js';
-import likedArticlesRouter from './routes/likedArticlesRoutes.js';
-import featuredArticlesRouter from './routes/featuredArticlesRoutes.js';
-import { updateFeaturedArticles } from './models/featuredArticlesModel.js';
+import savedArticlesRouter from "./routes/savedArticlesRoutes.js";
+import likedArticlesRouter from "./routes/likedArticlesRoutes.js";
+import featuredArticlesRouter from "./routes/featuredArticlesRoutes.js";
+import { updateFeaturedArticles } from "./models/featuredArticlesModel.js";
+import serviceRouter from "./routes/serviceRoutes.js";
 
 const app = express();
 
@@ -43,8 +44,8 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(
   session({
     secret: config.session.secret,
@@ -74,6 +75,7 @@ app.use("/", commentRouter);
 app.use("/", savedArticlesRouter);
 app.use("/", likedArticlesRouter);
 app.use("/", featuredArticlesRouter);
+app.use("/", serviceRouter);
 
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to the Blog Website API" });
@@ -83,10 +85,10 @@ app.get("/", (req, res) => {
   await updateFeaturedArticles();
 })();
 
-cron.schedule('0 0 * * 0', async () => {
-  console.log('Updating featured articles...');
+cron.schedule("0 0 * * 0", async () => {
+  console.log("Updating featured articles...");
   await updateFeaturedArticles();
-  console.log('Featured articles updated successfully.');
+  console.log("Featured articles updated successfully.");
 });
 
 // Start server

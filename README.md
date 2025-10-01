@@ -10,6 +10,7 @@ Using this website a user can :
   * Create, Edit, Update, Delete created article
   * Add, Reply, Delete comments
   * Save and Like articles -> shown in profile section.
+  * Contact and send message to SparkNest team.
 
 CRUD on user, articles and comments are performed on his authorized space only.
 
