@@ -1,17 +1,65 @@
 import { Helmet } from "react-helmet";
+import { useState } from "react";
+import Cookies from "js-cookie";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 
 import PreLoader from "./components/PreLoader";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import MoveToEffect from "./components/effects/MoveToEffect";
 
+import { sendMessage } from "../api/SERVICESAPI";
+
 const Contact = () => {
+  const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
+
+  const [message, setMessage] = useState({
+    name: user ? user.fname + " " + user.lname : "",
+    email: user ? user.email : "",
+    message: "",
+  });
+  const [show, setShow] = useState(false);
+  const [mssg, setMssg] = useState("");
+  const handleModal = () => setShow(!show);
+
+  const handleChange = (e) => {
+    setMessage((preVal) => {
+      return {
+        ...preVal,
+        [e.target.name]: e.target.value,
+      };
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await sendMessage(message);
+      if (response.status == 200) {
+        setMssg(response.data.message);
+        setShow(true);
+        setMessage(() => {
+          return {
+            name: "",
+            email: "",
+            message: "",
+          };
+        });
+      }
+    } catch (error) {
+      setMssg(error.response.data.message);
+      setShow(true);
+    }
+  };
+
   return (
     <>
       <Helmet>
         <title>Contact : SparkNest</title>
       </Helmet>
-      <PreLoader/>
+      <PreLoader />
       <div id="page" className="s-pagewrap">
         <Header />
         <section id="content" className="s-content s-content--page">
@@ -19,7 +67,7 @@ const Contact = () => {
             <div className="column lg-12">
               <article className="entry">
                 <header className="entry__header entry__header--narrow">
-                  <h1 className="entry__title">Say Hello.</h1>
+                  <h1 className="entry__title">{`Say What's up`}</h1>
                 </header>
                 <div className="entry__media">
                   <figure className="featured-image">
@@ -33,87 +81,75 @@ const Contact = () => {
                 </div>
                 <div className="content-primary">
                   <div className="entry__content">
-                    <p className="lead">
-                      Duis ex ad cupidatat tempor Excepteur cillum cupidatat
-                      fugiat nostrud cupidatat dolor sunt sint sit nisi est eu
-                      exercitation incididunt adipisicing veniam velit id fugiat
-                      enim mollit amet anim veniam dolor dolor irure velit
-                      commodo cillum sit nulla ullamco magna amet magna
-                      cupidatat qui labore cillum cillum cupidatat fugiat
-                      nostrud.
+                    <p className="lead" style={{ textAlign: "justify" }}>
+                      At SparkNest, we are committed to fostering meaningful
+                      connections with our community. Whether you have feedback,
+                      suggestions, or just want to say hello, we’re here to
+                      listen. Your input helps us grow and create better
+                      experiences for everyone.
                     </p>
-                    <p>
-                      Eligendi quam at quis. Sit vel neque quam consequuntur
-                      expedita quisquam. Incidunt quae qui error. Rerum non
-                      facere mollitia ut magnam laboriosam. Quisquam neque quia
-                      ex eligendi repellat illum quibusdam aut. Architecto quam
-                      consequuntur totam ratione reprehenderit est praesentium.
+                    <p style={{ textAlign: "justify" }}>
+                      We believe in open communication and value your thoughts.
+                      Feel free to reach out for any inquiries, suggestions or
+                      collaborations. Our team is always ready to assist and
+                      ensure your voice is heard. Simply fill out the form
+                      below, and we’ll get back to you as soon as possible.
+                      Thank you for being a part of SparkNest! We look forward
+                      to hearing from you.
                     </p>
                     <div className="row block-large-1-2 block-tab-whole entry__blocks">
                       <div className="column">
-                        <h4>Where to Find Us</h4>
-                        <p>
-                          1600 Amphitheatre Parkway
-                          <br />
-                          Mountain View, CA
-                          <br />
-                          94043 US
-                        </p>
-                      </div>
-                      <div className="column">
                         <h4>Contact Info</h4>
-                        <p>
-                          someone@yourdomain.com
+                        <p style={{marginBottom: "8px"}}>
+                          <b>Mail</b>: <a href="mailto:mprabhat774@gmail.com">mprabhat774@gmail.com</a>
                           <br />
-                          info@yourdomain.com
-                          <br />
-                          Phone: (+63) 555 1212
+                          <b>Service</b>: <a href="mailto:mprabhat774@gmail.com">spark.nest.service@gmail.com</a>
                         </p>
                       </div>
                     </div>
-                    <h4>Feel Free to Say Hi.</h4>
+                    <h4>Feel Free to Say Hello.</h4>
                     <form
                       action=""
                       autoComplete="off"
                       className="entry__form"
                       id="cForm"
-                      method="post"
                       name="cForm"
+                      onSubmit={handleSubmit}
                     >
                       <fieldset className="row">
                         <div className="column lg-6 tab-12 form-field">
                           <input
                             className="u-fullwidth"
                             id="cName"
-                            name="cName"
+                            name="name"
                             placeholder="Your Name"
                             type="text"
+                            value={message.name}
+                            onChange={handleChange}
+                            required
                           />
                         </div>
                         <div className="column lg-6 tab-12 form-field">
                           <input
                             className="u-fullwidth"
                             id="cEmail"
-                            name="cEmail"
+                            name="email"
                             placeholder="Your Email"
                             type="email"
-                          />
-                        </div>
-                        <div className="column lg-12 form-field">
-                          <input
-                            className="u-fullwidth"
-                            id="cWebsite"
-                            name="cWebsite"
-                            placeholder="Website"
-                            type="text"
+                            value={message.email}
+                            onChange={handleChange}
+                            required
                           />
                         </div>
                         <div className="column lg-12 message form-field">
                           <textarea
                             className="u-fullwidth"
                             id="cMessage"
-                            name="cMessage"
+                            name="message"
                             placeholder="Your Message"
+                            value={message.message}
+                            onChange={handleChange}
+                            required
                           />
                         </div>
                         <div className="column lg-12">
@@ -122,7 +158,7 @@ const Contact = () => {
                             id="submit"
                             name="submit"
                             type="submit"
-                            value="Add Comment"
+                            value="Send Message"
                           />
                         </div>
                       </fieldset>
@@ -132,6 +168,14 @@ const Contact = () => {
               </article>
             </div>
           </div>
+          <Modal show={show} onHide={handleModal}>
+            <Modal.Body>{mssg}</Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleModal}>
+                Close
+              </Button>
+            </Modal.Footer>
+          </Modal>
         </section>
         <Footer />
       </div>

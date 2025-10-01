@@ -169,7 +169,7 @@ export const processAndSavePreviewImage = async (
     // Thumbs
     const thumbs600 = `${userId}-t-600.jpg`;
     const thumbs1200 = `${userId}-t-1200.jpg`;
-    const thumbs2000 = `${userId}-t-2000.jpg`;
+    const thumbs2400 = `${userId}-t-2400.jpg`;
 
     // Masonary
     const masonryFilePath600 = path.join(basePath, masonry600);
@@ -179,7 +179,7 @@ export const processAndSavePreviewImage = async (
     // Thumbs
     const thumbsFilePath600 = path.join(basePath, thumbs600);
     const thumbsFilePath1200 = path.join(basePath, thumbs1200);
-    const thumbsFilePath2000 = path.join(basePath, thumbs2000);
+    const thumbsFilePath2400 = path.join(basePath, thumbs2400);
 
     sharp.cache(false);
     // For Masonry
@@ -201,7 +201,7 @@ export const processAndSavePreviewImage = async (
       sharp(imageFile.path)
         .resize(2000, 2600)
         .toFormat("jpeg")
-        .jpeg({ quality: 85 })
+        .jpeg({ quality: 95 })
         .toFile(featuredFilePath2000),
     ]);
     // For Thumbs
@@ -219,10 +219,10 @@ export const processAndSavePreviewImage = async (
         .toFile(thumbsFilePath1200),
 
       sharp(imageFile.path)
-        .resize(2000, 1350)
+        .resize(2400, 1350)
         .toFormat("jpeg")
-        .jpeg({ quality: 85 })
-        .toFile(thumbsFilePath2000),
+        .jpeg({ quality: 90 })
+        .toFile(thumbsFilePath2400),
     ]);
 
     // Delete original image
@@ -245,7 +245,7 @@ export const processAndSavePreviewImage = async (
     const thumbsPaths = [
       `${config.backendAddress}/article/images/${userId}/${articleId}/${thumbs600}`,
       `${config.backendAddress}/article/images/${userId}/${articleId}/${thumbs1200}`,
-      `${config.backendAddress}/article/images/${userId}/${articleId}/${thumbs2000}`,
+      `${config.backendAddress}/article/images/${userId}/${articleId}/${thumbs2400}`,
     ];
 
     return {

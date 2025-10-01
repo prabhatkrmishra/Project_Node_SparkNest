@@ -27,6 +27,10 @@ const config = {
       secure: process.env.NODE_ENV === "production",
     },
   },
+  nodemailer: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
   allowedOrigins: process.env.FRONTEND_ADDRESS,
   backendAddress: process.env.BACKEND_ADDRESS,
   saltRounds: parseInt(process.env.PASSWORD_SALTROUNDS) || 10
