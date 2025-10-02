@@ -37,7 +37,7 @@ export async function getComment(article_id) {
   COALESCE(u.avatar, '${defaultAvatar}') AS avatar
     FROM
       comments c
-    LEFT JOIN
+    JOIN
       users u ON u.email = c.email
     WHERE
       article_id = $1
@@ -85,7 +85,7 @@ export async function setComment(article_id, commentBody) {
         COALESCE(u.avatar, '${defaultAvatar}') AS avatar
     FROM
         inserted_comment ic
-    LEFT JOIN
+    JOIN
         users u ON u.email = ic.email
   `;
 

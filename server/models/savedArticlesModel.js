@@ -106,11 +106,11 @@ export async function getAllSavedArticles(userId, limit, offset) {
       saved_articles sa 
     JOIN
       articles_preview ap ON ap.article_id = sa.article_id
-    LEFT JOIN 
+    JOIN
       articles_categories ac ON ac.article_id = sa.article_id
-    LEFT JOIN 
+    JOIN
       categories c ON ac.category_id = c.id
-    LEFT JOIN 
+    JOIN
       article_images ai ON ai.article_id = sa.article_id
     WHERE
       sa.user_id = $1

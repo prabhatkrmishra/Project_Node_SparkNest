@@ -70,7 +70,7 @@ const Header = () => {
                   <a href="/category/design">Design</a>
                 </li>
                 <li>
-                  <a href="/category/categories">More...</a>
+                  <a href="/categories">More...</a>
                 </li>
               </ul>
             </li>

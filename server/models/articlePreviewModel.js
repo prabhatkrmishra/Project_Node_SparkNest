@@ -39,17 +39,17 @@ export async function fetchArticlePreviews(limit, offset) {
       ap.preview_subtitle,
       ARRAY_AGG(c.name) AS categories,
       ai.masonry AS preview_images
-    FROM 
+    FROM
       articles_preview ap
-    JOIN 
+    JOIN
       articles a ON ap.article_id = a.id
-    LEFT JOIN 
+    JOIN
       articles_categories ac ON a.id = ac.article_id
-    LEFT JOIN 
+    JOIN
       categories c ON ac.category_id = c.id
-    LEFT JOIN 
+    JOIN
       article_images ai ON ai.article_id = ap.article_id
-    GROUP BY 
+    GROUP BY
       ap.id, a.id, ai.masonry
     ORDER BY
       ap.id DESC
@@ -102,11 +102,11 @@ export async function fetchArticlePreviewsCategory(category, limit, offset) {
       articles_preview ap
     JOIN 
       articles a ON ap.article_id = a.id
-    LEFT JOIN 
+    JOIN
       articles_categories ac ON a.id = ac.article_id
-    LEFT JOIN 
+    JOIN
       categories c ON ac.category_id = c.id
-    LEFT JOIN 
+    JOIN
       article_images ai ON ai.article_id = ap.article_id
     WHERE 
       c.name ILIKE '%' || $1 || '%'
@@ -170,17 +170,17 @@ export async function fetchArticlePreview(id, limit, offset) {
       ARRAY_AGG(c.name) AS categories,
       ai.masonry AS preview_images,
       u.id as creator_uid
-    FROM 
+    FROM
       articles_preview ap
-    JOIN 
+    JOIN
       articles a ON ap.article_id = a.id
-    LEFT JOIN 
+    JOIN
       users u ON a.user_id = u.id
-    LEFT JOIN 
+    JOIN
       articles_categories ac ON a.id = ac.article_id
-    LEFT JOIN 
+    JOIN
       categories c ON ac.category_id = c.id
-    LEFT JOIN 
+    JOIN
       article_images ai ON ai.article_id = ap.article_id
     WHERE 
       a.user_id = $1
@@ -199,7 +199,7 @@ export async function fetchArticlePreview(id, limit, offset) {
       articles_preview ap
     JOIN 
       articles a ON ap.article_id = a.id
-    LEFT JOIN
+    JOIN
       users u ON a.user_id = u.id
     WHERE
       a.user_id = $1

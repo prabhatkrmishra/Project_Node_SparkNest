@@ -1,10 +1,10 @@
-# SparkNest V1.0
+# SparkNest V2.5
 
 A **Distinctive** and **stylish** Web application for article sharing based on **PERN** Stack. Developed with the use of **React in FrontEnd** and **Node.js, ExpressJs and PostgreSQL in BackEnd**.
 
 ## Deployment
 
-Deployed Website (V 2.0): [https://sparknest.run.place/](https://sparknest.run.place/)
+Deployed Website (V 2.5): [https://sparknest.run.place/](https://sparknest.run.place/)
 Deployed on AWS.
 
 ## Features
@@ -17,6 +17,7 @@ Using this website a **user** can :
   * Add, Reply, Delete comments.
   * Save and Like articles -> shown in profile section.
   * Contact and send message to SparkNest team.
+  * View other user profile using user id
 
 Create, Read, Update and Delete on user, articles and comments are performed on user's authorized space only.
 

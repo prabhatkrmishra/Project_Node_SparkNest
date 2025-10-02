@@ -7,7 +7,7 @@ export const getArticlePreviews = () => {
 };
 
 export const getArticlePreviewsCategory = (category) => {
-  return (`${WEB_URL}/article/previews/category/${category}`);
+  return (`${WEB_URL}/article/preview/category/${category}`);
 };
 
 export const getProfileArticlePreviews = (id) => {

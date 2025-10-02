@@ -17,3 +17,17 @@ export async function getCategories(category) {
   const result = await db.query(query, values);
   return result.rows.length > 0 ? result.rows : null;
 }
+
+/**
+ * Get all categories
+ *
+ * @returns {Promise<String[]|null>} - categories list or null
+ */
+export async function getAllCategories() {
+  const db = getDBClient();
+
+  const query = "SELECT * FROM categories";
+
+  const result = await db.query(query);
+  return result.rows.length > 0 ? result.rows : null;
+}

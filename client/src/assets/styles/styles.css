@@ -6254,6 +6254,7 @@ button.profile-buttons-highlight:hover {
   .entry__author-name-profile {
     margin-bottom: 30px !important;
   }
+
   .profile-name-height {
     font-size: 3rem !important;
   }
@@ -6493,7 +6494,7 @@ p.entry__tags strong {
   margin: 5px 0 5px 0;
 }
 
-p.entry__tags > span.entry__tag-list > a {
+p.entry__tags>span.entry__tag-list>a {
   margin: 5px 0 5px 5px;
 }
 
@@ -6656,7 +6657,7 @@ div.add-comment-div>div.fade.toast.show {
   margin-top: 20px;
 }
 
-div.add-comment-div>div.fade.toast.show>div.toast-header{
+div.add-comment-div>div.fade.toast.show>div.toast-header {
   position: relative;
 }
 
@@ -6670,14 +6671,14 @@ div.add-comment-div>div.fade.toast.show>div.toast-header>div>h3 {
   margin: 0;
 }
 
-div.add-comment-div>div.fade.toast.show>div.toast-header>button.btn-close{
+div.add-comment-div>div.fade.toast.show>div.toast-header>button.btn-close {
   position: absolute;
   display: block;
   top: 20px;
   right: 20px;
 }
 
-fieldset.row > div {
+fieldset.row>div {
   padding-left: 16px;
   padding-right: 16px;
 }
@@ -6756,6 +6757,73 @@ div.alert-box.alert-box--error p,
 div.alert-box.alert-box--info p,
 div.alert-box.alert-box--info p {
   margin-bottom: 0;
+}
+
+/*
+ * Public User profile
+ * SparkNest
+*/
+div.profile-creation-box {
+  height: inherit;
+}
+
+h3.profile-creation-heading {
+  text-align: center;
+  margin: 32px 0 !important;
+  padding: 5px 0px;
+  border: 0.1rem solid var(--color-gray-14);
+  border-radius: 5px;
+}
+
+h3.profile-creation-heading span {
+  display: block;
+  padding-top: 6px !important;
+  color: var(--color-gray-16);
+  font-style: var(--font-1) !important;
+}
+
+section.s-content.user-profile div.bricks {
+  padding-top: 70px !important;
+}
+
+@media screen and (max-width: 440px) {
+  h3.profile-creation-heading {
+    font-size: 2.5rem;
+  }
+}
+
+/*
+ *
+  * Categories
+  *  SparkNest
+  */
+
+article.brick.entry {
+  padding-top: 5px;
+}
+
+article.brick.entry h3 {
+  margin: 32px 0 22px 0;
+  color: var(--color-gray-17);
+}
+
+ul.categories-ul {
+  margin-left: 0px;
+}
+
+li.categories-li {
+  list-style: none;
+  margin-left: 0px;
+  padding-left: 0px;
+}
+
+li.categories-li a {
+  color: var(--color-gray-16);
+}
+
+li.categories-li a:hover {
+  color: var(--color-gray-19);
+  font-weight: bold;
 }
 
 /* ------------------------------------------------------------------- 

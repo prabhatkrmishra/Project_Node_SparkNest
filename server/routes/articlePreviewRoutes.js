@@ -16,11 +16,11 @@ const articlePreviewRouter = express.Router();
 articlePreviewRouter.get("/article/previews", getAllArticlePreview);
 
 /**
- * @route GET /article/previews
+ * @route GET /article/preview
  * @description Fetch and view article preview
  * @access Private
  */
-articlePreviewRouter.get("/article/previews/category/:category", getAllArticlePreviewCategory);
+articlePreviewRouter.get("/article/preview/category/:category", getAllArticlePreviewCategory);
 
 /**
  * @route GET /article/profile/preview/:id

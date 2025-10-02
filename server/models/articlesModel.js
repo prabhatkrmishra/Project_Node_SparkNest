@@ -43,15 +43,15 @@ export async function getArticle(id) {
         articles a
       JOIN
         users u ON a.user_id = u.id
-      LEFT JOIN 
+      JOIN
         articles_categories ac ON ac.article_id = a.id
-      LEFT JOIN 
+      JOIN
         categories c ON c.id = ac.category_id
-      LEFT JOIN 
+      JOIN
         article_images ai ON ai.article_id = a.id
       WHERE
         a.id = $1
-      GROUP BY 
+      GROUP BY
         a.id, u.id, ai.thumbs
     )
     SELECT 
@@ -100,13 +100,13 @@ export async function fetchTheArticle(id) {
         ARRAY_AGG(c.name) AS article_cnames
       FROM
         articles a
-      JOIN 
+      JOIN
         articles_categories ac ON ac.article_id = a.id
-      LEFT JOIN 
+      JOIN
         categories c ON c.id = ac.category_id
       WHERE
         a.id = $1
-      GROUP BY 
+      GROUP BY
         a.id
   `;
 

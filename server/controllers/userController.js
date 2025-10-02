@@ -13,6 +13,7 @@ import {
 import { verifyPassword, hashPassword } from "../services/bcryptService.js";
 import { getSubscriptionByEmail, deleteSubscription } from "../models/subscriptionModel.js";
 import { processAndSaveAvatarImage } from "../services/imagesServices.js";
+import { fetchArticlePreview } from "../models/articlePreviewModel.js";
 
 const MAX_LENGTH = 30;
 function makeValidUsername(username) {

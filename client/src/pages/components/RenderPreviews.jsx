@@ -16,7 +16,7 @@ const RenderPreviews = ({ url, type }) => {
   const login = Cookies.get("isLoggedIn") || null;
   const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
 
-  if (type != 100) {
+  if (type == 101 || type == 102 || type == 103) {
     if (!login) {
       navigate("/session/new");
     }

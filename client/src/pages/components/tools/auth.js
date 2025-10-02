@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import CryptoJS from 'crypto-js';
+import CryptoJS from "crypto-js";
 
 import { LogOut } from "../../../api/API";
 

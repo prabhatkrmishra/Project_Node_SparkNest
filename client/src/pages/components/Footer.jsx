@@ -14,7 +14,7 @@ const Footer = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     subscribeNewsletter.email = email;
-    subscribeNewsletter.type = 'newsletter';
+    subscribeNewsletter.type = "newsletter";
     const response = await Subscription(subscribeNewsletter);
     if (response.status === 200) {
       setEmail("");
@@ -57,10 +57,10 @@ const Footer = () => {
         <div className="column lg-5 md-6 tab-12 s-footer__about">
           <h4>SparkNest</h4>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo
+            SparkNest serves as a haven for human narratives and ideas. It
+            empowers anyone to share their insights and knowledge with the
+            world—no need to build a mailing list or cultivate a following
+            beforehand.
           </p>
         </div>
 

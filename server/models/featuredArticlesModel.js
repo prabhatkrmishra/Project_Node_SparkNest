@@ -38,13 +38,13 @@ export async function getFeaturedArticles() {
         featured_articles f
 	  JOIN
         articles_preview ap ON ap.article_id = f.article_id
-    LEFT JOIN 
+    JOIN
         articles_categories ac ON ac.article_id = f.article_id
-    LEFT JOIN 
+    JOIN
         categories c ON ac.category_id = c.id
-    LEFT JOIN 
+    JOIN
         article_images ai ON ai.article_id = f.article_id
-    GROUP BY 
+    GROUP BY
         f.id, ap.id, ai.featured
     ORDER BY
         f.id ASC;

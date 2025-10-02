@@ -66,18 +66,13 @@ export async function getAllArticlePreviewCategory(req, res) {
 }
 
 /**
- * Fetch and send a articles preview from database
+ * Fetch and send a articles preview of
+ * a specific user from database.
  *
  * @param {Object} req - The request object.
  * @param {Object} res - The response object.
  */
 export async function getArticlePreview(req, res) {
-  if (!req.isAuthenticated()) {
-    return res
-      .status(403)
-      .json({ message: "Not authenticated to fetch article" });
-  }
-
   const { id } = req.params;
   const { page = 1, limit = 12 } = req.query;
 
@@ -98,7 +93,7 @@ export async function getArticlePreview(req, res) {
     if (articles && articles.length < 1) {
       return res
         .status(200)
-        .json({ message: `Article with id:${id} doesn't exist` });
+        .json({ message: `Article with user id:${id} doesn't exist` });
     }
 
     res.status(200).json({

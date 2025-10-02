@@ -24,7 +24,7 @@ const NormalArticle = (prop) => {
         data = response.data;
       } catch (error) {
         if (error.response.status === 403) {
-          logout();
+         // logout();
         }
       }
     };

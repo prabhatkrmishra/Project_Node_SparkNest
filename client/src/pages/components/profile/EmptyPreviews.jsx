@@ -6,6 +6,7 @@ const EmptyPreviews = () => {
   let message = useRef("");
   const categoryMatch = location.pathname.match(/\/category\/(.+)/);
   const category = categoryMatch ? categoryMatch[1] : null;
+  const decodedString = decodeURIComponent(category);
 
   useEffect(() => {
     switch (location.pathname) {
@@ -19,12 +20,12 @@ const EmptyPreviews = () => {
         message.current = "No liked articles";
         break;
       case category ? `/category/${category}` : null:
-        message.current = `No articles having tags ${category}`;
+        message.current = `No articles having tags ${decodedString}`;
         break;
       default:
         message.current = "No articles to show";
     }
-  }, [category, location.pathname]);
+  }, [category, decodedString, location.pathname]);
 
   return (
     <div className="nothing-menu">

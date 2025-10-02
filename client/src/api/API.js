@@ -121,3 +121,9 @@ export const fetchCategories = (categoryString) => {
     withCredentials: false,
   });
 };
+
+export const fetchAllCategories = () => {
+  return axios.get(`${WEB_URL}/fetch/categories/all`, {
+    withCredentials: false,
+  });
+};

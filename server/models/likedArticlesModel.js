@@ -106,11 +106,11 @@ export async function getAllLikedArticles(userId, limit, offset) {
       liked_articles la 
     JOIN
       articles_preview ap ON ap.article_id = la.article_id
-    LEFT JOIN 
+    JOIN
       articles_categories ac ON ac.article_id = la.article_id
-    LEFT JOIN 
+    JOIN
       categories c ON ac.category_id = c.id
-    LEFT JOIN 
+    JOIN
       article_images ai ON ai.article_id = la.article_id
     WHERE
       la.user_id = $1

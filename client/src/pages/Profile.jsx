@@ -147,8 +147,7 @@ const Profile = () => {
                   </figure>
                   <div className="entry__author-info-profile">
                     <h5 className="entry__author-name-profile">
-                      <a className="profile-name-height" href="#0">
-                        {/* TODO: Link to username */}
+                      <a className="profile-name-height" href={`/user/${user.id}`}>
                         {user ? user.fname + " " + user.lname : ""}
                       </a>
                     </h5>

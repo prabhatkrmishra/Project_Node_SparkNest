@@ -52,7 +52,7 @@ userRouter.get("/user/details/:email", getUserDetails);
 
 /**
  * @route GET /public/user/:id
- * @description Get details of a user by email
+ * @description Get details of a user by id
  * @access Private
  */
 userRouter.get("/public/user/:id", getUserPublic);

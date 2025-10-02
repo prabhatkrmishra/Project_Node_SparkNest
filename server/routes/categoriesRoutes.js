@@ -1,6 +1,7 @@
 import express from "express";
 import {
-    fetchCategory
+    fetchCategory,
+    fetchAllCategory
 } from "../controllers/categoriesController.js";
 
 const categoriesRouter = express.Router();
@@ -11,5 +12,12 @@ const categoriesRouter = express.Router();
  * @access Private
  */
 categoriesRouter.get("/fetch/categories", fetchCategory);
+
+/**
+ * @route GET /fetch/categories
+ * @description Fetch and view all categories
+ * @access Private
+ */
+categoriesRouter.get("/fetch/categories/all", fetchAllCategory);
 
 export default categoriesRouter;
