@@ -13,7 +13,7 @@ const SuccessMessage = ({ isSuccess, successMssg }) => {
   return (
     <>
       {isSuccess && (
-        <div className="alert-box alert-box--success" style={{ height: "68px" }}>
+        <div className="alert-box alert-box--success">
           <p>{successMssg}</p>
           <span className="alert-box__close" onClick={handleClose}></span>
         </div>

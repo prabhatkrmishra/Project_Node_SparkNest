@@ -8,3 +8,27 @@ export const sendMessage = (body) => {
     },
   });
 };
+
+export const resetPassword = (email) => {
+  return axios.post(`${WEB_URL}/password/request/email`, email, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+export const verifyToken = (body) => {
+  return axios.post(`${WEB_URL}/password/verify`, body, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+export const patchPasswords = (body) => {
+  return axios.post(`${WEB_URL}/password/new`, body, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}

@@ -6744,6 +6744,18 @@ div.delete-modal-footer {
 }
 
 /* ------------------------------------------------------------------- 
+ * Message Box:
+ * SparkNest
+ * ------------------------------------------------------------------- */
+
+div.alert-box.alert-box--success p,
+div.alert-box.alert-box--error p,
+div.alert-box.alert-box--info p,
+div.alert-box.alert-box--info p {
+  margin-bottom: 0;
+}
+
+/* ------------------------------------------------------------------- 
  * Custom styling:
  * SparkNest
  * ------------------------------------------------------------------- */

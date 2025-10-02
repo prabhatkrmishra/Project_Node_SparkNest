@@ -174,7 +174,7 @@ const UpdatePublish = () => {
   return (
     <>
       <Helmet>
-        <title>Create Article</title>
+        <title>Publish Update</title>
       </Helmet>
       <PreLoader />
       <div id="page" className="s-pagewrap">

@@ -209,7 +209,7 @@ const Login = () => {
                     </span>
                   </label>
                   <label className="u-add-bottom" style={{ margin: "0 0" }}>
-                    <a className="label-text" href="/forgot-password">
+                    <a className="label-text" href="/password/request">
                       Forgot password?
                     </a>
                   </label>

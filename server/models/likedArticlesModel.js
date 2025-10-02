@@ -23,7 +23,7 @@ export async function checkIfLikedArticle(userId, articleId) {
     return result.rows.length > 0;
   } catch (error) {
     console.error("Error checking saved article:", error);
-    throw error;
+    return false;
   }
 }
 
@@ -88,6 +88,7 @@ export async function unSetLikedArticle(user_id, article_id) {
  * @param {number} userId - The user ID.
  * @param {number} limit - The number of articles to fetch per page.
  * @param {number} offset - The offset to start fetching articles.
+ * @returns {Promise<Object|null>} - Query done ? Liked articles : null
  */
 export async function getAllLikedArticles(userId, limit, offset) {
   const db = getDBClient();
@@ -144,6 +145,6 @@ export async function getAllLikedArticles(userId, limit, offset) {
     };
   } catch (error) {
     console.error("Error fetching article previews:", error);
-    throw new Error("Could not fetch article previews.");
+    return null;
   }
 }

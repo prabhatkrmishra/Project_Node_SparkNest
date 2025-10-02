@@ -23,7 +23,7 @@ export async function checkIfSavedArticle(userId, articleId) {
     return result.rows.length > 0;
   } catch (error) {
     console.error("Error checking saved article:", error);
-    throw error;
+    return false;
   }
 }
 
@@ -88,7 +88,7 @@ export async function setUnSaveArticle(user_id, article_id) {
  * @param {number} userId - The user ID.
  * @param {number} limit - The number of articles to fetch per page.
  * @param {number} offset - The offset to start fetching articles.
- * @returns {Promise<Array>} - List of saved articles.
+ * @returns {Promise<Object|null>} - Query done ? Saved articles : null
  */
 export async function getAllSavedArticles(userId, limit, offset) {
   const db = getDBClient();
@@ -145,6 +145,6 @@ export async function getAllSavedArticles(userId, limit, offset) {
     };
   } catch (error) {
     console.error("Error fetching article previews:", error);
-    throw new Error("Could not fetch article previews.");
+    return null;
   }
 }

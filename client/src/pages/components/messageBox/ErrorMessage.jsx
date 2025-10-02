@@ -4,7 +4,7 @@ const ErrorMessage = ({ isError, errorMssg }) => {
   return (
     <>
       {isError && (
-        <div className="alert-box alert-box--error" style={{ height: "68px" }}>
+        <div className="alert-box alert-box--error">
           <p>{errorMssg}</p>
         </div>
       )}

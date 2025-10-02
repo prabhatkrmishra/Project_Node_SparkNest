@@ -160,7 +160,7 @@ const UpdateArticle = () => {
   return (
     <>
       <Helmet>
-        <title>Create Article</title>
+        <title>Update Article</title>
       </Helmet>
       <PreLoader />
       <div id="page" className="s-pagewrap">

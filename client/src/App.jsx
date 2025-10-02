@@ -6,6 +6,8 @@ import Contact from "./pages/Contact";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import ForgotPassword from "./pages/components/passwords/ForgotPassword";
+import ResetMain from "./pages/components/passwords/ResetMain";
 import Profile from "./pages/Profile";
 import GoogleLogin from "./pages/components/GoogleLogin";
 import Details from "./pages/components/Details";
@@ -33,6 +35,10 @@ function App() {
         <Route exact path="/article/update/publish" element={<UpdatePublish />} />
         <Route exact path="/session/new" element={<Login />} />
         <Route exact path="/signup/new" element={<Signup />} />
+
+        <Route exact path="/password/request" element={<ForgotPassword />} />
+        <Route exact path="/password/reset/:email/:token" element={<ResetMain />} />
+        
         <Route exact path="/google/login" element={<GoogleLogin />} />
         <Route exact path="/profile" element={<Profile />} />
         <Route exact path="/profile/details" element={<Details />} />

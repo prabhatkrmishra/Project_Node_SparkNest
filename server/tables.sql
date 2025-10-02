@@ -11,6 +11,8 @@ GRANT ALL PRIVILEGES ON DATABASE sparknest TO pkm774;
 /*sudo -u postgres psql*/
 /*\c sparknest*/
 GRANT ALL PRIVILEGES ON SCHEMA public TO pkm774;
+/*psql -U pkm774 -d sparknest;*/
+/*\copy categories (id, name) FROM '/home/ubuntu/SparkNest/server/categories.csv' WITH (FORMAT csv, HEADER true);*/
 
 /*****************************************************************/
 /*                  TABLE FOR STORING USERS                   */
@@ -208,7 +210,7 @@ CREATE INDEX idx_liked_articles_user_id ON liked_articles(user_id);
 CREATE INDEX idx_liked_articles_article_id ON liked_articles(article_id);
 
 /*****************************************************************/
-/*                 TABLE FOR FEATURED ARTICLES                  */
+/*                 TABLE FOR FEATURED ARTICLES                   */
 
 CREATE TABLE featured_articles (
     id SERIAL PRIMARY KEY,
@@ -218,3 +220,13 @@ CREATE TABLE featured_articles (
 
 /* Adding an index for performance */
 CREATE INDEX idx_featured_article_id ON featured_articles(article_id);
+
+/*****************************************************************/
+/*                 TABLE FOR PASSWORD RESET TOKENS               */
+
+CREATE TABLE password_resets (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) NOT NULL,
+  token VARCHAR(255) NOT NULL,
+  expires TIMESTAMP NOT NULL
+);

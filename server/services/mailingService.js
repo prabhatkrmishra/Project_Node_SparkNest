@@ -5,8 +5,8 @@ import config from "../config/config.js";
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: config.nodemailer.user,
-    pass: config.nodemailer.pass,
+    user: config.serviceEmail,
+    pass: config.servicePass,
   },
 });
 
@@ -28,7 +28,7 @@ export const sendContactEmail = async (req, res) => {
   try {
     const mailOptions = {
       from: email,
-      to: `${config.nodemailer.user}`,
+      to: `${config.serviceEmail}`,
       subject: `Contact Form Submission from ${name}`,
       text: `You have a new contact form submission:\n\nName: ${name}\nEmail: ${email}\n\nMessage: ${message}`,
     };
