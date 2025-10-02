@@ -5952,7 +5952,7 @@ div.settings-navigation-dropdown {
   }
 }
 
-@media screen and (max-width: 650px) {
+@media screen and (max-width: 440px) {
   div.profil-info {
     flex-direction: column !important;
     justify-content: center !important;
@@ -6250,7 +6250,10 @@ button.profile-buttons-highlight:hover {
   }
 }
 
-@media screen and (max-width: 650px) {
+@media screen and (max-width: 440px) {
+  .entry__author-name-profile {
+    margin-bottom: 30px !important;
+  }
   .profile-name-height {
     font-size: 3rem !important;
   }
@@ -6592,7 +6595,7 @@ span.enabled-like-article {
  */
 
 .modal-header {
-  padding: 0 0 0 var(--vspace-0_5) !important;
+  padding: 0 0 0 var(--vspace-0_75) !important;
 }
 
 div.modal-title.h4 {
@@ -6605,7 +6608,7 @@ div.modal-title.h4 {
 }
 
 .modal-body {
-  padding: var(--vspace-0_5) 0 var(--vspace-0_5) var(--vspace-0_5) !important;
+  padding: var(--vspace-0_5) 0 var(--vspace-0_5) var(--vspace-0_75) !important;
 }
 
 button.btn.btn-secondary,

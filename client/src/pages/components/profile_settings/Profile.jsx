@@ -45,7 +45,7 @@ const Profile = () => {
   const [isUpdated, setIsUpdated] = useState(false);
   const [responseMssg, SetResponseMssg] = useState("");
   const [charCount, setCharCount] = useState(0);
-  const maxCharLimit = 200;
+  const maxCharLimit = 210;
 
   const handleDataChange = (e) => {
     if (e.target.name === "bio" && e.target.value.length > maxCharLimit) return;
@@ -228,7 +228,8 @@ const Profile = () => {
               color: charCount > maxCharLimit ? "red" : "gray",
             }}
           >
-            {maxCharLimit - charCount} characters remaining
+            {maxCharLimit - `${charCount ? charCount : newUserData.bio.length}`}{" "}
+            characters remaining
           </p>
         </div>
         <button

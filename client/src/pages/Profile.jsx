@@ -32,8 +32,13 @@ const Profile = () => {
   if (!login) {
     navigate("/session/new");
   }
-  const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
-  if (!user) {
+
+  const userCookie = Cookies.get("user");
+  if(userCookie == undefined) {
+    logout();
+  }
+  const user = userCookie ? JSON.parse(userCookie) : null;
+  if (!user || user == null) {
     logout();
   }
   if (user) {

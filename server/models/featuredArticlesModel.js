@@ -36,7 +36,7 @@ export async function getFeaturedArticles() {
         ai.featured AS featured_images
     FROM
         featured_articles f
-	JOIN
+	  JOIN
         articles_preview ap ON ap.article_id = f.article_id
     LEFT JOIN 
         articles_categories ac ON ac.article_id = f.article_id
@@ -45,9 +45,9 @@ export async function getFeaturedArticles() {
     LEFT JOIN 
         article_images ai ON ai.article_id = f.article_id
     GROUP BY 
-        f.article_id, ap.id, ai.featured
+        f.id, ap.id, ai.featured
     ORDER BY
-        ap.id DESC;
+        f.id ASC;
   `;
 
   try {

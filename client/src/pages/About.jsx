@@ -78,7 +78,7 @@ const About = () => {
                       </div>
                     </div>
                     <div className="row">
-                      <div className="lg-12 tab-7 mob-12 column">
+                      <div className="lg-12 tab-12 mob-12 column">
                         <p style={{ textAlign: "justify" }}>
                           At SparkNest, we prioritize meaningful engagement over
                           advertisements or data exploitation. Our mission is

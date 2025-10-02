@@ -209,9 +209,29 @@ export async function updateArticle(req, res) {
 
   const imageFile = req.file;
 
+  const article = await checkArticle(article_id);
+  if (!article) {
+    return res
+      .status(404)
+      .json({ message: "Article not found, cannot update" });
+  }
+
+  if (current_uid != article.user_id) {
+    return res.status(400).json({
+      message: `Not authorized to update article`,
+    });
+  }
+
   const updatedArticle = new Map();
   if (article_title) updatedArticle.set("title", article_title);
-  if (article_body) updatedArticle.set("body", article_body);
+  if (article_body) {
+    const images = extractImages(article_body);
+    images.forEach((image) => {
+      image.link = saveImage(image, article.user_id);
+    });
+    const newBody = await replaceImages(article_body, images);
+    updatedArticle.set("body", newBody);
+  }
   if (updatedArticle.size === 0) {
     return res
       .status(400)
@@ -226,19 +246,6 @@ export async function updateArticle(req, res) {
     return res
       .status(400)
       .json({ message: "Nothing to update in aricle preview, cannot update" });
-  }
-
-  const article = await checkArticle(article_id);
-  if (!article) {
-    return res
-      .status(404)
-      .json({ message: "Article not found, cannot update" });
-  }
-
-  if (current_uid != article.user_id) {
-    return res.status(400).json({
-      message: `Not authorized to update article`,
-    });
   }
 
   const articlePreview = await checkArticlePreview(preview_id);

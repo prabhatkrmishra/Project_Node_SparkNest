@@ -123,13 +123,13 @@ const UpdatePublish = () => {
   }, [data]);
 
   const handleTitleChange = (e) => {
-    if(e.target.value.length > maxCharLimit) return;
+    if (e.target.value.length > maxCharLimit) return;
     setTitle(e.target.value);
     setCharCount(e.target.value.length);
   };
 
   const handleInfoChange = (e) => {
-    if(e.target.value.length > 210) return;
+    if (e.target.value.length > 210) return;
     setInfo(e.target.value);
   };
 
@@ -318,33 +318,37 @@ const UpdatePublish = () => {
               </div>
               <div className="column lg-5">
                 <div>
-                  <div style={{position: "relative"}}>
-                  <label htmlFor="previewTitle" style={{ marginBottom: "8px" }}>
-                    Update Preview Title
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Preview Title"
-                    id="previewTitle"
-                    className="title-input"
-                    value={title}
-                    onChange={handleTitleChange}
-                    required
-                  />
-                  <p
-                    style={{
-                      position: "absolute",
-                      padding: "0 1px 0 5px",
-                      top: "66px",
-                      right: "1px",
-                      bottom: "1px",
-                      fontSize: "12px",
-                      marginBottom: "0",
-                      color: charCount > maxCharLimit ? "red" : "gray",
-                    }}
-                  >
-                    {maxCharLimit - charCount} characters remaining
-                  </p>
+                  <div style={{ position: "relative" }}>
+                    <label
+                      htmlFor="previewTitle"
+                      style={{ marginBottom: "8px" }}
+                    >
+                      Update Preview Title
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Preview Title"
+                      id="previewTitle"
+                      className="title-input"
+                      value={title}
+                      onChange={handleTitleChange}
+                      required
+                    />
+                    <p
+                      style={{
+                        position: "absolute",
+                        padding: "0 1px 0 5px",
+                        top: "66px",
+                        right: "1px",
+                        bottom: "1px",
+                        fontSize: "12px",
+                        marginBottom: "0",
+                        color: charCount > maxCharLimit ? "red" : "gray",
+                      }}
+                    >
+                      {maxCharLimit - `${charCount ? charCount : title.length}`}{" "}
+                      characters remaining
+                    </p>
                   </div>
                   <label htmlFor="previewInfo" style={{ marginBottom: "8px" }}>
                     Update Preview Info

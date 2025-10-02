@@ -21,7 +21,7 @@ CREATE TABLE users (
     email VARCHAR(255) UNIQUE NOT NULL,
     fname VARCHAR(50),
     lname VARCHAR(50),
-    username VARCHAR(50) UNIQUE,
+    username VARCHAR(30) UNIQUE,
     region VARCHAR(50),
     avatar TEXT,
     password VARCHAR(100) NOT NULL,

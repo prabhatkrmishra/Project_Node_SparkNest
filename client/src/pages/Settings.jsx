@@ -26,7 +26,15 @@ const Settings = () => {
   if (login == null) {
     window.location.href = "/session/new";
   }
-  const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
+
+  const userCookie = Cookies.get("user");
+  if(userCookie == undefined) {
+    logout();
+  }
+  const user = userCookie ? JSON.parse(userCookie) : null;
+  if (!user) {
+    logout();
+  }
   if (login && user == null) {
     logout();
   }

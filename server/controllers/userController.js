@@ -14,6 +14,18 @@ import { verifyPassword, hashPassword } from "../services/bcryptService.js";
 import { getSubscriptionByEmail, deleteSubscription } from "../models/subscriptionModel.js";
 import { processAndSaveAvatarImage } from "../services/imagesServices.js";
 
+const MAX_LENGTH = 30;
+function makeValidUsername(username) {
+  let formattedUsername = username.trim().toLowerCase();
+  formattedUsername = formattedUsername.replace(/[^a-z0-9_-]/g, "");
+  formattedUsername = formattedUsername.substring(0, MAX_LENGTH);
+  if (/^\d+$/.test(formattedUsername) || formattedUsername === "") {
+    formattedUsername = `user${formattedUsername}`;
+  }
+
+  return formattedUsername;
+}
+
 /**
  * Check for existing email
  *
@@ -156,7 +168,10 @@ export async function updateUserDetails(req, res) {
 
   if (fname) updatedDetails.set("fname", fname);
   if (lname) updatedDetails.set("lname", lname);
-  if (username) updatedDetails.set("username", username);
+  if (username) { 
+    const newUsername = makeValidUsername(username);
+    updatedDetails.set("username", newUsername);
+  }
   if (region) updatedDetails.set("region", region);
   if (bio) updatedDetails.set("bio", bio);
   if (email) updatedDetails.set("email", email);

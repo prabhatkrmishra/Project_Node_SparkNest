@@ -109,6 +109,7 @@ const PublishArticle = () => {
       const imageUrl = URL.createObjectURL(imageFile);
       setSelectedImage(imageUrl);
       setPreviewImage(imageFile);
+      setError(false);
       //data.preview_image = await getBase64String(imageFile);
     }
   };
@@ -144,13 +145,13 @@ const PublishArticle = () => {
   }, [data]);
 
   const handleTitleChange = (e) => {
-    if(e.target.value.length > maxCharLimit) return;
+    if (e.target.value.length > maxCharLimit) return;
     setTitle(e.target.value);
     setCharCount(e.target.value.length);
   };
 
   const handleInfoChange = (e) => {
-    if(e.target.value.length > 210) return;
+    if (e.target.value.length > 210) return;
     setInfo(e.target.value);
   };
 
@@ -159,6 +160,12 @@ const PublishArticle = () => {
 
     if (selectedCategories.length < 1) {
       setErrorMssg("Select atleast one category");
+      setError(true);
+      return;
+    }
+
+    if (!previewImage) {
+      setErrorMssg("Preview image is required");
       setError(true);
       return;
     }
@@ -379,7 +386,8 @@ const PublishArticle = () => {
                         color: charCount > maxCharLimit ? "red" : "gray",
                       }}
                     >
-                      {maxCharLimit - charCount} characters remaining
+                      {maxCharLimit - `${charCount ? charCount : title.length}`}{" "}
+                      characters remaining
                     </p>
                   </div>
 

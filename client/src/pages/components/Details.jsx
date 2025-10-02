@@ -38,7 +38,7 @@ const Details = () => {
   const [unameExists, setUnameExists] = useState(false);
   const [errorMssg, SetErrorMssg] = useState("");
   const [charCount, setCharCount] = useState(0);
-  const maxCharLimit = 200;
+  const maxCharLimit = 210;
 
   const handleFocus = (e) => {
     e.target.removeAttribute("readonly");
@@ -60,6 +60,7 @@ const Details = () => {
     }
 
     setUnameExists(false);
+    setIsNull(false);
   }
 
   const handleBlur = async () => {
@@ -80,6 +81,7 @@ const Details = () => {
   const [avatar, setAvatar] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [isNull, setIsNull] = useState(false);
   const [notChoosen, setNotChoosen] = useState(false);
 
   useEffect(() => {
@@ -126,6 +128,17 @@ const Details = () => {
       return;
     }
 
+    if (
+      !userData.id ||
+      !userData.username ||
+      !userData.region ||
+      !userData.bio
+    ) {
+      SetErrorMssg("Details cannot be empty, fill each detail");
+      setIsNull(true);
+      return;
+    }
+
     if (!avatar && !selectedImage) {
       SetErrorMssg("No avatar selected or uploaded");
       setNotChoosen(true);
@@ -138,8 +151,8 @@ const Details = () => {
       formData.append("username", userData.username);
       formData.append("region", userData.region);
       formData.append("bio", userData.bio);
-      if(userData.avatar) formData.append("avatar", userData.avatar);
-      if(selectedFile) formData.append("avatar_image", selectedFile);
+      if (userData.avatar) formData.append("avatar", userData.avatar);
+      if (selectedFile) formData.append("avatar_image", selectedFile);
 
       const response = await updateDetails(formData);
       if (response.status == 200) {
@@ -242,6 +255,7 @@ const Details = () => {
               className="column lg-6 tab-12"
               style={{ paddingBottom: "50px" }}
             >
+              <ErrorMessage isError={isNull} errorMssg={errorMssg} />
               <form onSubmit={handleSubmit}>
                 <div className="form-outline mb-4">
                   <label htmlFor="userName" style={{ marginBottom: "8px" }}>
@@ -288,7 +302,7 @@ const Details = () => {
                   </label>
                   <textarea
                     className="u-fullwidth"
-                    placeholder="Max 200 characters"
+                    placeholder="Max 210 characters"
                     id="inputBio"
                     name="bio"
                     required
@@ -308,7 +322,9 @@ const Details = () => {
                       color: charCount > maxCharLimit ? "red" : "gray",
                     }}
                   >
-                    {maxCharLimit - charCount} characters remaining
+                    {maxCharLimit -
+                      `${charCount ? charCount : userData.bio.length}`}{" "}
+                    characters remaining
                   </p>
                 </div>
                 <button type="submit" className="btn--primary u-fullwidth mb-5">
