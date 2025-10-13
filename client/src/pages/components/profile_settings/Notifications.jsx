@@ -8,7 +8,7 @@ import { SetSubscription } from "../../../api/API";
 import SuccessMessage from "../messageBox/SuccessMessage";
 
 const Notifications = (prop) => {
-  const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
+  const user = Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null;
   if (user == null) {
     window.location.href == "/profile";
   }

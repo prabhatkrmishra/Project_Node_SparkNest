@@ -10,8 +10,6 @@ import { verifyToken } from "../../../api/SERVICESAPI";
 
 const ResetMain = () => {
   const { email, token } = useParams();
-  console.log(email);
-  console.log(token);
 
   const [mssg, setMssg] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);

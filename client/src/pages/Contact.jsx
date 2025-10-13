@@ -12,7 +12,7 @@ import MoveToEffect from "./components/effects/MoveToEffect";
 import { sendMessage } from "../api/SERVICESAPI";
 
 const Contact = () => {
-  const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
+  const user = Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null;
 
   const [message, setMessage] = useState({
     name: user ? user.fname + " " + user.lname : "",

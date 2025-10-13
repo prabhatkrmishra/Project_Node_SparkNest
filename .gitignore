@@ -2,3 +2,6 @@
 *.crt
 *.key
 .env
+
+!commands.txt
+!ngix.txt

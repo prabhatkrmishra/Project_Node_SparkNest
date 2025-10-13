@@ -25,12 +25,12 @@ const UpdateArticle = () => {
   var { UpdateData } = location.state || {};
 
   const navigate = useNavigate();
-  const login = Cookies.get("isLoggedIn") || null;
+  const login = Cookies.get("sessionLogged") || false;
   if (!login) {
     navigate("/session/new");
   }
-  const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
-  if (!user) {
+  const user = Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null;
+  if (user == null) {
     logout();
   }
 

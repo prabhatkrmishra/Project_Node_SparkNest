@@ -24,14 +24,16 @@ const config = {
   session: {
     secret: process.env.SESSION_SECRET,
     cookie: {
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.SECURE_COOKIE,
+      httpOnly: process.env.HTTP_ONLY,
+      sameSite: process.env.SAME_SITE,
     },
   },
   serviceEmail: process.env.SERVICE_EMAIL_USER,
   servicePass: process.env.SERVICE_EMAIL_PASS,
   allowedOrigins: process.env.FRONTEND_ADDRESS,
   backendAddress: process.env.BACKEND_ADDRESS,
-  saltRounds: parseInt(process.env.PASSWORD_SALTROUNDS) || 10
+  saltRounds: parseInt(process.env.PASSWORD_SALTROUNDS) || 10,
 };
 
 export default config;

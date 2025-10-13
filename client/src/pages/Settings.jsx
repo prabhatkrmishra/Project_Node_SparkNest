@@ -22,20 +22,13 @@ const Settings = () => {
   const navigate = useNavigate();
   const pSection = section ? section : "general";
 
-  const login = Cookies.get("isLoggedIn") || null;
-  if (login == null) {
+  const login = Cookies.get("sessionLogged") || false;
+  if (!login) {
     window.location.href = "/session/new";
   }
 
-  const userCookie = Cookies.get("user");
-  if(userCookie == undefined) {
-    logout();
-  }
-  const user = userCookie ? JSON.parse(userCookie) : null;
-  if (!user) {
-    logout();
-  }
-  if (login && user == null) {
+  const user = Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null;
+  if (user == null) {
     logout();
   }
 
@@ -85,7 +78,7 @@ const Settings = () => {
       window.location.href = "/profile/details";
     }
     return () => clearTimeout(timer);
-  }, [pSection, user.region, user.username]);
+  }, [pSection, user]);
 
   if (validSections.includes(pSection)) {
     selectedSection = sectionMap.get(pSection);

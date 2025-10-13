@@ -28,19 +28,16 @@ import updateProfile from "./components/UpdateProfile";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const login = Cookies.get("isLoggedIn") || null;
+  const login = Cookies.get("sessionLogged") || false;
   if (!login) {
     navigate("/session/new");
   }
 
-  const userCookie = Cookies.get("user");
-  if(userCookie == undefined) {
+  const user = Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null;
+  if (user == null) {
     logout();
   }
-  const user = userCookie ? JSON.parse(userCookie) : null;
-  if (!user || user == null) {
-    logout();
-  }
+
   if (user) {
     if (user.username == null || user.region == null) {
       Cookies.set("setProfile", "true");
@@ -147,7 +144,7 @@ const Profile = () => {
                   </figure>
                   <div className="entry__author-info-profile">
                     <h5 className="entry__author-name-profile">
-                      <a className="profile-name-height" href={`/user/${user.id}`}>
+                      <a className="profile-name-height" href={`/user/${user ? user.id : 0}`}>
                         {user ? user.fname + " " + user.lname : ""}
                       </a>
                     </h5>
@@ -290,7 +287,7 @@ const Profile = () => {
             </div>
           </div>
           {user && (
-            <GetPreviews renderCategory={highlighted} userId={user.id} />
+            <GetPreviews renderCategory={highlighted} userId={ user.id ? user.id : 0} />
           )}
         </section>
         <Footer />

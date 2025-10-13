@@ -4,10 +4,11 @@ import CryptoJS from "crypto-js";
 import { LogOut } from "../../../api/API";
 
 const logout = () => {
-  Cookies.remove("isLoggedIn");
-  Cookies.remove("user");
+  console.log("Logging out!");
+  Cookies.remove("sessionDays");
+  Cookies.remove("sessionLogged");
+  Cookies.remove("sessionUser");
   Cookies.remove("setProfile");
-  Cookies.remove("sessiondays");
   localStorage.removeItem("userBio");
   localStorage.removeItem("avatar");
 

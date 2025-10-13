@@ -32,11 +32,11 @@ function DeleteModel(prop) {
 // eslint-disable-next-line react/prop-types
 const Comments = ({ articleId }) => {
   const loggedin = useRef(false);
-  const login = Cookies.get("isLoggedIn") || null;
+  const login = Cookies.get("sessionLogged") || false;
   if (login) {
     loggedin.current = true;
   }
-  const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
+  const user = Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null;
 
   const nestComments = (comments) => {
     const commentMap = {};

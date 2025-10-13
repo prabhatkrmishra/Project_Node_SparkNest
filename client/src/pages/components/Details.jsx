@@ -25,9 +25,9 @@ const Details = () => {
   }, [navigate, setProfile]);
 
   const user = useRef(
-    Cookies.get("user") ? JSON.parse(Cookies.get("user")) : {}
+    Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : {}
   );
-  const days = Cookies.get("sessiondays") ? Number(Cookies.get("user")) : null;
+  const days = Cookies.get("sessionDays") ? Number(Cookies.get("sessionDays")) : 0;
   const [userData, setUserData] = useState({
     id: user.current.id ? user.current.id : "",
     username: "",
@@ -160,7 +160,9 @@ const Details = () => {
         user.current.region = userData.region;
         user.current.avatar = "";
         user.current.bio = "";
-        Cookies.set("user", JSON.stringify(user.current), { expires: days });
+        Cookies.set("sessionUser", JSON.stringify(user.current), {
+          expires: days,
+        });
         localStorage.setItem("userBio", userData.bio);
         setItem("avatar", userData.avatar || selectedImage);
         Cookies.remove("setProfile");

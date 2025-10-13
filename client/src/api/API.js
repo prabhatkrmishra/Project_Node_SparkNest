@@ -30,14 +30,16 @@ export const sendSignupCred = (signupCred) => {
 
 export const updateDetails = (details) => {
   return axios.patch(`${WEB_URL}/user/details`, details, {
+    withCredentials: true,
     headers: {
       'Content-Type': 'multipart/form-data',
-    }
+    },
   });
 };
 
 export const DeleteUserAccount = (data) => {
   return axios.delete(`${WEB_URL}/user/account/delete/yes`, {
+    withCredentials: true,
     headers: {
       "Content-Type": "application/json",
     },

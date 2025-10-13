@@ -23,7 +23,7 @@ const likeEnabled = (props) => (
 
 // eslint-disable-next-line react/prop-types
 const Like = ({ articleId }) => {
-  const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
+  const user = Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null;
 
   const user_id = user ? user.id : "";
   const article_id = articleId ? articleId : "";

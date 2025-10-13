@@ -10,18 +10,20 @@ import SuccessMessage from "../messageBox/SuccessMessage";
 
 const General = () => {
   const user = useRef(
-    Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null
+    Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null
   );
-  const days = Cookies.get("sessiondays") ? Number(Cookies.get("user")) : null;
-  if (user.current == null || days == null) {
+  const days = Cookies.get("sessionDays")
+    ? Number(Cookies.get("sessionDays"))
+    : 0;
+  if (user.current == null || days == 0) {
     window.location.href == "/profile";
   }
   const [updateCookie, setUpdateCookie] = useState(false);
 
   useEffect(() => {
     if (updateCookie) {
-      user.current = Cookies.get("user")
-        ? JSON.parse(Cookies.get("user"))
+      user.current = Cookies.get("sessionUser")
+        ? JSON.parse(Cookies.get("sessionUser"))
         : null;
     }
     setUpdateCookie(false);
@@ -119,7 +121,9 @@ const General = () => {
         if (response.status == 200) {
           user.current.username = newUserData.username;
           user.current.email = newUserData.email;
-          Cookies.set("user", JSON.stringify(user.current), { expires: days });
+          Cookies.set("sessionUser", JSON.stringify(user.current), {
+            expires: days,
+          });
           setUpdateCookie(true);
           SetResponseMssg(response.data.message);
           setIsUpdated(true);
@@ -134,8 +138,7 @@ const General = () => {
           error.response.status == 500 //Server error
         ) {
           logout();
-        }
-       else console.log(error);
+        } else console.log(error.response);
       }
     }
   };

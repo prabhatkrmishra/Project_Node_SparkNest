@@ -9,14 +9,15 @@ import SuccessMessage from "../messageBox/SuccessMessage";
 
 const Profile = () => {
   const user = useRef(
-    Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null
+    Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null
   );
-  const userBio = localStorage.getItem("userBio") || "";
-  const days = Cookies.get("sessiondays") ? Number(Cookies.get("user")) : null;
-  if (user == null || days == null) {
-    window.location.href == "/profile";
+  const days = Cookies.get("sessionDays")
+    ? Number(Cookies.get("sessionDays"))
+    : 0;
+  if (user.current == null || days == 0) {
+    window.location.href = "/profile";
   }
-
+  const userBio = localStorage.getItem("userBio") || "";
   const profileAvatar = useRef(null);
   useEffect(() => {
     if (!localStorage.getItem("avatar")) {
@@ -25,20 +26,10 @@ const Profile = () => {
   }, []);
   profileAvatar.current = localStorage.getItem("avatar") || "";
 
-  const [updateCookie, setUpdateCookie] = useState(false);
-  useEffect(() => {
-    if (updateCookie) {
-      user.current = Cookies.get("user")
-        ? JSON.parse(Cookies.get("user"))
-        : null;
-    }
-    setUpdateCookie(false);
-  }, [updateCookie]);
-
   const [newUserData, setUserData] = useState({
-    fname: user.current.fname,
-    lname: user.current.lname,
-    region: user.current.region,
+    fname: user.current?.fname || "",
+    lname: user.current?.lname || "",
+    region: user.current?.region || "",
     bio: userBio,
   });
   const Id = user.current.id;
@@ -78,15 +69,21 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsUpdated(false);
+
+    if (!user.current) {
+      logout();
+      return;
+    }
+
     if (!newUserData.fname && !newUserData.lname && !newUserData.region) {
       alert("Input field is empty");
       return;
     }
 
     if (
-      newUserData.fname === user.current.fname &&
-      newUserData.lname === user.current.lname &&
-      newUserData.region === user.current.region &&
+      newUserData.fname === user.current?.fname &&
+      newUserData.lname === user.current?.lname &&
+      newUserData.region === user.current?.region &&
       newUserData.bio === user.current.bio
     ) {
       return;
@@ -94,11 +91,11 @@ const Profile = () => {
 
     const formData = new FormData();
     formData.append("id", Id);
-    if (newUserData.fname !== user.current.fname)
+    if (newUserData.fname !== user.current?.fname || "")
       formData.append("fname", newUserData.fname);
-    if (newUserData.lname !== user.current.lname)
+    if (newUserData.lname !== user.current?.lname || "")
       formData.append("lname", newUserData.lname);
-    if (newUserData.region !== user.current.region)
+    if (newUserData.region !== user.current?.region || "")
       formData.append("region", newUserData.region);
     if (newUserData.bio !== user.current.bio)
       formData.append("bio", newUserData.bio);
@@ -107,12 +104,17 @@ const Profile = () => {
     try {
       const response = await updateDetails(formData);
       if (response.status == 200) {
-        user.current.fname = newUserData.fname;
-        user.current.lname = newUserData.lname;
-        user.current.region = newUserData.region;
-        Cookies.set("user", JSON.stringify(user.current), { expires: days });
+        const updatedUser = {
+          ...user.current,
+          fname: newUserData.fname,
+          lname: newUserData.lname,
+          region: newUserData.region,
+        };
+        user.current = updatedUser;
+        Cookies.set("sessionUser", JSON.stringify(user.current), {
+          expires: days,
+        });
         localStorage.setItem("userBio", newUserData.bio);
-        setUpdateCookie(true);
         SetResponseMssg(response.data.message);
         setIsUpdated(true);
         setTimeout(() => {
@@ -168,7 +170,7 @@ const Profile = () => {
               id="fName"
               name="fname"
               required
-              value={newUserData.fname}
+              value={newUserData?.fname || ""}
               placeholder="First Name"
               onChange={handleDataChange}
             />
@@ -183,7 +185,7 @@ const Profile = () => {
               id="lName"
               name="lname"
               required
-              value={newUserData.lname}
+              value={newUserData?.lname || ""}
               placeholder="Last Name"
               onChange={handleDataChange}
             />
@@ -199,7 +201,7 @@ const Profile = () => {
             id="pRegion"
             name="region"
             required
-            value={newUserData.region}
+            value={newUserData?.region || ""}
             placeholder="City, State, Country"
             onChange={handleDataChange}
           />

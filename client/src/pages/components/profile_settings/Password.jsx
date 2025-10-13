@@ -8,7 +8,7 @@ import ErrorMessage from "../messageBox/ErrorMessage";
 import SuccessMessage from "../messageBox/SuccessMessage";
 
 const Password = () => {
-  const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
+  const user = Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null;
   if (user == null) {
     window.location.href == "/profile";
   }

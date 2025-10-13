@@ -11,7 +11,7 @@ import logout from "../components/tools/auth";
 const Header = () => {
   const location = useLocation();
   const currentPath = location.pathname;
-  const isLoggedIn = Cookies.get("isLoggedIn");
+  const sessionLogged = Cookies.get("sessionLogged");
 
   const isActivePath = (path) =>
     currentPath === path || currentPath.startsWith(path);
@@ -83,7 +83,7 @@ const Header = () => {
             >
               <a href="/create">Create</a>
             </li>
-            {isLoggedIn ? (
+            {sessionLogged ? (
               <li
                 className={` has-children ${
                   currentPath === "/profile" ? "current-menu-item" : ""

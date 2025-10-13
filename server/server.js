@@ -26,6 +26,7 @@ import { updateFeaturedArticles } from "./models/featuredArticlesModel.js";
 import serviceRouter from "./routes/serviceRoutes.js";
 
 const app = express();
+app.set("trust proxy", 1);
 
 // Middleware setup
 app.use(
@@ -46,14 +47,22 @@ app.use(
 );
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
+
+// Session setup
 app.use(
   session({
     secret: config.session.secret,
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: config.session.cookie.secure },
+    cookie: {
+      secure: config.session.cookie.secure === "true" ? true : false,
+      httpOnly: config.session.cookie.httpOnly === "true" ? true : false,
+      sameSite: config.session.cookie.sameSite,
+    },
   })
 );
+
+//console.log(config.session.cookie.sameSite);
 
 // Initialize passport
 initializePassport(passport);

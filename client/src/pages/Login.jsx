@@ -19,8 +19,8 @@ const Login = () => {
   const [isError, setError] = useState(false);
   const [errorMssg, SetErrorMssg] = useState("");
 
-  const isLoggedIn = Cookies.get("isLoggedIn") || null;
-  if (isLoggedIn) {
+  const sessionLogged = Cookies.get("sessionLogged") || null;
+  if (sessionLogged) {
     window.location.href = `/profile`;
   }
 
@@ -52,26 +52,37 @@ const Login = () => {
         if (response.data.cookieAge && response.data.cookieAge !== false) {
           // persistent cookie
           const days = response.data.cookieAge / (1000 * 60 * 60 * 24);
-          Cookies.set("sessiondays", days.toString(), {
-            expires: userCred.savesession ? days : null,
+          Cookies.set("sessionDays", days.toString(), {
+            expires: userCred.savesession ? days : 0,
           });
-          Cookies.set("isLoggedIn", "true", {
-            expires: userCred.savesession ? days : null,
+          Cookies.set("sessionLogged", true, {
+            expires: userCred.savesession ? days : 0,
           });
           const userData = response.data;
           localStorage.setItem("userBio", userData.bio);
           userData.bio = "";
-          Cookies.set("user", JSON.stringify(userData), { expires: days });
+          Cookies.set("sessionUser", JSON.stringify(userData), {
+            expires: days,
+          });
         } else {
+          const userData = response.data;
           // session cookie
-          Cookies.set("isLoggedIn", "true");
-          Cookies.set("user", JSON.stringify(response.data));
+          Cookies.set("sessionLogged", true, {});
+          Cookies.set("sessionDays", "Session");
+          Cookies.set("sessionUser", JSON.stringify(userData), {});
         }
         window.location.href = `/profile`;
       }
     } catch (error) {
       if (error.response.data.message) {
         setError(true);
+        setUserCred((preVal) => {
+          return {
+            ...preVal,
+            useremail: "",
+            password: ""
+          };
+        });
         SetErrorMssg(error.response.data.message);
       } else {
         setError(true);

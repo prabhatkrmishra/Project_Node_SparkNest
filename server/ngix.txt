@@ -1,0 +1,62 @@
+/etc/nginx/nginx.conf
+
+user www-data;
+worker_processes auto;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+
+    sendfile on;
+    keepalive_timeout 65;
+
+    # Set the maximum body size to 50 MB
+    client_max_body_size 50M;
+
+    # Include all server block files from sites-enabled
+    include /etc/nginx/sites-enabled/*;
+}
+
+-----------------------------------------------------------------------------
+/etc/nginx/sites-available/default
+
+server {
+    listen 443 ssl; # SSL configuration
+    server_name sparknest.run.place;
+
+    ssl_certificate /etc/letsencrypt/live/sparknest.run.place/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/sparknest.run.place/privkey.pem;
+
+    location / {
+        root /home/ubuntu/client;
+        index index.html;
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /api/ {
+        proxy_pass http://localhost:8080/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr; # Forward client IP
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; # Forward IP chain
+        proxy_set_header X-Forwarded-Proto $scheme; # Forward protocol
+
+        proxy_set_header Cookie $http_cookie;
+
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+
+server {
+    listen 80;
+    server_name sparknest.run.place;
+
+    # Redirect all HTTP requests to HTTPS
+    return 301 https://$host$request_uri;
+}

@@ -13,14 +13,14 @@ import logout from "../components/tools/auth";
 
 const RenderPreviews = ({ url, type }) => {
   const navigate = useNavigate();
-  const login = Cookies.get("isLoggedIn") || null;
-  const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
+  const login = Cookies.get("sessionLogged") || false;
+  const user = Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null;
 
   if (type == 101 || type == 102 || type == 103) {
     if (!login) {
       navigate("/session/new");
     }
-    if (!user) {
+    if (user == null) {
       logout();
     }
   }

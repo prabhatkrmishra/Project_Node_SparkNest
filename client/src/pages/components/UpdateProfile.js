@@ -2,8 +2,8 @@ import Cookies from "js-cookie";
 import { GetUserPublic } from "../../api/API";
 
 const updateProfile = async () => {
-  const days = Cookies.get("sessiondays") ? Number(Cookies.get("user")) : null;
-  const userCookie = Cookies.get("user");
+  const days = Cookies.get("sessionDays") ? Number(Cookies.get("sessionDays")) : 0;
+  const userCookie = Cookies.get("sessionUser");
   const user = userCookie ? JSON.parse(userCookie) : null;
 
   if (user && user.id) {
@@ -13,10 +13,11 @@ const updateProfile = async () => {
     user.lname = response.data.lname;
     user.username = response.data.username;
     user.region = response.data.region;
-    Cookies.set("user", JSON.stringify(user), { expires: days });
+    Cookies.set("sessionUser", JSON.stringify(user), {
+      expires: days,
+    });
     localStorage.setItem("userBio", response.data.bio);
     localStorage.setItem("avatar", response.data.avatar);
-    console.log(response);
   }
 };
 

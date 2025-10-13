@@ -1,0 +1,6 @@
+# Starting non-session server
+
+tmux
+nodemon server.js
+Ctrl + b, then d
+tmux attach
