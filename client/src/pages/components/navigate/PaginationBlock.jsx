@@ -1,23 +1,34 @@
 import PropTypes from "prop-types";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+
+function scrollToElement() {
+  const element = document.getElementById("bricks");
+  element.scrollIntoView({ behavior: "smooth" });
+}
 
 const PaginationBlock = ({ currentPage, totalPages, onPageChange }) => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const handlePageChange = (page) => {
     onPageChange(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
       handlePageChange(currentPage - 1);
+      setTimeout(function() {
+        scrollToElement();
+      }, 5);
     }
   };
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       handlePageChange(currentPage + 1);
+      setTimeout(function() {
+        scrollToElement();
+      }, 5);
     }
   };
 
@@ -55,13 +66,17 @@ const PaginationBlock = ({ currentPage, totalPages, onPageChange }) => {
                 {currentPage === index + 1 ? (
                   <span className="pgn__num current">{index + 1}</span>
                 ) : (
-                  <Link
-                    to={`${location.pathname}?page=${index + 1}`}
+                  <span
                     className="pgn__num"
-                    onClick={() => handlePageChange(index + 1)}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => {
+                      navigate(`${location.pathname}?page=${index + 1}`);
+                      handlePageChange(index + 1);
+                      scrollToElement();
+                    }}
                   >
                     {index + 1}
-                  </Link>
+                  </span>
                 )}
               </li>
             ))}
