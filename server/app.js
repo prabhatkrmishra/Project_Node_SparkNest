@@ -14,9 +14,12 @@ import passport from "passport";
 import { initializePassport } from "./config/passport.js";
 import { env } from "./config/env.js";
 import pool from "./db/db.js";
+import pinoHttp from "pino-http";
+import { logger } from "./config/logger.js";
 import { applyRateLimit } from "./middlewares/rateLimiter.js";
 import { errorHandler, notFound } from "./middlewares/errorMiddleware.js";
 
+import healthRoutes from "./routes/healthRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import subscriptionRoutes from "./routes/subscriptionRoutes.js";
@@ -32,6 +35,8 @@ import serviceRouter from "./routes/serviceRoutes.js";
 
 const app = express();
 app.set("trust proxy", 1);
+
+app.use(pinoHttp({ logger }));
 
 // Security headers
 app.use(
@@ -104,6 +109,9 @@ app.use(
 initializePassport(passport);
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Health (before rate limit bypass if needed, but after logger)
+app.use("/", healthRoutes);
 
 // Routes
 app.use("/", authRoutes);
