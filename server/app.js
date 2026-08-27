@@ -5,10 +5,17 @@
 
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
+import hpp from "hpp";
+import compression from "compression";
 import session from "express-session";
+import pgSession from "connect-pg-simple";
 import passport from "passport";
 import { initializePassport } from "./config/passport.js";
-import config from "./config/config.js";
+import { env } from "./config/env.js";
+import pool from "./db/db.js";
+import { applyRateLimit } from "./middlewares/rateLimiter.js";
+import { errorHandler, notFound } from "./middlewares/errorMiddleware.js";
 
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
@@ -26,41 +33,70 @@ import serviceRouter from "./routes/serviceRoutes.js";
 const app = express();
 app.set("trust proxy", 1);
 
-// Middleware setup
+// Security headers
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    contentSecurityPolicy: false,
+  })
+);
+app.use(hpp());
+app.use(compression());
+
+// CORS — strict allowlist
+const allowedOrigins = env.FRONTEND_ADDRESS.split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+
 app.use(
   cors({
     origin: function (origin, callback) {
       if (!origin) return callback(null, true);
-
-      if (config.allowedOrigins) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error(`CORS blocked: ${origin}`));
     },
     methods: "GET,POST,PUT,PATCH,DELETE",
     allowedHeaders: "Content-Type,Authorization",
     credentials: true,
   })
 );
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
-// Session setup
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
+
+// Global rate limit
+app.use(applyRateLimit);
+
+// Session — pg store (falls back to MemoryStore in test without DB)
+const PgStore = pgSession(session);
+let sessionStore;
+try {
+  sessionStore = new PgStore({
+    pool,
+    tableName: "session",
+    createTableIfMissing: true,
+  });
+} catch {
+  sessionStore = undefined;
+}
+
 app.use(
   session({
-    secret: config.session.secret,
+    store: sessionStore,
+    secret: env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
-      secure: config.session.cookie.secure === "true" ? true : false,
-      httpOnly: config.session.cookie.httpOnly === "true" ? true : false,
-      sameSite: config.session.cookie.sameSite,
+      secure: env.SECURE_COOKIE === "true",
+      httpOnly: env.HTTP_ONLY === "true",
+      sameSite: env.SAME_SITE,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
     },
+    name: "sparknest.sid",
   })
 );
 
-// Initialize passport
+// Passport
 initializePassport(passport);
 app.use(passport.initialize());
 app.use(passport.session());
@@ -82,5 +118,9 @@ app.use("/", serviceRouter);
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to the Blog Website API" });
 });
+
+// 404 + error handler (must be after routes)
+app.use(notFound);
+app.use(errorHandler);
 
 export default app;

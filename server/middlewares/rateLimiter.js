@@ -1,26 +1,35 @@
 /**
- * Middleware for rate limiting requests.
+ * Rate limiting middleware.
  */
-
 import rateLimit from "express-rate-limit";
 
-/**
- * Rate limiter configuration.
- */
 const limiter = rateLimit({
   keyGenerator: (req) => req.ip,
   windowMs: 30 * 60 * 1000,
   max: 100,
   message: "Too many requests from this IP, please try again later.",
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
-/**
- * Apply rate limiting to all requests.
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
- * @param {Function} next - The next middleware function.
- */
+export const authLimiter = rateLimit({
+  keyGenerator: (req) => req.ip,
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: "Too many auth attempts, please try again later.",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+export const writeLimiter = rateLimit({
+  keyGenerator: (req) => req.ip,
+  windowMs: 15 * 60 * 1000,
+  max: 50,
+  message: "Too many requests, please try again later.",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 export function applyRateLimit(req, res, next) {
   return limiter(req, res, next);
 }

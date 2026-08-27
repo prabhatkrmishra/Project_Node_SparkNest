@@ -114,7 +114,7 @@ export async function unsubscribe(req, res) {
       .json({ message: "Not authenticated to unsubscribe" });
   }
 
-  const { email } = req.param;
+  const { email } = req.params;
 
   try {
     await deleteSubscription(email);

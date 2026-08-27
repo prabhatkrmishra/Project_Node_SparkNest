@@ -1,39 +1,35 @@
 /**
- * Configuration file for setting up environment variables and other settings.
- * Responsibilities:
- * * Load environment variables.
- * * Set up database configurations.
- * * Configure CORS options.
- * * Define session settings.
+ * Configuration — re-exports validated env for backward compatibility.
+ * New code should import { env } from "./env.js" directly.
  */
-
-import dotenv from "dotenv";
-
-dotenv.config();
+import { env } from "./env.js";
 
 const config = {
-  hostname: process.env.SERVER_HOSTNAME || "localhost",
-  port: process.env.SERVER_PORT || 3000,
+  hostname: env.SERVER_HOSTNAME,
+  port: env.SERVER_PORT,
   pg: {
-    user: process.env.PG_USER,
-    host: process.env.PG_HOST,
-    database: process.env.PG_DATABASE,
-    password: process.env.PG_PASSWORD,
-    port: process.env.PG_PORT,
+    user: env.PG_USER,
+    host: env.PG_HOST,
+    database: env.PG_DATABASE,
+    password: env.PG_PASSWORD,
+    port: env.PG_PORT,
   },
   session: {
-    secret: process.env.SESSION_SECRET || "test-secret-32-chars-minimum-for-tests",
+    secret: env.SESSION_SECRET,
     cookie: {
-      secure: process.env.SECURE_COOKIE,
-      httpOnly: process.env.HTTP_ONLY,
-      sameSite: process.env.SAME_SITE,
+      secure: env.SECURE_COOKIE,
+      httpOnly: env.HTTP_ONLY,
+      sameSite: env.SAME_SITE,
     },
   },
-  serviceEmail: process.env.SERVICE_EMAIL_USER,
-  servicePass: process.env.SERVICE_EMAIL_PASS,
-  allowedOrigins: process.env.FRONTEND_ADDRESS,
-  backendAddress: process.env.BACKEND_ADDRESS,
-  saltRounds: parseInt(process.env.PASSWORD_SALTROUNDS) || 10,
+  serviceEmail: env.SERVICE_EMAIL_USER,
+  servicePass: env.SERVICE_EMAIL_PASS,
+  allowedOrigins: env.FRONTEND_ADDRESS,
+  backendAddress: env.BACKEND_ADDRESS,
+  saltRounds: env.PASSWORD_SALTROUNDS,
+  dataRoot: env.DATA_ROOT,
+  nodeEnv: env.NODE_ENV,
 };
 
 export default config;
+export { env };
