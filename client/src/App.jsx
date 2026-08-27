@@ -1,4 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { HelmetProvider } from "react-helmet-async";
+import { queryClient } from "./lib/queryClient";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import About from "./pages/About";
 import Category from "./pages/Category";
 import Categories from "./pages/Categories";
@@ -20,38 +25,46 @@ import Article from "./pages/components/StandardPost";
 import UserProfile from "./pages/UserProfile";
 import Error from "./pages/Error";
 import Styles from "./pages/Styles";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route exact path="/" element={<Index />} />
-        <Route exact path="/article/view/:selector" element={<Article />} />
-        <Route exact path="/category/:type" element={<Category />} />
-        <Route exact path="/category" element={<Category />} />
-        <Route exact path="/categories" element={<Categories />} />
-        <Route exact path="/create" element={<CreateArticle />} />
-        <Route exact path="/publish" element={<PublishArticle/>} />
-        <Route exact path="/article/edit" element={<UpdateArticle />} />
-        <Route exact path="/article/update/publish" element={<UpdatePublish />} />
-        <Route exact path="/session/new" element={<Login />} />
-        <Route exact path="/signup/new" element={<Signup />} />
-        <Route exact path="/password/request" element={<ForgotPassword />} />
-        <Route exact path="/password/reset/:email/:token" element={<ResetMain />} />
-        <Route exact path="/google/login" element={<GoogleLogin />} />
-        <Route exact path="/google/success" element={<GoogleLogin />} />
-        <Route exact path="/profile" element={<Profile />} />
-        <Route exact path="/profile/details" element={<Details />} />
-        <Route exact path="/profile/:section" element={<Profile />} />
-        <Route exact path="/account/settings" element={<Settings />} />
-        <Route exact path="/account/settings/:section" element={<Settings />} />
-        <Route exact path="/user/:usertag" element={<UserProfile />} />
-        <Route exact path="/about" element={<About />} />
-        <Route exact path="/contact" element={<Contact />} />
-        <Route exact path="/styles" element={<Styles />} />
-        <Route path="*" element={<Error />} />
-      </Routes>
-    </Router>
+    <QueryClientProvider client={queryClient}>
+      <HelmetProvider>
+        <ErrorBoundary>
+          <Router>
+            <Routes>
+              <Route exact path="/" element={<Index />} />
+              <Route exact path="/article/view/:selector" element={<Article />} />
+              <Route exact path="/category/:type" element={<Category />} />
+              <Route exact path="/category" element={<Category />} />
+              <Route exact path="/categories" element={<Categories />} />
+              <Route exact path="/create" element={<CreateArticle />} />
+              <Route exact path="/publish" element={<PublishArticle />} />
+              <Route exact path="/article/edit" element={<UpdateArticle />} />
+              <Route exact path="/article/update/publish" element={<UpdatePublish />} />
+              <Route exact path="/session/new" element={<Login />} />
+              <Route exact path="/signup/new" element={<Signup />} />
+              <Route exact path="/password/request" element={<ForgotPassword />} />
+              <Route exact path="/password/reset/:email/:token" element={<ResetMain />} />
+              <Route exact path="/google/login" element={<GoogleLogin />} />
+              <Route exact path="/google/success" element={<GoogleLogin />} />
+              <Route exact path="/profile" element={<Profile />} />
+              <Route exact path="/profile/details" element={<Details />} />
+              <Route exact path="/profile/:section" element={<Profile />} />
+              <Route exact path="/account/settings" element={<Settings />} />
+              <Route exact path="/account/settings/:section" element={<Settings />} />
+              <Route exact path="/user/:usertag" element={<UserProfile />} />
+              <Route exact path="/about" element={<About />} />
+              <Route exact path="/contact" element={<Contact />} />
+              <Route exact path="/styles" element={<Styles />} />
+              <Route path="*" element={<Error />} />
+            </Routes>
+          </Router>
+        </ErrorBoundary>
+      </HelmetProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }
 

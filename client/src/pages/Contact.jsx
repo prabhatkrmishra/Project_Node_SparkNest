@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { useState } from "react";
 import Cookies from "js-cookie";
 import Modal from "react-bootstrap/Modal";
