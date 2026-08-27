@@ -1,41 +1,44 @@
 import { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
 const GoogleLogin = () => {
-  const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const login = queryParams.get("login");
-    const saveData = queryParams.get("saveData");
-    const user = queryParams.get("user");
+    // New flow: session is already set via httpOnly cookie by server redirect to /google/success
+    // Try to fetch current user via session; fallback to legacy query param for backward compat
+    const params = new URLSearchParams(window.location.search);
+    const legacyUser = params.get("user");
 
-    if (login && saveData && user) {
+    if (legacyUser) {
       try {
-        const parsedUserData = JSON.parse(decodeURIComponent(user));
-        const days = parsedUserData.cookieAge / (1000 * 60 * 60 * 24);
-        Cookies.set("sessionDays", days.toString(), {
-          expires: days,
-        });
-        Cookies.set("sessionLogged", true, {
-          expires: days,
-        });
-        localStorage.setItem("userBio", parsedUserData.bio);
-        parsedUserData.bio = "";
-        Cookies.set("sessionUser", JSON.stringify(parsedUserData), {
-          expires: days,
-        });
+        const parsed = JSON.parse(decodeURIComponent(legacyUser));
+        const days = parsed.cookieAge / (1000 * 60 * 60 * 24);
+        Cookies.set("sessionDays", days.toString(), { expires: days });
+        Cookies.set("sessionLogged", true, { expires: days });
+        localStorage.setItem("userBio", parsed.bio);
+        parsed.bio = "";
+        Cookies.set("sessionUser", JSON.stringify(parsed), { expires: days });
         navigate("/profile");
-      } catch (error) {
-        console.error("Error parsing user data:", error);
-        navigate("/");
+        return;
+      } catch (e) {
+        console.error("Legacy Google login parse failed:", e);
       }
-    } else {
-      navigate("/");
     }
-  }, [location, navigate]);
+
+    // Preferred: session cookie already set, fetch user via API or use sessionUser if present
+    const sessionUser = Cookies.get("sessionUser");
+    if (sessionUser) {
+      navigate("/profile");
+      return;
+    }
+
+    // If no sessionUser yet, try to verify session by checking if we can reach a protected endpoint
+    // For now, just redirect to profile — server session will be validated there
+    // If session is valid, profile will load; otherwise it will redirect to login
+    navigate("/profile");
+  }, [navigate]);
 
   return null;
 };

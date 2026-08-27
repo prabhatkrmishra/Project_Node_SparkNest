@@ -6,13 +6,17 @@ import { createUser, getUserByEmail } from "../models/userModel.js";
 import { hashPassword } from "../services/bcryptService.js";
 import { subscribeUser } from "../services/newsletterService.js";
 import passport from "passport";
-import config from "../config/config.js";
+import { env } from "../config/env.js";
+
+function stripPassword(user) {
+  if (!user) return user;
+  // eslint-disable-next-line no-unused-vars
+  const { password, ...safe } = user;
+  return safe;
+}
 
 /**
  * Handle user signup.
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
 export async function signup(req, res) {
   const { fname, lname, email, password } = req.body;
@@ -34,11 +38,13 @@ export async function signup(req, res) {
       email,
       password: hashedPassword,
     });
-    await subscribeUser(email, "newsletter", req.body.newsletter)
+    try {
+      await subscribeUser(email, "newsletter", req.body.newsletter);
+    } catch (e) {
+      console.warn("subscribeUser failed:", e.message);
+    }
 
-    res
-      .status(201)
-      .json({ message: "User registered successfully.", user: newUser });
+    res.status(201).json({ message: "User registered successfully.", user: stripPassword(newUser) });
   } catch (err) {
     console.error("Error during signup:", err);
     res.status(500).json({ message: "Internal Server Error" });
@@ -47,10 +53,6 @@ export async function signup(req, res) {
 
 /**
  * Handle user login.
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
- * @param {Function} next - The next middleware function.
  */
 export function login(req, res, next) {
   passport.authenticate("local", (err, user, info) => {
@@ -66,27 +68,25 @@ export function login(req, res, next) {
         return res.status(500).json({ error: "Login error" });
       }
       if (req.body.savesession) {
-        // Only 30 day
         req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 30;
         req.session.maxAge = req.session.cookie.maxAge;
-        //console.log("Session will be saved for 30 days");
       } else {
         req.session.cookie.expires = false;
         req.session.maxAge = null;
-        //console.log("Session will expire when the browser is closed");
       }
+      const safe = stripPassword(user);
       res.status(200).json({
         message: "",
         sessionId: req.sessionID,
         cookieAge: req.session.cookie.maxAge,
-        id: user.id,
-        email: user.email,
-        fname: user.fname,
-        lname: user.lname,
-        username: user.username,
-        region: user.region,
-        bio: user.bio,
-        avatar: user.avatar
+        id: safe.id,
+        email: safe.email,
+        fname: safe.fname,
+        lname: safe.lname,
+        username: safe.username,
+        region: safe.region,
+        bio: safe.bio,
+        avatar: safe.avatar,
       });
     });
   })(req, res, next);
@@ -94,24 +94,24 @@ export function login(req, res, next) {
 
 /**
  * Handle user logout.
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
 export function logout(req, res) {
   req.logout((err) => {
     if (err) {
       return res.status(500).json({ error: "Logout error" });
     }
-    res.status(200).json({ message: "Logged out successfully" });
+    req.session.destroy((destroyErr) => {
+      if (destroyErr) {
+        return res.status(500).json({ error: "Session destroy error" });
+      }
+      res.clearCookie("sparknest.sid");
+      res.status(200).json({ message: "Logged out successfully" });
+    });
   });
 }
 
 /**
  * Handle Google OAuth authentication.
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
 export const googleAuth = (req, res) => {
   passport.authenticate("google", { scope: ["profile", "email"] })(req, res);
@@ -119,51 +119,24 @@ export const googleAuth = (req, res) => {
 
 /**
  * Handle callback after Google authentication.
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
 export const googleAuthCallback = (req, res) => {
   passport.authenticate("google", (err, user, _info) => {
     if (err) {
-      return res
-        .status(500)
-        .json({ success: false, message: "Internal server error" });
+      return res.status(500).json({ success: false, message: "Internal server error" });
     }
     if (!user) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Authentication failed" });
+      return res.status(401).json({ success: false, message: "Authentication failed" });
     }
     req.login(user, (loginErr) => {
       if (loginErr) {
-        return res
-          .status(500)
-          .json({ success: false, message: "Login failed" });
+        return res.status(500).json({ success: false, message: "Login failed" });
       }
-      // Default 30 days
       req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 30;
       req.session.maxAge = req.session.cookie.maxAge;
 
-      const userData = {
-        sessionId: req.sessionID,
-        cookieAge: req.session.cookie.maxAge,
-        id: user.id,
-        email: user.email,
-        fname: user.fname,
-        lname: user.lname,
-        username: user.username,
-        region: user.region,
-        bio: user.bio,
-        avatar: user.avatar
-      };
-      return res.redirect(
-        `${
-          config.allowedOrigins
-        }/google/login?login='success'&saveData='true'&user=${encodeURIComponent(
-          JSON.stringify(userData)
-        )}`
-      );
+      // No PII in URL — frontend fetches user via session
+      return res.redirect(`${env.FRONTEND_ADDRESS}/google/success`);
     });
   })(req, res);
-};
+}

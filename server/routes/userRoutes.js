@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer";
-import path from "path";
+import { resolveDataPath } from "../services/storageService.js";
+import { AppError } from "../middlewares/errorMiddleware.js";
 
 import {
   checkEmailExists,
@@ -14,18 +15,24 @@ import {
 const userRouter = express.Router();
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(process.cwd(), './uploads'));
+    cb(null, resolveDataPath("tmp", "uploads"));
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + '-' + file.originalname);
-  }
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + "-" + file.originalname);
+  },
 });
 const upload = multer({
   storage: storage,
   limits: {
     fileSize: 20 * 1024 * 1024,
-    fieldSize: 20 * 1024 * 1024
+    fieldSize: 20 * 1024 * 1024,
+  },
+  fileFilter: (req, file, cb) => {
+    if (!file.mimetype.startsWith("image/")) {
+      return cb(new AppError(400, "Only images allowed"), false);
+    }
+    cb(null, true);
   },
 });
 
@@ -62,7 +69,7 @@ userRouter.get("/public/user/:id", getUserPublic);
  * @description Update user details
  * @access Private
  */
-userRouter.patch("/user/details", upload.single('avatar_image'), updateUserDetails);
+userRouter.patch("/user/details", upload.single("avatar_image"), updateUserDetails);
 
 /**
  * @route DELETE /user/account/delete/yes

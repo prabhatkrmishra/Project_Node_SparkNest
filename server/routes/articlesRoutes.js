@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer";
-import path from "path";
+import { resolveDataPath } from "../services/storageService.js";
+import { AppError } from "../middlewares/errorMiddleware.js";
 import {
   createArticle,
   viewArticle,
@@ -14,7 +15,7 @@ const articlesRouter = express.Router();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(process.cwd(), "./uploads"));
+    cb(null, resolveDataPath("tmp", "uploads"));
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -26,6 +27,12 @@ const upload = multer({
   limits: {
     fileSize: 10 * 1024 * 1024,
     fieldSize: 10 * 1024 * 1024,
+  },
+  fileFilter: (req, file, cb) => {
+    if (!file.mimetype.startsWith("image/")) {
+      return cb(new AppError(400, "Only images allowed"), false);
+    }
+    cb(null, true);
   },
 });
 
