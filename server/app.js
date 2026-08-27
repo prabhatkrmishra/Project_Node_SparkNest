@@ -67,16 +67,20 @@ app.use(express.urlencoded({ limit: "10mb", extended: true }));
 // Global rate limit
 app.use(applyRateLimit);
 
-// Session — pg store (falls back to MemoryStore in test without DB)
-const PgStore = pgSession(session);
+// Session — pg store (MemoryStore in test to avoid DB dependency)
 let sessionStore;
-try {
-  sessionStore = new PgStore({
-    pool,
-    tableName: "session",
-    createTableIfMissing: true,
-  });
-} catch {
+if (env.NODE_ENV !== "test") {
+  const PgStore = pgSession(session);
+  try {
+    sessionStore = new PgStore({
+      pool,
+      tableName: "session",
+      createTableIfMissing: true,
+    });
+  } catch {
+    sessionStore = undefined;
+  }
+} else {
   sessionStore = undefined;
 }
 
