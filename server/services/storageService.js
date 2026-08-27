@@ -1,13 +1,15 @@
 import path from "path";
 import fs from "fs/promises";
 import { fileURLToPath } from "url";
-import { env } from "../config/env.js";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 
-export const DATA_ROOT = path.isAbsolute(env.DATA_ROOT)
-  ? env.DATA_ROOT
-  : path.resolve(projectRoot, env.DATA_ROOT);
+function getDataRoot() {
+  const raw = process.env.DATA_ROOT || "./data";
+  return path.isAbsolute(raw) ? raw : path.resolve(projectRoot, raw);
+}
+
+export const DATA_ROOT = getDataRoot();
 
 export const resolveDataPath = (...segments) => path.join(DATA_ROOT, ...segments);
 
