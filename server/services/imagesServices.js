@@ -25,19 +25,15 @@ export const extractImages = (articleBody) => {
   const images = [];
   let match;
 
-  try {
-    while ((match = imageRegex.exec(articleBody)) !== null) {
-      const imageData = match[2];
-      images.push({
-        type: match[1],
-        data: imageData,
-        hash: hashImageData(imageData),
-      });
-    }
-    return images;
-  } catch (error) {
-    throw error;
+  while ((match = imageRegex.exec(articleBody)) !== null) {
+    const imageData = match[2];
+    images.push({
+      type: match[1],
+      data: imageData,
+      hash: hashImageData(imageData),
+    });
   }
+  return images;
 };
 
 /**

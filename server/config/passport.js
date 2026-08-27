@@ -59,36 +59,38 @@ export const initializePassport = (passport) => {
    * @param {Object} profile - The user's profile information.
    * @param {Function} done - Callback function to proceed with authentication.
    */
-  passport.use(
-    new GoogleStrategy(
-      {
-        clientID: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: process.env.GOOGLE_CALLBACK_URL,
-        userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
-      },
-      async (accessToken, refreshToken, profile, done) => {
-        try {
-          //console.log("Google profile:", profile);
-          const result = await getUserDetailEmail(profile.email);
+  if (
+    process.env.GOOGLE_CLIENT_ID &&
+    process.env.GOOGLE_CLIENT_SECRET &&
+    process.env.GOOGLE_CALLBACK_URL
+  ) {
+    passport.use(
+      new GoogleStrategy(
+        {
+          clientID: process.env.GOOGLE_CLIENT_ID,
+          clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          callbackURL: process.env.GOOGLE_CALLBACK_URL,
+          userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
+        },
+        async (accessToken, refreshToken, profile, done) => {
+          try {
+            const result = await getUserDetailEmail(profile.email);
 
-          if (result == null) {
-            //console.log("User not found, creating a new user.");
-            const user = await CreateGoogleUser(profile);
-            subscribeUser(profile.email, "newsletter", true);
+            if (result == null) {
+              const user = await CreateGoogleUser(profile);
+              subscribeUser(profile.email, "newsletter", true);
 
-            return done(null, user);
-          } else {
-            //console.log("User found, returning existing user.");
-            return done(null, result);
+              return done(null, user);
+            } else {
+              return done(null, result);
+            }
+          } catch (err) {
+            return done(err);
           }
-        } catch (err) {
-          //console.error("Error during Google authentication:", err);
-          return done(err);
         }
-      }
-    )
-  );
+      )
+    );
+  }
 
   /**
    * Serialize user to store user ID in the session.

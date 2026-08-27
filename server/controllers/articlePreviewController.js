@@ -11,9 +11,9 @@ import {
  * @param {Object} res - The response object.
  */
 export async function getAllArticlePreview(req, res) {
-  const { page = 1, limit = 12 } = req.query;
+  let { page = 1, limit = 12 } = req.query;
 
-  if(limit > 12) {
+  if (limit > 12) {
     limit = 12;
   }
 
@@ -42,9 +42,9 @@ export async function getAllArticlePreview(req, res) {
  */
 export async function getAllArticlePreviewCategory(req, res) {
   const { category } = req.params;
-  const { page = 1, limit = 12 } = req.query;
+  let { page = 1, limit = 12 } = req.query;
 
-  if(limit > 12) {
+  if (limit > 12) {
     limit = 12;
   }
 
@@ -74,9 +74,9 @@ export async function getAllArticlePreviewCategory(req, res) {
  */
 export async function getArticlePreview(req, res) {
   const { id } = req.params;
-  const { page = 1, limit = 12 } = req.query;
+  let { page = 1, limit = 12 } = req.query;
 
-  if(limit > 12) {
+  if (limit > 12) {
     limit = 12;
   }
 

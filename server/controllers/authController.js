@@ -124,7 +124,7 @@ export const googleAuth = (req, res) => {
  * @param {Object} res - The response object.
  */
 export const googleAuthCallback = (req, res) => {
-  passport.authenticate("google", (err, user, info) => {
+  passport.authenticate("google", (err, user, _info) => {
     if (err) {
       return res
         .status(500)

@@ -106,9 +106,9 @@ export async function fetchLikedArticles(req, res) {
   }
 
   const { userId } = req.params;
-  const { page = 1, limit = 12 } = req.query;
+  let { page = 1, limit = 12 } = req.query;
 
-  if(limit > 12) {
+  if (limit > 12) {
     limit = 12;
   }
 
