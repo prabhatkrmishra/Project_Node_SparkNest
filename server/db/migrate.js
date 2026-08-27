@@ -6,7 +6,7 @@
 import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
+import { fileURLToPath, pathToFileURL } from "url";
 import config from "../config/config.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -119,7 +119,9 @@ export async function runMigrations() {
 }
 
 // CLI: node server/db/migrate.js
-if (import.meta.url === `file://${process.argv[1].replace(/\\/g, "/")}`) {
+const isMain =
+  process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
+if (isMain) {
   runMigrations()
     .then(() => process.exit(0))
     .catch((err) => {
