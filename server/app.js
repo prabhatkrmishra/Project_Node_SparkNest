@@ -36,7 +36,9 @@ import serviceRouter from "./routes/serviceRoutes.js";
 const app = express();
 app.set("trust proxy", 1);
 
-app.use(pinoHttp({ logger }));
+if (env.NODE_ENV !== "test") {
+  app.use(pinoHttp({ logger }));
+}
 
 // Security headers
 app.use(
