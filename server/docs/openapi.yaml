@@ -1,0 +1,127 @@
+openapi: 3.0.3
+info:
+  title: SparkNest API
+  version: 2.5.0
+  description: PERN article platform — auth, articles, comments, media, subscriptions
+servers:
+  - url: http://localhost:3000
+    description: Local
+  - url: https://sparknest.run.place/api
+    description: Production
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: ok }
+                  uptime: { type: number }
+
+  /ready:
+    get:
+      summary: Readiness (DB)
+      responses:
+        "200": { description: Ready }
+        "503": { description: Not ready }
+
+  /signup:
+    post:
+      summary: Register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                fname: { type: string }
+                lname: { type: string }
+                email: { type: string, format: email }
+                password: { type: string, minLength: 8 }
+                newsletter: { type: boolean }
+      responses:
+        "201": { description: Created }
+        "400": { description: Validation / exists }
+
+  /login:
+    post:
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [useremail, password]
+              properties:
+                useremail: { type: string, format: email }
+                password: { type: string }
+                savesession: { type: boolean }
+      responses:
+        "200": { description: Logged in }
+        "401": { description: Invalid credentials }
+
+  /logout:
+    post:
+      summary: Logout
+      responses:
+        "200": { description: Logged out }
+
+  /article/previews:
+    get:
+      summary: List article previews (paginated)
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, minimum: 1, default: 1 }
+        - in: query
+          name: limit
+          schema: { type: integer, minimum: 1, maximum: 12, default: 12 }
+      responses:
+        "200":
+          description: Paginated previews
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  data: { type: array, items: { type: object } }
+                  meta: { type: object, properties: { totalPages: { type: integer }, totalCount: { type: integer } } }
+
+  /article/view/{id}:
+    get:
+      summary: View article with prev/next
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200": { description: Article }
+        "404": { description: Not found }
+
+  /articles/featured:
+    get:
+      summary: Featured articles
+      responses:
+        "200": { description: List }
+
+  /comment/fetch/{article_id}:
+    get:
+      summary: Fetch comments for article
+      parameters:
+        - in: path
+          name: article_id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200": { description: Comments }
