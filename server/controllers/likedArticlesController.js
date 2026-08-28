@@ -4,12 +4,10 @@ import {
   unSetLikedArticle,
   getAllLikedArticles,
 } from "../models/likedArticlesModel.js";
+import { ok, paginated } from "../utils/response.js";
 
 /**
  * Check if the user has liked a particular article
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
 export async function isLikedArticle(req, res) {
   const { userId, articleId } = req.params;
@@ -29,9 +27,6 @@ export async function isLikedArticle(req, res) {
 
 /**
  * Like an article for the user
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
 export async function likeArticle(req, res) {
   const { user_id, article_id } = req.body;
@@ -43,9 +38,9 @@ export async function likeArticle(req, res) {
   try {
     const response = await setLikedArticle(user_id, article_id);
     if (response) {
-      res.status(200).json({ message: "Article liked successfully" });
+      return ok(res, null, { message: "Article liked successfully" });
     } else {
-      res.status(200).json({ message: "Error in liking article" });
+      return res.status(200).json({ message: "Error in liking article" });
     }
   } catch (error) {
     console.error("Error liking article:", error);
@@ -55,9 +50,6 @@ export async function likeArticle(req, res) {
 
 /**
  * Unlike an article for the user
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
 export async function unlikeArticle(req, res) {
   const { user_id, article_id } = req.body;
@@ -69,9 +61,9 @@ export async function unlikeArticle(req, res) {
   try {
     const response = await unSetLikedArticle(user_id, article_id);
     if (response) {
-      res.status(200).json({ message: "Article unliked successfully" });
+      return ok(res, null, { message: "Article unliked successfully" });
     } else {
-      res.status(200).json({ message: "Article was not unliked" });
+      return res.status(200).json({ message: "Article was not unliked" });
     }
   } catch (error) {
     console.error("Error unliking article:", error);
@@ -81,9 +73,6 @@ export async function unlikeArticle(req, res) {
 
 /**
  * Get all liked articles for the user
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
 export async function fetchLikedArticles(req, res) {
   const current_uid = req.session.passport ? req.session.passport.user : null;
@@ -113,7 +102,7 @@ export async function fetchLikedArticles(req, res) {
       return res.status(200).json({ message: `No liked article found` });
     }
 
-    res.status(200).json({ articles, totalPages });
+    return paginated(res, articles, totalPages, totalCount);
   } catch (error) {
     console.error("Error fetching liked articles:", error);
     res.status(500).json({ message: "Internal Server Error" });

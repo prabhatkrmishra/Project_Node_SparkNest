@@ -3,12 +3,10 @@ import {
   fetchArticlePreview,
   fetchArticlePreviewsCategory,
 } from "../models/articlePreviewModel.js";
+import { paginated } from "../utils/response.js";
 
 /**
  * Fetch and send a articles preview from database
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
 export async function getAllArticlePreview(req, res) {
   let { page = 1, limit = 12 } = req.query;
@@ -27,7 +25,7 @@ export async function getAllArticlePreview(req, res) {
       return res.status(200).json({ message: "No articles found" });
     }
 
-    res.status(200).json({ articles, totalPages });
+    return paginated(res, articles, totalPages, totalCount);
   } catch (error) {
     console.error("Error getting article from database:", error);
     res.status(500).json({ message: "Internal Server Error, " });
@@ -36,9 +34,6 @@ export async function getAllArticlePreview(req, res) {
 
 /**
  * Fetch and send a articles preview from database
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
 export async function getAllArticlePreviewCategory(req, res) {
   const { category } = req.params;
@@ -58,7 +53,7 @@ export async function getAllArticlePreviewCategory(req, res) {
       return res.status(200).json({ message: `No articles found having category ${category}` });
     }
 
-    res.status(200).json({ articles, totalPages });
+    return paginated(res, articles, totalPages, totalCount);
   } catch (error) {
     console.error("Error getting article from database:", error);
     res.status(500).json({ message: "Internal Server Error, " });
@@ -68,9 +63,6 @@ export async function getAllArticlePreviewCategory(req, res) {
 /**
  * Fetch and send a articles preview of
  * a specific user from database.
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
 export async function getArticlePreview(req, res) {
   const { id } = req.params;
@@ -90,10 +82,7 @@ export async function getArticlePreview(req, res) {
       return res.status(200).json({ message: `Article with user id:${id} doesn't exist` });
     }
 
-    res.status(200).json({
-      articles,
-      totalPages,
-    });
+    return paginated(res, articles, totalPages, totalCount);
   } catch (error) {
     console.error("Error getting article from database:", error);
     res.status(500).json({ message: "Internal Server Error, " });
