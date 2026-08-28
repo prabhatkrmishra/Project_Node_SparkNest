@@ -1,6 +1,13 @@
 import nodemailer from "nodemailer";
 import { v4 as uuidv4 } from "uuid";
 import config from "../config/config.js";
+import { getUserDetailEmail } from "../models/userModel.js";
+import {
+  storeResetCredentials,
+  verifyToken,
+  updateResetPassword,
+} from "../models/passwordResetModel.js";
+import { hashPassword } from "./bcryptService.js";
 
 // Per-email rate limit: 3 requests per hour
 const emailRateLimit = new Map();
@@ -18,15 +25,6 @@ function checkEmailRateLimit(email) {
   entry.count++;
   return true;
 }
-
-import { getUserDetailEmail } from "../models/userModel.js";
-import {
-  storeResetCredentials,
-  verifyToken,
-  updateResetPassword,
-} from "../models/passwordResetModel.js";
-
-import { hashPassword } from "./bcryptService.js";
 
 // Initialize Nodemailer
 const transporter = nodemailer.createTransport({
