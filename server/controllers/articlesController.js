@@ -1,5 +1,5 @@
 /**
- * Controller for handling user-related operations.
+ * Controller for handling article operations.
  */
 
 import { getUserDetail } from "../models/userModel.js";
@@ -36,9 +36,6 @@ import {
 
 /**
  * Fetch and send a article from database
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
 export async function viewArticle(req, res) {
   const { id } = req.params;
@@ -46,9 +43,7 @@ export async function viewArticle(req, res) {
   try {
     const article = await getArticle(id);
     if (!article) {
-      return res
-        .status(500)
-        .json({ message: `Article with id:${id} doesn't exist` });
+      return res.status(404).json({ message: `Article with id:${id} doesn't exist` });
     }
     res.status(200).json(article);
   } catch (error) {
@@ -59,15 +54,10 @@ export async function viewArticle(req, res) {
 
 /**
  * Fetch and send a article from database
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
 export async function fetchArticle(req, res) {
   if (!req.isAuthenticated()) {
-    return res
-      .status(403)
-      .json({ message: "Not authenticated to get article to edit" });
+    return res.status(403).json({ message: "Not authenticated to get article to edit" });
   }
 
   const { id } = req.params;
@@ -75,9 +65,7 @@ export async function fetchArticle(req, res) {
   try {
     const article = await fetchTheArticle(id);
     if (!article) {
-      return res
-        .status(500)
-        .json({ message: `Article with id:${id} doesn't exist` });
+      return res.status(404).json({ message: `Article with id:${id} doesn't exist` });
     }
     res.status(200).json(article);
   } catch (error) {
@@ -88,61 +76,67 @@ export async function fetchArticle(req, res) {
 
 /**
  * Create new article with new preview
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
 export async function createArticle(req, res) {
   if (!req.isAuthenticated()) {
-    return res
-      .status(403)
-      .json({ message: "Not authenticated to create article" });
+    return res.status(403).json({ message: "Not authenticated to create article" });
   }
 
   const { user_id, title, body, preview_title, preview_subtitle } = req.body;
-
-  const images = extractImages(body);
-  images.forEach((image) => {
-    image.link = saveImage(image, user_id);
-  });
-  const newBody = await replaceImages(body, images);
-  const article = {
-    user_id: user_id,
-    title: title,
-    body: newBody,
-  };
 
   const imageFile = req.file;
   if (!imageFile) {
     return res.status(400).json({ message: "Preview image is required" });
   }
 
+  // Validate categories early
+  let categories;
+  try {
+    categories = JSON.parse(req.body.categories);
+  } catch {
+    return res.status(400).json({ message: "Invalid categories JSON" });
+  }
+  if (!Array.isArray(categories) || categories.some((cat) => !cat.id)) {
+    return res.status(400).json({ message: "Invalid categories" });
+  }
+
   try {
     const cols = "username";
     const user = await getUserDetail(user_id, cols);
     if (!user) {
-      return res
-        .status(400)
-        .json({ message: `User with id:${user_id} doesn't exist` });
+      return res.status(400).json({ message: `User with id:${user_id} doesn't exist` });
     }
+
+    // Process inline body images (async)
+    const images = extractImages(body);
+    for (const image of images) {
+      image.link = await saveImage(image, user_id);
+    }
+    const newBody = replaceImages(body, images);
+    const article = {
+      user_id: user_id,
+      title: title,
+      body: newBody,
+    };
 
     const created = await newArticle(article);
     if (!created) {
-      return res
-        .status(400)
-        .json({ message: `Cannot create article, internal error` });
+      return res.status(400).json({ message: `Cannot create article, internal error` });
     }
 
-    const imagesPath = await processAndSavePreviewImage(
-      imageFile,
-      user_id,
-      created.id
-    );
+    let imagesPath;
+    try {
+      imagesPath = await processAndSavePreviewImage(imageFile, user_id, created.id);
+    } catch (imgErr) {
+      // Cleanup article on preview failure
+      await dropArticle(created.id).catch(() => {});
+      throw imgErr;
+    }
+
     const inserted = await inserImagestPath(imagesPath, created.id);
     if (!inserted) {
-      return res
-        .status(400)
-        .json({ message: `Cannot create article, internal error` });
+      await dropArticle(created.id).catch(() => {});
+      return res.status(400).json({ message: `Cannot create article, internal error` });
     }
 
     const article_preview = {
@@ -153,42 +147,31 @@ export async function createArticle(req, res) {
     };
     const created_preview = await newPreviewArticle(article_preview);
     if (!created_preview) {
-      return res
-        .status(400)
-        .json({ message: `Cannot create article preview, internal error` });
+      await dropArticle(created.id).catch(() => {});
+      return res.status(400).json({ message: `Cannot create article preview, internal error` });
     }
 
-    const categories = JSON.parse(req.body.categories);
-    if (!Array.isArray(categories) || categories.some((cat) => !cat.id)) {
-      return res.status(400).json({ message: "Invalid categories" });
-    }
     const lastResponse = await insertArticleCategories(created.id, categories);
     if (!lastResponse) {
-      return res
-        .status(400)
-        .json({ message: `Cannot insert article categories, internal error` });
+      await dropArticle(created.id).catch(() => {});
+      return res.status(400).json({ message: `Cannot insert article categories, internal error` });
     }
 
     return res.status(200).json({ message: `Article created successfully` });
   } catch (error) {
+    // Let AppError propagate to errorHandler, otherwise 500
+    if (error.statusCode) throw error;
     console.error("Error creating new article:", error);
-    res
-      .status(500)
-      .json({ message: "Internal Server Error, cannot create new article" });
+    res.status(500).json({ message: "Internal Server Error, cannot create new article" });
   }
 }
 
 /**
  * Update existing article with preview
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
 export async function updateArticle(req, res) {
   if (!req.isAuthenticated()) {
-    return res
-      .status(403)
-      .json({ message: "Not authenticated to update article" });
+    return res.status(403).json({ message: "Not authenticated to update article" });
   }
 
   const current_uid = req.session.passport ? req.session.passport.user : null;
@@ -211,12 +194,10 @@ export async function updateArticle(req, res) {
 
   const article = await checkArticle(article_id);
   if (!article) {
-    return res
-      .status(404)
-      .json({ message: "Article not found, cannot update" });
+    return res.status(404).json({ message: "Article not found, cannot update" });
   }
 
-  if (current_uid != article.user_id) {
+  if (String(current_uid) !== String(article.user_id)) {
     return res.status(400).json({
       message: `Not authorized to update article`,
     });
@@ -226,54 +207,51 @@ export async function updateArticle(req, res) {
   if (article_title) updatedArticle.set("title", article_title);
   if (article_body) {
     const images = extractImages(article_body);
-    images.forEach((image) => {
-      image.link = saveImage(image, article.user_id);
-    });
-    const newBody = await replaceImages(article_body, images);
+    for (const image of images) {
+      image.link = await saveImage(image, article.user_id);
+    }
+    const newBody = replaceImages(article_body, images);
     updatedArticle.set("body", newBody);
   }
   if (updatedArticle.size === 0) {
-    return res
-      .status(400)
-      .json({ message: "Nothing to update in aricle, cannot update" });
+    return res.status(400).json({ message: "Nothing to update in aricle, cannot update" });
   }
 
   const updatedArticlePreview = new Map();
   if (preview_title) updatedArticlePreview.set("preview_title", preview_title);
-  if (preview_subtitle)
-    updatedArticlePreview.set("preview_subtitle", preview_subtitle);
+  if (preview_subtitle) updatedArticlePreview.set("preview_subtitle", preview_subtitle);
   if (updatedArticlePreview.size === 0) {
-    return res
-      .status(400)
-      .json({ message: "Nothing to update in aricle preview, cannot update" });
+    return res.status(400).json({ message: "Nothing to update in aricle preview, cannot update" });
   }
 
   const articlePreview = await checkArticlePreview(preview_id);
   if (!articlePreview) {
-    return res
-      .status(404)
-      .json({ message: "Article not found, cannot update" });
+    return res.status(404).json({ message: "Article not found, cannot update" });
+  }
+
+  // Validate updated_categories early
+  let categories;
+  try {
+    categories = JSON.parse(req.body.updated_categories);
+  } catch {
+    return res.status(400).json({ message: "Invalid categories JSON" });
+  }
+  if (!Array.isArray(categories) || categories.some((cat) => !cat.id)) {
+    return res.status(400).json({ message: "Invalid categories" });
   }
 
   const categories_deleted = await dropArticleCategories(article_id);
   if (!categories_deleted) {
-    return res
-      .status(404)
-      .json({ message: "Article categories not found, cannot update" });
+    return res.status(404).json({ message: "Article categories not found, cannot update" });
   }
 
   try {
     const articleUpdated = await patchArticle(article_id, updatedArticle);
     if (!articleUpdated) {
-      return res
-        .status(500)
-        .json({ message: "Cannot update article, internal server error" });
+      return res.status(500).json({ message: "Cannot update article, internal server error" });
     }
 
-    const previewUpdated = await updatePreviewArticle(
-      preview_id,
-      updatedArticlePreview
-    );
+    const previewUpdated = await updatePreviewArticle(preview_id, updatedArticlePreview);
     if (!previewUpdated) {
       return res.status(500).json({
         message: "Cannot update article preview, internal server error",
@@ -284,20 +262,14 @@ export async function updateArticle(req, res) {
       await processAndSavePreviewImage(imageFile, article.user_id, article_id);
     }
 
-    const categories = JSON.parse(req.body.updated_categories);
-    if (!Array.isArray(categories) || categories.some((cat) => !cat.id)) {
-      return res.status(400).json({ message: "Invalid categories" });
-    }
-
     const lastResponse = await insertArticleCategories(article_id, categories);
     if (!lastResponse) {
-      return res
-        .status(400)
-        .json({ message: `Cannot insert article categories, internal error` });
+      return res.status(400).json({ message: `Cannot insert article categories, internal error` });
     }
 
     res.status(200).json({ message: "Article updated successfully" });
   } catch (error) {
+    if (error.statusCode) throw error;
     console.error("Error updating article", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
@@ -305,15 +277,10 @@ export async function updateArticle(req, res) {
 
 /**
  * Delete article.
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
 export async function deleteArticle(req, res) {
- if (!req.isAuthenticated()) {
-    return res
-      .status(403)
-      .json({ message: "Not authenticated to delete article" });
+  if (!req.isAuthenticated()) {
+    return res.status(403).json({ message: "Not authenticated to delete article" });
   }
 
   const current_uid = req.session.passport ? req.session.passport.user : null;
@@ -334,7 +301,7 @@ export async function deleteArticle(req, res) {
         });
       }
 
-      if (current_uid != articleExist.user_id) {
+      if (String(current_uid) !== String(articleExist.user_id)) {
         return res.status(400).json({
           message: `Not authorized to delete article`,
         });
@@ -347,6 +314,7 @@ export async function deleteArticle(req, res) {
           message: `Article with id:${id} removed from database`,
         });
       } catch (error) {
+        console.error("Error deleting article:", error);
         return res.status(500).json({
           message: `cannot delete Article with id:${id}`,
         });

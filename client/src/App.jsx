@@ -39,6 +39,7 @@ function App() {
         <Route exact path="/password/request" element={<ForgotPassword />} />
         <Route exact path="/password/reset/:email/:token" element={<ResetMain />} />
         <Route exact path="/google/login" element={<GoogleLogin />} />
+        <Route exact path="/google/success" element={<GoogleLogin />} />
         <Route exact path="/profile" element={<Profile />} />
         <Route exact path="/profile/details" element={<Details />} />
         <Route exact path="/profile/:section" element={<Profile />} />

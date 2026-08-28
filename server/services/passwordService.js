@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 import { v4 as uuidv4 } from "uuid";
 import config from "../config/config.js";
 
-import { getUserByEmail } from "../models/userModel.js";
+import { getUserDetailEmail } from "../models/userModel.js";
 import {
   storeResetCredentials,
   verifyToken,
@@ -40,8 +40,8 @@ export const sendResetEmail = async (req, res) => {
   const resetUrl = `${config.allowedOrigins}/password/reset/${email}/${token}`;
 
   try {
-    const result = await getUserByEmail(email);
-    if (!result) {
+    const user = await getUserDetailEmail(email);
+    if (!user) {
       return res.status(200).json({
         message:
           "If an account with this email exists, a password reset link has been sent. Check your email inbox/spam folder",
@@ -146,8 +146,8 @@ export const updateNewPasswords = async (req, res) => {
   }
 
   try {
-    const result = await getUserByEmail(email);
-    if (!result) {
+    const user = await getUserDetailEmail(email);
+    if (!user) {
       return res.status(400).json({
         message: "User email or token is wrong, cannot update",
       });

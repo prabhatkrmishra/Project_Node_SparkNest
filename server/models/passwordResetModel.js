@@ -1,12 +1,12 @@
 import { getDBClient } from "../db/db.js";
+import { createHash } from "crypto";
+
+function hashToken(token) {
+  return createHash("sha256").update(token).digest("hex");
+}
 
 /**
- * Save email, token and date for password reset
- *
- * @param {string} email - The requested email address
- * @param {string} token - The generated token
- * @param {Date} expires - The expiry date
- * @returns {Promise<boolean>} - Query done ? true : false
+ * Save email, token and date for password reset (token is hashed at rest).
  */
 export async function storeResetCredentials(email, token, expires) {
   if (!email || !token || !expires) {
@@ -14,11 +14,16 @@ export async function storeResetCredentials(email, token, expires) {
   }
 
   const db = getDBClient();
-  const query =
-    "INSERT INTO password_resets (email, token, expires) VALUES ($1, $2, $3)";
+  const hashed = hashToken(token);
 
   try {
-    const result = await db.query(query, [email, token, expires]);
+    // Remove old tokens for this email to keep single active token
+    await db.query("DELETE FROM password_resets WHERE email = $1", [email]);
+    const result = await db.query("INSERT INTO password_resets (email, token, expires) VALUES ($1, $2, $3)", [
+      email,
+      hashed,
+      expires,
+    ]);
     return result.rowCount > 0;
   } catch (error) {
     console.error("Error saving password reset credentials:", error);
@@ -27,19 +32,15 @@ export async function storeResetCredentials(email, token, expires) {
 }
 
 /**
- * Verify token for password reset
- *
- * @param {string} email - The requested email address
- * @param {string} token - The generated token
- * @returns {Promise<boolean>} - Verified email and token ? true : false
+ * Verify token for password reset (compares hash).
  */
 export async function verifyToken(email, token) {
   const db = getDBClient();
-  const query =
-    "SELECT * FROM password_resets WHERE email=$1 AND token = $2 AND expires > NOW()";
+  const hashed = hashToken(token);
+  const query = "SELECT * FROM password_resets WHERE email=$1 AND token = $2 AND expires > NOW()";
 
   try {
-    const result = await db.query(query, [email, token]);
+    const result = await db.query(query, [email, hashed]);
     return result.rows.length > 0;
   } catch (error) {
     console.error("Error verifying password reset token:", error);
@@ -49,10 +50,6 @@ export async function verifyToken(email, token) {
 
 /**
  * Update the user's password in the database.
- *
- * @param {string} email - The user's email address.
- * @param {string} newPassword - The new hashed password to be set.
- * @returns {Promise<boolean>} - Query executed successfully ? true : false
  */
 export async function updateResetPassword(email, newPassword) {
   const db = getDBClient();

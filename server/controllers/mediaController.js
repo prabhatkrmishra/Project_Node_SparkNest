@@ -1,91 +1,88 @@
 import fs from "fs";
 import path from "path";
-import config from "../config/config.js";
+import { env } from "../config/env.js";
+import { resolveDataPath } from "../services/storageService.js";
+import { AppError } from "../middlewares/errorMiddleware.js";
 
-/**
- * Fetch image for article body
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
- */
-export const fetchMedia = (req, res) => {
-  const { uid, image } = req.params;
-  const imagePath = path.join(
-    process.cwd(),
-    "..",
-    "..",
-    "data",
-    "images",
-    uid,
-    image
-  );
+function sanitizeSegment(value) {
+  const str = String(value);
+  const safe = str.replace(/[^a-zA-Z0-9._-]/g, "");
+  if (safe !== str || safe.includes("..")) {
+    throw new AppError(400, "Invalid path segment");
+  }
+  return safe;
+}
 
-  fs.stat(imagePath, (err) => {
-    if (err) {
+function sendWithCache(req, res, imagePath, contentType) {
+  fs.stat(imagePath, (err, stat) => {
+    if (err || !stat.isFile()) {
       return res.status(404).send("Requested image not found");
     }
 
-    const ext = path.extname(image).toLowerCase();
-    let contentType = "image/jpeg";
-    if (ext === ".png") {
-      contentType = "image/png";
-    } else if (ext === ".gif") {
-      contentType = "image/gif";
+    const etag = `"${stat.mtimeMs}-${stat.size}"`;
+    res.setHeader("ETag", etag);
+    res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+
+    if (req.headers["if-none-match"] === etag) {
+      return res.status(304).end();
     }
 
     res.sendFile(imagePath, { headers: { "Content-Type": contentType } });
   });
+}
+
+function contentTypeFor(ext) {
+  if (ext === ".png") return "image/png";
+  if (ext === ".gif") return "image/gif";
+  if (ext === ".webp") return "image/webp";
+  return "image/jpeg";
+}
+
+/**
+ * Fetch image for article body
+ */
+export const fetchMedia = (req, res, next) => {
+  try {
+    const uid = sanitizeSegment(req.params.uid);
+    const image = sanitizeSegment(req.params.image);
+    const imagePath = resolveDataPath("images", uid, image);
+    const ext = path.extname(image).toLowerCase();
+    sendWithCache(req, res, imagePath, contentTypeFor(ext));
+  } catch (err) {
+    next(err);
+  }
 };
 
 /**
  * Fetch image for preview
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
-export const fetchPreviewMedia = (req, res) => {
-  const { uid, articleid, image } = req.params;
-  const imagePath = path.join(
-    process.cwd(),
-    "..",
-    "..",
-    "data",
-    "images",
-    uid,
-    articleid,
-    image
-  );
-
-  fs.stat(imagePath, (err) => {
-    if (err) {
-      return res.status(404).send("Requested image not found");
-    }
-
+export const fetchPreviewMedia = (req, res, next) => {
+  try {
+    const uid = sanitizeSegment(req.params.uid);
+    const articleid = sanitizeSegment(req.params.articleid);
+    const image = sanitizeSegment(req.params.image);
+    const imagePath = resolveDataPath("images", uid, articleid, image);
     const ext = path.extname(image).toLowerCase();
-    let contentType = "image/jpeg";
-    if (ext === ".png") {
-      contentType = "image/png";
-    } else if (ext === ".gif") {
-      contentType = "image/gif";
-    }
-
-    res.sendFile(imagePath, { headers: { "Content-Type": contentType } });
-  });
+    sendWithCache(req, res, imagePath, contentTypeFor(ext));
+  } catch (err) {
+    next(err);
+  }
 };
+
+let avatarCache = null;
+let avatarCacheTime = 0;
+const AVATAR_CACHE_TTL = 60 * 60 * 1000;
 
 /**
  * Fetch all profile avatar images.
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
 export const fetchAllProfileAvatar = (req, res) => {
-  const imageDirectory = path.join(
-    process.cwd(),
-    "assets",
-    "images",
-    "avatars"
-  );
+  const now = Date.now();
+  if (avatarCache && now - avatarCacheTime < AVATAR_CACHE_TTL) {
+    return res.json({ avatars: avatarCache });
+  }
+
+  const imageDirectory = path.join(process.cwd(), "assets", "images", "avatars");
 
   fs.readdir(imageDirectory, (err, files) => {
     if (err) {
@@ -97,9 +94,10 @@ export const fetchAllProfileAvatar = (req, res) => {
       return ext === ".jpg" || ext === ".png" || ext === ".gif";
     });
 
-    const avatarUrls = imageFiles.map((file) =>
-      `${config.backendAddress}/get/avatars/${file}`
-    );
+    const avatarUrls = imageFiles.map((file) => `${env.BACKEND_ADDRESS}/get/avatars/${file}`);
+
+    avatarCache = avatarUrls;
+    avatarCacheTime = now;
 
     res.json({ avatars: avatarUrls });
   });
@@ -107,106 +105,67 @@ export const fetchAllProfileAvatar = (req, res) => {
 
 /**
  * Fetch a single profile avatar image by file name.
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
 export const fetchSingleProfileAvatar = (req, res) => {
   const { avatarName } = req.params;
+  const safeName = sanitizeSegment(avatarName);
 
-  const imageDirectory = path.join(
-    process.cwd(),
-    "assets",
-    "images",
-    "avatars"
-  );
-  const imagePath = path.join(imageDirectory, avatarName);
+  const imageDirectory = path.join(process.cwd(), "assets", "images", "avatars");
+  const imagePath = path.join(imageDirectory, safeName);
 
   fs.stat(imagePath, (err, stat) => {
     if (err || !stat.isFile()) {
       return res.status(404).send("Avatar not found");
     }
 
-    const ext = path.extname(avatarName).toLowerCase();
-    let contentType = "image/jpeg";
-    if (ext === ".png") {
-      contentType = "image/png";
-    } else if (ext === ".gif") {
-      contentType = "image/gif";
-    }
-
-    res.sendFile(imagePath, { headers: { "Content-Type": contentType } });
+    const ext = path.extname(safeName).toLowerCase();
+    res.setHeader("Cache-Control", "public, max-age=86400");
+    res.sendFile(imagePath, { headers: { "Content-Type": contentTypeFor(ext) } });
   });
 };
 
 /**
- * Fetch a single profile avatar image by file name.
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
+ * Fetch a user uploaded avatar
  */
-export const fetchCustomProfileAvatar = (req, res) => {
-  const { uid, avatarName } = req.params;
+export const fetchCustomProfileAvatar = (req, res, next) => {
+  try {
+    const uid = sanitizeSegment(req.params.uid);
+    const avatarName = sanitizeSegment(req.params.avatarName);
 
-  const imageDirectory = path.join(
-    process.cwd(),
-    "..",
-    "..",
-    "data",
-    "images",
-    uid,
-    "profile"
-  );
-  const imagePath = path.join(imageDirectory, avatarName);
+    const imageDirectory = resolveDataPath("images", uid, "profile");
+    const imagePath = path.join(imageDirectory, avatarName);
 
-  fs.stat(imagePath, (err, stat) => {
-    if (err || !stat.isFile()) {
-      return res.status(404).send("Avatar not found");
-    }
+    fs.stat(imagePath, (err, stat) => {
+      if (err || !stat.isFile()) {
+        return res.status(404).send("Avatar not found");
+      }
 
-    const ext = path.extname(avatarName).toLowerCase();
-    let contentType = "image/jpeg";
-    if (ext === ".png") {
-      contentType = "image/png";
-    } else if (ext === ".gif") {
-      contentType = "image/gif";
-    }
-
-    res.sendFile(imagePath, { headers: { "Content-Type": contentType } });
-  });
+      const ext = path.extname(avatarName).toLowerCase();
+      res.setHeader("Cache-Control", "public, max-age=86400");
+      res.sendFile(imagePath, { headers: { "Content-Type": contentTypeFor(ext) } });
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 /**
- * 
  * Fetch default comment avatar
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
 export const fetchCommentDefaultAvatar = (req, res) => {
   const { avatarName } = req.params;
+  const safeName = sanitizeSegment(avatarName);
 
-  const imageDirectory = path.join(
-    process.cwd(),
-    "assets",
-    "images",
-    "comments"
-  );
-  const imagePath = path.join(imageDirectory, avatarName);
+  const imageDirectory = path.join(process.cwd(), "assets", "images", "comments");
+  const imagePath = path.join(imageDirectory, safeName);
 
   fs.stat(imagePath, (err, stat) => {
     if (err || !stat.isFile()) {
       return res.status(404).send("Avatar not found");
     }
 
-    const ext = path.extname(avatarName).toLowerCase();
-    let contentType = "image/jpeg";
-    if (ext === ".png") {
-      contentType = "image/png";
-    } else if (ext === ".gif") {
-      contentType = "image/gif";
-    }
-
-    res.sendFile(imagePath, { headers: { "Content-Type": contentType } });
+    const ext = path.extname(safeName).toLowerCase();
+    res.setHeader("Cache-Control", "public, max-age=86400");
+    res.sendFile(imagePath, { headers: { "Content-Type": contentTypeFor(ext) } });
   });
 };
