@@ -1,0 +1,43 @@
+name: Deploy
+on:
+  push:
+    branches: [V2.5, main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/V2.5' || github.ref == 'refs/heads/main'
+    needs: [] # run independently; CI already validates
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build images
+        run: docker compose build
+
+      # Example: push to GHCR (uncomment and set secrets)
+      # - name: Log in to GHCR
+      #   uses: docker/login-action@v3
+      #   with:
+      #     registry: ghcr.io
+      #     username: ${{ github.actor }}
+      #     password: ${{ secrets.GITHUB_TOKEN }}
+      # - run: docker compose push
+
+      # Example: SSH deploy (uncomment and set secrets)
+      # - name: Deploy via SSH
+      #   uses: appleboy/ssh-action@v1
+      #   with:
+      #     host: ${{ secrets.DEPLOY_HOST }}
+      #     username: ${{ secrets.DEPLOY_USER }}
+      #     key: ${{ secrets.DEPLOY_KEY }}
+      #     script: |
+      #       cd /opt/SparkNest
+      #       git pull
+      #       docker compose pull
+      #       docker compose up -d --build
+      #       docker compose exec -T server npm run db:migrate
+      #       curl -f http://localhost:3000/health || exit 1

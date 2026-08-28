@@ -9,7 +9,7 @@ import tsPlugin from "@typescript-eslint/eslint-plugin";
 export default [
   { ignores: ["dist"] },
   {
-    files: ["vite.config.js", "vitest.config.js"],
+    files: ["vite.config.js", "vitest.config.js", "playwright.config.ts"],
     languageOptions: {
       globals: globals.node,
     },

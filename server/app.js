@@ -20,6 +20,7 @@ import { applyRateLimit } from "./middlewares/rateLimiter.js";
 import { errorHandler, notFound } from "./middlewares/errorMiddleware.js";
 
 import healthRoutes from "./routes/healthRoutes.js";
+import docsRoutes from "./routes/docsRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import subscriptionRoutes from "./routes/subscriptionRoutes.js";
@@ -112,8 +113,9 @@ initializePassport(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Health (before rate limit bypass if needed, but after logger)
+// Health + docs (before rate limit bypass if needed, but after logger)
 app.use("/", healthRoutes);
+app.use("/", docsRoutes);
 
 // Routes
 app.use("/", authRoutes);
