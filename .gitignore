@@ -34,6 +34,8 @@ flyway.conf.local
 # secrets
 *.crt
 *.key
+cloudflare.ini
+certbot/
 # keep required txt
 !commands.txt
 !ngix.txt

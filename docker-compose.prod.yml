@@ -1,0 +1,69 @@
+# Production — 443 only, Cloudflare DNS-01 via certbot/dns-cloudflare
+# Usage:
+#   1. Create Cloudflare API token (Zone:Edit, DNS:Edit for your zone) at
+#      https://dash.cloudflare.com/profile/api-tokens
+#   2. cp cloudflare.ini.example cloudflare.ini  # put token, chmod 600
+#   3. Set DOMAIN + CERTBOT_EMAIL in .env (see .env.example)
+#   4. Issue cert (once): docker compose -f docker-compose.prod.yml run --rm certbot
+#   5. Start: docker compose -f docker-compose.prod.yml up -d --build
+#   6. Renew (cron on host): 0 3 * * * docker compose -f /path/to/docker-compose.prod.yml run --rm certbot renew && docker compose -f /path/to/docker-compose.prod.yml exec client nginx -s reload
+# Notes:
+#   - No port 80 exposed. Cloudflare DNS-01 needs no inbound HTTP.
+#   - server:3000 is NOT published — only reachable via nginx /api/ proxy.
+#   - certs live in named volume certbot_certs (/etc/letsencrypt).
+
+services:
+  server:
+    build: ./server
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      SESSION_SECRET: ${SESSION_SECRET}
+      FRONTEND_ADDRESS: https://${DOMAIN}
+      BACKEND_ADDRESS: https://${DOMAIN}
+      DATA_ROOT: /data
+      SECURE_COOKIE: "true"
+      HTTP_ONLY: "true"
+      SAME_SITE: lax
+      NODE_ENV: production
+    volumes:
+      - appdata:/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  client:
+    build: ./client
+    environment:
+      DOMAIN: ${DOMAIN}
+    ports:
+      - "443:443"
+    volumes:
+      - certbot_certs:/etc/letsencrypt:ro
+      - ./client/nginx.prod.conf.template:/etc/nginx/templates/default.conf.template:ro
+    depends_on:
+      server:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-check-certificate -qO- https://localhost/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # One-shot cert issuance/renewal. Not started with `up`; run explicitly:
+  #   docker compose -f docker-compose.prod.yml run --rm certbot
+  certbot:
+    image: certbot/dns-cloudflare:latest
+    volumes:
+      - certbot_certs:/etc/letsencrypt
+      - ./cloudflare.ini:/etc/letsencrypt/cloudflare.ini:ro
+    # Request cert for apex + wildcard. Override CMD to renew: `run --rm certbot renew`
+    command: certonly --dns-cloudflare --dns-cloudflare-credentials /etc/letsencrypt/cloudflare.ini -d ${DOMAIN} -d *.${DOMAIN} --email ${CERTBOT_EMAIL} --agree-tos --non-interactive --keep-until-expiring
+    profiles: ["certbot"]
+
+volumes:
+  appdata:
+  certbot_certs:

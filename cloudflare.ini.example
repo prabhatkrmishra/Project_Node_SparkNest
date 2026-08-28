@@ -1,0 +1,5 @@
+# Cloudflare API token for certbot DNS-01
+# Create at https://dash.cloudflare.com/profile/api-tokens
+# Permissions: Zone:Read, DNS:Edit for your zone
+# Copy to cloudflare.ini and chmod 600 — never commit the real file.
+dns_cloudflare_api_token = YOUR_CLOUDFLARE_API_TOKEN_HERE
