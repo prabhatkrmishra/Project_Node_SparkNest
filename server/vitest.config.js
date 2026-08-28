@@ -7,8 +7,15 @@ export default defineConfig({
     globals: true,
     coverage: {
       provider: "v8",
-      reporter: ["text", "lcov"],
-      // Thresholds enforced in CI after more tests are added (target: 60% lines)
+      reporter: ["text", "lcov", "html"],
+      include: ["routes/**/*.js", "middlewares/**/*.js", "services/**/*.js", "validators/**/*.js", "utils/**/*.js"],
+      exclude: ["tests/**", "db/migrations/**", "db/scripts/**"],
+      thresholds: {
+        lines: 5,
+        functions: 5,
+        branches: 5,
+        statements: 5,
+      },
     },
   },
 });
