@@ -35,6 +35,7 @@ npm --workspace=server run db:migrate  # applies V2..V5
 | V1 | V1__baseline.sql | Normalized tables.sql (IF NOT EXISTS, featured_articles UNIQUE) |
 | V2 | V2__seed_categories.sql | 305 categories from categories.csv |
 | V3 | V3__harden_constraints.sql | newsletter default, indexes |
+| V4 | V4__session_table.sql | connect-pg-simple session store |
 | V5 | V5__password_resets_harden.sql | created_at, cleanup, indexes |
 
 Generate V2 from CSV:
