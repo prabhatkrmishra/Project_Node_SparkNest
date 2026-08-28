@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import Cookies from "js-cookie";
-import axios from "axios";
+import { api } from "../../api/API";
 
 import MasonryEffect from "./effects/MasonryEffect";
 import AnimateBricks from "./effects/AnimateBricks";
@@ -39,11 +39,12 @@ const RenderPreviews = ({ url, type }) => {
     const fetchArticles = async () => {
       try {
         setShouldAnimate(false);
-        const response = await axios.get(`${url}?page=${currentPage}&limit=12`, {
-          withCredentials: true,
-        });
-        setArticles(response.data.articles);
-        setTotalPages(response.data.totalPages);
+        const response = await api.get(`${url}?page=${currentPage}&limit=12`);
+        // Support both legacy {articles, totalPages} and new {success, data, meta}
+        const articlesData = response.data.articles ?? response.data.data ?? [];
+        const pages = response.data.totalPages ?? response.data.meta?.totalPages ?? 1;
+        setArticles(articlesData);
+        setTotalPages(pages);
       } catch (error) {
         if (error.response?.status === 403) {
           logout();
