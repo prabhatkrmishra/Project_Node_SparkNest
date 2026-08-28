@@ -8,12 +8,8 @@ import logout from "../tools/auth";
 import SuccessMessage from "../messageBox/SuccessMessage";
 
 const Profile = () => {
-  const user = useRef(
-    Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null
-  );
-  const days = Cookies.get("sessionDays")
-    ? Number(Cookies.get("sessionDays"))
-    : 0;
+  const user = useRef(Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null);
+  const days = Cookies.get("sessionDays") ? Number(Cookies.get("sessionDays")) : 0;
   if (user.current == null || days == 0) {
     window.location.href = "/profile";
   }
@@ -97,8 +93,7 @@ const Profile = () => {
       formData.append("lname", newUserData.lname);
     if (newUserData.region !== user.current?.region || "")
       formData.append("region", newUserData.region);
-    if (newUserData.bio !== user.current.bio)
-      formData.append("bio", newUserData.bio);
+    if (newUserData.bio !== user.current.bio) formData.append("bio", newUserData.bio);
     if (selectedFile) formData.append("avatar_image", selectedFile);
 
     try {
@@ -142,11 +137,7 @@ const Profile = () => {
         <div className="settings-image-selector">
           {selectedImage && (
             <div className="settings-image-avatar">
-              <img
-                src={selectedImage}
-                alt="Selected"
-                style={{ width: "100px", height: "100px" }}
-              />
+              <img src={selectedImage} alt="Selected" style={{ width: "100px", height: "100px" }} />
             </div>
           )}
           <div className="settings-image">
@@ -230,14 +221,11 @@ const Profile = () => {
               color: charCount > maxCharLimit ? "red" : "gray",
             }}
           >
-            {maxCharLimit - `${charCount ? charCount : newUserData.bio.length}`}{" "}
-            characters remaining
+            {maxCharLimit - `${charCount ? charCount : newUserData.bio.length}`} characters
+            remaining
           </p>
         </div>
-        <button
-          className="btn--primary u-quartorwidth profile-button-styles"
-          type="submit"
-        >
+        <button className="btn--primary u-quartorwidth profile-button-styles" type="submit">
           Update
         </button>
       </form>

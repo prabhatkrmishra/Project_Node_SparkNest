@@ -36,13 +36,13 @@ export async function isLikedArticle(req, res) {
 export async function likeArticle(req, res) {
   const { user_id, article_id } = req.body;
 
-  if(!user_id || !article_id) {
+  if (!user_id || !article_id) {
     return res.status(400).json({ message: "Userid or Articleid is empty, cannot LIKE" });
   }
 
   try {
     const response = await setLikedArticle(user_id, article_id);
-    if(response){
+    if (response) {
       res.status(200).json({ message: "Article liked successfully" });
     } else {
       res.status(200).json({ message: "Error in liking article" });
@@ -62,7 +62,7 @@ export async function likeArticle(req, res) {
 export async function unlikeArticle(req, res) {
   const { user_id, article_id } = req.body;
 
-  if(!user_id || !article_id) {
+  if (!user_id || !article_id) {
     return res.status(400).json({ message: "Userid or Articleid is empty, cannot unlike" });
   }
 
@@ -87,9 +87,7 @@ export async function unlikeArticle(req, res) {
  */
 export async function fetchLikedArticles(req, res) {
   if (!req.isAuthenticated()) {
-    return res
-      .status(403)
-      .json({ message: "Not authenticated to delete user" });
+    return res.status(403).json({ message: "Not authenticated to delete user" });
   }
 
   const current_uid = req.session.passport ? req.session.passport.user : null;

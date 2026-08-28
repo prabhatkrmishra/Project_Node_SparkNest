@@ -11,7 +11,10 @@ const envSchema = z.object({
   PG_DATABASE: z.string().optional().default(""),
   PG_PASSWORD: z.string().optional().default(""),
   PG_PORT: z.coerce.number().default(5432),
-  SESSION_SECRET: z.string().min(32, "SESSION_SECRET must be >=32 chars").default("test-secret-32-chars-minimum-for-tests"),
+  SESSION_SECRET: z
+    .string()
+    .min(32, "SESSION_SECRET must be >=32 chars")
+    .default("test-secret-32-chars-minimum-for-tests"),
   SECURE_COOKIE: z.enum(["true", "false"]).default("false"),
   HTTP_ONLY: z.enum(["true", "false"]).default("true"),
   SAME_SITE: z.enum(["lax", "strict", "none"]).default("lax"),

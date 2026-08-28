@@ -90,12 +90,7 @@ const StandardPost = () => {
 
                   <div className="entry__meta">
                     <div className="entry__meta-author">
-                      <svg
-                        width="24"
-                        height="24"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
+                      <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <circle
                           cx="12"
                           cy="8"
@@ -116,12 +111,7 @@ const StandardPost = () => {
                       <a href={`/user/${article.user_id}`}>{article.fname + " " + article.lname}</a>
                     </div>
                     <div className="entry__meta-date">
-                      <svg
-                        width="24"
-                        height="24"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
+                      <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <circle
                           cx="12"
                           cy="12"
@@ -129,21 +119,12 @@ const StandardPost = () => {
                           stroke="currentColor"
                           strokeWidth="1.5"
                         ></circle>
-                        <path
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          d="M12 8V12L14 14"
-                        ></path>
+                        <path stroke="currentColor" strokeWidth="1.5" d="M12 8V12L14 14"></path>
                       </svg>
                       {date}
                     </div>
                     <div className="entry__meta-cat">
-                      <svg
-                        width="24"
-                        height="24"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
+                      <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path
                           stroke="currentColor"
                           strokeLinecap="round"
@@ -163,18 +144,13 @@ const StandardPost = () => {
                       {article.article_categories && (
                         <span className="cat-links">
                           {article.article_categories[0] && (
-                            <a
-                              href={`/category/${article.article_categories[0]}`}
-                            >
+                            <a href={`/category/${article.article_categories[0]}`}>
                               {article.article_categories[0]}
                             </a>
                           )}
                           {article.article_categories[0] && (
-                            <a
-                              href={`/category/${article.article_categories[1]}`}
-                            >
-                              {article.article_categories &&
-                                article.article_categories[1]}
+                            <a href={`/category/${article.article_categories[1]}`}>
+                              {article.article_categories && article.article_categories[1]}
                             </a>
                           )}
                         </span>
@@ -200,44 +176,32 @@ const StandardPost = () => {
 
                 <div className="content-primary">
                   <div className="entry__content">
-                    <div
-                      className="ql-viewer"
-                      id="editor"
-                      ref={editorRef}
-                    ></div>
+                    <div className="ql-viewer" id="editor" ref={editorRef}></div>
 
                     <div className="tags-save-like">
                       {article.article_categories && (
                         <p className="entry__tags">
                           <strong>Tags:</strong>
                           <span className="entry__tag-list">
-                            {article.article_categories.map(
-                              (category, index) => (
-                                <a key={index} href={`/category/${category}`}>
-                                  {category}
-                                </a>
-                              )
-                            )}
+                            {article.article_categories.map((category, index) => (
+                              <a key={index} href={`/category/${category}`}>
+                                {category}
+                              </a>
+                            ))}
                           </span>
                         </p>
                       )}
-                      <Main articleId={selector}/>
+                      <Main articleId={selector} />
                     </div>
 
                     <div className="entry__author-box customize-author-box">
                       <figure className="entry__author-avatar customize-article-avatar">
-                        <img
-                          alt=""
-                          src={`${article ? article.avatar : ""}`}
-                          className="avatar"
-                        />
+                        <img alt="" src={`${article ? article.avatar : ""}`} className="avatar" />
                       </figure>
                       <div className="entry__author-info customize-author-info">
                         <h5 className="entry__author-name">
                           <a href="#">
-                            {article.fname
-                              ? article.fname + " " + article.lname
-                              : "No Name"}
+                            {article.fname ? article.fname + " " + article.lname : "No Name"}
                           </a>
                         </h5>
                         <p>{article.bio ? article.bio : "No Bio"}</p>
@@ -249,34 +213,22 @@ const StandardPost = () => {
                     <div className="post-nav__prev">
                       {prevArticle.id && (
                         <a
-                          href={
-                            prevArticle.id
-                              ? `/article/view/${prevArticle.id}`
-                              : "#"
-                          }
+                          href={prevArticle.id ? `/article/view/${prevArticle.id}` : "#"}
                           rel="prev"
                         >
                           <span>Prev</span>
-                          {prevArticle.title
-                            ? prevArticle.title
-                            : "No Previous article"}
+                          {prevArticle.title ? prevArticle.title : "No Previous article"}
                         </a>
                       )}
                     </div>
                     <div className="post-nav__next">
                       {nextArticle.id && (
                         <a
-                          href={
-                            nextArticle.id
-                              ? `/article/view/${nextArticle.id}`
-                              : "#"
-                          }
+                          href={nextArticle.id ? `/article/view/${nextArticle.id}` : "#"}
                           rel="next"
                         >
                           <span>Next</span>
-                          {nextArticle.title
-                            ? nextArticle.title
-                            : "No Next article"}
+                          {nextArticle.title ? nextArticle.title : "No Next article"}
                         </a>
                       )}
                     </div>

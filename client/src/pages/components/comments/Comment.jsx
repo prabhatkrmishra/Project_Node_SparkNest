@@ -1,13 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 
-const Comment = ({
-  comment,
-  depth = 0,
-  onReply,
-  handleDelete,
-  currentUser,
-}) => {
+const Comment = ({ comment, depth = 0, onReply, handleDelete, currentUser }) => {
   // eslint-disable-next-line react/prop-types
   const { id, name, body, avatar, updated_at } = comment;
 
@@ -41,20 +35,14 @@ const Comment = ({
             </div>
             {!enableDelete && (
               <div className="comment__reply">
-                <span
-                  className="comment-reply-link"
-                  onClick={() => onReply(id)}
-                >
+                <span className="comment-reply-link" onClick={() => onReply(id)}>
                   Reply
                 </span>
               </div>
             )}
             {enableDelete && (
               <div className="comment__reply">
-                <span
-                  className="comment-reply-link"
-                  onClick={() => handleDelete(id)}
-                >
+                <span className="comment-reply-link" onClick={() => handleDelete(id)}>
                   Delete
                 </span>
               </div>

@@ -18,9 +18,7 @@ import { subscribeUser } from "../services/newsletterService.js";
  */
 export async function subscribe(req, res) {
   if (!req.isAuthenticated()) {
-    return res
-      .status(403)
-      .json({ message: "Not authenticated to subscribe" });
+    return res.status(403).json({ message: "Not authenticated to subscribe" });
   }
   const { email, type } = req.body;
 
@@ -45,9 +43,7 @@ export async function subscribe(req, res) {
  */
 export async function getSubscription(req, res) {
   if (!req.isAuthenticated()) {
-    return res
-      .status(403)
-      .json({ message: "Not authenticated to get subscription details" });
+    return res.status(403).json({ message: "Not authenticated to get subscription details" });
   }
 
   const { email } = req.params;
@@ -55,9 +51,7 @@ export async function getSubscription(req, res) {
   try {
     const subscription = await getSubscriptionByEmail(email);
     if (!subscription) {
-      return res
-        .status(404)
-        .json({ message: "No subscription found for this email" });
+      return res.status(404).json({ message: "No subscription found for this email" });
     }
     res.status(200).json(subscription);
   } catch (error) {
@@ -74,9 +68,7 @@ export async function getSubscription(req, res) {
  */
 export async function updateSubscriptionDetails(req, res) {
   if (!req.isAuthenticated()) {
-    return res
-      .status(403)
-      .json({ message: "Not authenticated to get subscription details" });
+    return res.status(403).json({ message: "Not authenticated to get subscription details" });
   }
 
   const { email, newsletter } = req.body;
@@ -109,9 +101,7 @@ export async function updateSubscriptionDetails(req, res) {
  */
 export async function unsubscribe(req, res) {
   if (!req.isAuthenticated()) {
-    return res
-      .status(403)
-      .json({ message: "Not authenticated to unsubscribe" });
+    return res.status(403).json({ message: "Not authenticated to unsubscribe" });
   }
 
   const { email } = req.params;

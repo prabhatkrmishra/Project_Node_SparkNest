@@ -17,7 +17,7 @@ const PaginationBlock = ({ currentPage, totalPages, onPageChange }) => {
   const handlePrevPage = () => {
     if (currentPage > 1) {
       handlePageChange(currentPage - 1);
-      setTimeout(function() {
+      setTimeout(function () {
         scrollToElement();
       }, 5);
     }
@@ -26,7 +26,7 @@ const PaginationBlock = ({ currentPage, totalPages, onPageChange }) => {
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       handlePageChange(currentPage + 1);
-      setTimeout(function() {
+      setTimeout(function () {
         scrollToElement();
       }, 5);
     }
@@ -38,11 +38,7 @@ const PaginationBlock = ({ currentPage, totalPages, onPageChange }) => {
         <nav className="pgn">
           <ul>
             <li>
-              <button
-                className="pgn__prev"
-                onClick={handlePrevPage}
-                disabled={currentPage === 1}
-              >
+              <button className="pgn__prev" onClick={handlePrevPage} disabled={currentPage === 1}>
                 <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
                   <path
                     stroke="currentColor"

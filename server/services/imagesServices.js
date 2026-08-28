@@ -120,14 +120,38 @@ export const processAndSavePreviewImage = async (imageFile, userId, articleId) =
 
     try {
       await Promise.all([
-        sharp(imageFile.path).resize(600, 780).toFormat("jpeg").jpeg({ quality: 80 }).toFile(masonryFilePath600),
-        sharp(imageFile.path).resize(1200, 1560).toFormat("jpeg").jpeg({ quality: 85 }).toFile(masonryFilePath1200),
+        sharp(imageFile.path)
+          .resize(600, 780)
+          .toFormat("jpeg")
+          .jpeg({ quality: 80 })
+          .toFile(masonryFilePath600),
+        sharp(imageFile.path)
+          .resize(1200, 1560)
+          .toFormat("jpeg")
+          .jpeg({ quality: 85 })
+          .toFile(masonryFilePath1200),
       ]);
-      await sharp(imageFile.path).resize(2000, 2600).toFormat("jpeg").jpeg({ quality: 95 }).toFile(featuredFilePath2000);
+      await sharp(imageFile.path)
+        .resize(2000, 2600)
+        .toFormat("jpeg")
+        .jpeg({ quality: 95 })
+        .toFile(featuredFilePath2000);
       await Promise.all([
-        sharp(imageFile.path).resize(600, 338).toFormat("jpeg").jpeg({ quality: 80 }).toFile(thumbsFilePath600),
-        sharp(imageFile.path).resize(1200, 675).toFormat("jpeg").jpeg({ quality: 85 }).toFile(thumbsFilePath1200),
-        sharp(imageFile.path).resize(2400, 1350).toFormat("jpeg").jpeg({ quality: 90 }).toFile(thumbsFilePath2400),
+        sharp(imageFile.path)
+          .resize(600, 338)
+          .toFormat("jpeg")
+          .jpeg({ quality: 80 })
+          .toFile(thumbsFilePath600),
+        sharp(imageFile.path)
+          .resize(1200, 675)
+          .toFormat("jpeg")
+          .jpeg({ quality: 85 })
+          .toFile(thumbsFilePath1200),
+        sharp(imageFile.path)
+          .resize(2400, 1350)
+          .toFormat("jpeg")
+          .jpeg({ quality: 90 })
+          .toFile(thumbsFilePath2400),
       ]);
     } catch (sharpErr) {
       // Cleanup partial files on sharp failure
@@ -145,7 +169,9 @@ export const processAndSavePreviewImage = async (imageFile, userId, articleId) =
       `${env.BACKEND_ADDRESS}/article/images/${userId}/${articleId}/${masonry600}`,
       `${env.BACKEND_ADDRESS}/article/images/${userId}/${articleId}/${masonry1200}`,
     ];
-    const featuredPaths = [`${env.BACKEND_ADDRESS}/article/images/${userId}/${articleId}/${featured2000}`];
+    const featuredPaths = [
+      `${env.BACKEND_ADDRESS}/article/images/${userId}/${articleId}/${featured2000}`,
+    ];
     const thumbsPaths = [
       `${env.BACKEND_ADDRESS}/article/images/${userId}/${articleId}/${thumbs600}`,
       `${env.BACKEND_ADDRESS}/article/images/${userId}/${articleId}/${thumbs1200}`,
@@ -199,7 +225,11 @@ export const processAndSaveAvatarImage = async (imageFile, userId) => {
 
     sharp.cache(false);
     try {
-      await sharp(imageFile.path).resize(100, 100).toFormat("jpeg").jpeg({ quality: 90 }).toFile(profileAvatarPath);
+      await sharp(imageFile.path)
+        .resize(100, 100)
+        .toFormat("jpeg")
+        .jpeg({ quality: 90 })
+        .toFile(profileAvatarPath);
     } catch (sharpErr) {
       throw new AppError(400, `Invalid avatar image: ${sharpErr.message}`);
     }

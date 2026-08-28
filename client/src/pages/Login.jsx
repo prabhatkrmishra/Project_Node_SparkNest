@@ -80,7 +80,7 @@ const Login = () => {
           return {
             ...preVal,
             useremail: "",
-            password: ""
+            password: "",
           };
         });
         SetErrorMssg(error.response.data.message);
@@ -103,16 +103,9 @@ const Login = () => {
       </Helmet>
       <div id="page" className="s-pagewrap">
         <Header />
-        <section
-          id="content"
-          className="s-content"
-          style={{ paddingTop: "130px" }}
-        >
+        <section id="content" className="s-content" style={{ paddingTop: "130px" }}>
           <div className="row d-flex justify-content-center">
-            <div
-              className="column lg-6 tab-12"
-              style={{ paddingBottom: "50px" }}
-            >
+            <div className="column lg-6 tab-12" style={{ paddingBottom: "50px" }}>
               <div className="">
                 <h2
                   className="d-flex justify-content-center u-add-bottom mb-xxl-5"
@@ -160,10 +153,7 @@ const Login = () => {
                   />
                 </div>
                 {/*  <!-- Mid Text --> */}
-                <div
-                  className="text-center fw-bold mx-3 text-muted"
-                  style={{ textWrap: "nowrap" }}
-                >
+                <div className="text-center fw-bold mx-3 text-muted" style={{ textWrap: "nowrap" }}>
                   OR
                 </div>
                 {/* <!-- Right horizontal border --> */}
@@ -228,10 +218,7 @@ const Login = () => {
                 <button type="submit" className="btn--primary u-fullwidth mb-5">
                   Sign in
                 </button>
-                <label
-                  className="u-add-bottom"
-                  style={{ margin: "0 0", textAlign: "center" }}
-                >
+                <label className="u-add-bottom" style={{ margin: "0 0", textAlign: "center" }}>
                   <span className="label-text" htmlFor="loginCheck">
                     Not have an account?{" "}
                     <a className="label-text " href="/signup/new">

@@ -62,7 +62,12 @@ articlesRouter.post("/article/create", writeLimiter, upload.single("preview_imag
  * @description Update the article
  * @access Private
  */
-articlesRouter.patch("/article/update", writeLimiter, upload.single("updated_preview_image"), updateArticle);
+articlesRouter.patch(
+  "/article/update",
+  writeLimiter,
+  upload.single("updated_preview_image"),
+  updateArticle
+);
 
 /**
  * @route DELETE /user/details

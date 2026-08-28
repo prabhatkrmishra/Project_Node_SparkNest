@@ -14,9 +14,7 @@ import { setItem } from "./tools/IndexDBstorage";
 
 const Details = () => {
   const navigate = useNavigate();
-  const setProfile = Cookies.get("setProfile")
-    ? Cookies.get("setProfile")
-    : null;
+  const setProfile = Cookies.get("setProfile") ? Cookies.get("setProfile") : null;
 
   useEffect(() => {
     if (setProfile == null) {
@@ -24,9 +22,7 @@ const Details = () => {
     }
   }, [navigate, setProfile]);
 
-  const user = useRef(
-    Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : {}
-  );
+  const user = useRef(Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : {});
   const days = Cookies.get("sessionDays") ? Number(Cookies.get("sessionDays")) : 0;
   const [userData, setUserData] = useState({
     id: user.current.id ? user.current.id : "",
@@ -45,8 +41,7 @@ const Details = () => {
   };
 
   function handleUserData(event) {
-    if (event.target.name === "bio" && event.target.value.length > maxCharLimit)
-      return;
+    if (event.target.name === "bio" && event.target.value.length > maxCharLimit) return;
 
     setUserData((preVal) => {
       return {
@@ -128,12 +123,7 @@ const Details = () => {
       return;
     }
 
-    if (
-      !userData.id ||
-      !userData.username ||
-      !userData.region ||
-      !userData.bio
-    ) {
+    if (!userData.id || !userData.username || !userData.region || !userData.bio) {
       SetErrorMssg("Details cannot be empty, fill each detail");
       setIsNull(true);
       return;
@@ -192,11 +182,7 @@ const Details = () => {
       <PreLoader />
       <div id="page" className="s-pagewrap">
         <Header />
-        <section
-          id="content"
-          className="s-content"
-          style={{ paddingTop: "130px" }}
-        >
+        <section id="content" className="s-content" style={{ paddingTop: "130px" }}>
           <div className="row d-flex justify-content-center mb-lg-5">
             <div className="column lg-6 tab-12 profile-avatar-selection">
               <div className="image-selector">
@@ -253,10 +239,7 @@ const Details = () => {
                 <ErrorMessage isError={notChoosen} errorMssg={errorMssg} />
               </div>
             </div>
-            <div
-              className="column lg-6 tab-12"
-              style={{ paddingBottom: "50px" }}
-            >
+            <div className="column lg-6 tab-12" style={{ paddingBottom: "50px" }}>
               <ErrorMessage isError={isNull} errorMssg={errorMssg} />
               <form onSubmit={handleSubmit}>
                 <div className="form-outline mb-4">
@@ -295,10 +278,7 @@ const Details = () => {
                     onFocus={handleFocus}
                   />
                 </div>
-                <div
-                  className="form-outline mb-4"
-                  style={{ position: "relative" }}
-                >
+                <div className="form-outline mb-4" style={{ position: "relative" }}>
                   <label htmlFor="inputBio" style={{ marginBottom: "8px" }}>
                     Your Bio
                   </label>
@@ -324,9 +304,8 @@ const Details = () => {
                       color: charCount > maxCharLimit ? "red" : "gray",
                     }}
                   >
-                    {maxCharLimit -
-                      `${charCount ? charCount : userData.bio.length}`}{" "}
-                    characters remaining
+                    {maxCharLimit - `${charCount ? charCount : userData.bio.length}`} characters
+                    remaining
                   </p>
                 </div>
                 <button type="submit" className="btn--primary u-fullwidth mb-5">

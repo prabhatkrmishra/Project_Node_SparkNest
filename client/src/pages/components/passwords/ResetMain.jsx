@@ -51,13 +51,11 @@ const ResetMain = () => {
       </Helmet>
       <PreLoader />
       <div id="page" className="s-pagewrap">
-        <section
-          id="content"
-          className="s-content"
-          style={{ paddingTop: "130px" }}
-        >
+        <section id="content" className="s-content" style={{ paddingTop: "130px" }}>
           <div className="row d-flex justify-content-center mb-lg-5">
-            {isSuccess && <ResetPass isSuccess={isSuccess} mssg={mssg} email={email} token={token}/>}
+            {isSuccess && (
+              <ResetPass isSuccess={isSuccess} mssg={mssg} email={email} token={token} />
+            )}
             {isError && <ResetError isError={isError} mssg={mssg} />}
           </div>
         </section>

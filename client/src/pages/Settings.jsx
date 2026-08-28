@@ -17,7 +17,6 @@ import DropDownMenu from "./components/profile_settings/settings_components/Drop
 import updateProfile from "./components/UpdateProfile";
 
 const Settings = () => {
-
   const { section } = useParams();
   const navigate = useNavigate();
   const pSection = section ? section : "general";
@@ -36,7 +35,7 @@ const Settings = () => {
   useEffect(() => {
     const updateUser = async () => {
       await updateProfile();
-      const avatar = localStorage.getItem('avatar');
+      const avatar = localStorage.getItem("avatar");
       setProfileAvatar(avatar);
     };
     updateUser();
@@ -44,13 +43,7 @@ const Settings = () => {
 
   const [fade, setFade] = useState(false);
 
-  const validSections = [
-    "general",
-    "profile",
-    "password",
-    "notifications",
-    "delete",
-  ];
+  const validSections = ["general", "profile", "password", "notifications", "delete"];
 
   const sectionMap = new Map([
     ["general", "General"],
@@ -110,17 +103,10 @@ const Settings = () => {
               <div className="entry__author-box-settings mainpage-settings-profile">
                 <div>
                   <figure className="entry__author-avatar profile-avatar-settings">
-                    <img
-                      alt=""
-                      src={profileAvatar}
-                      className="avatar avatar-settings"
-                    />
+                    <img alt="" src={profileAvatar} className="avatar avatar-settings" />
                   </figure>
                 </div>
-                <div
-                  className="entry__author-info"
-                  style={{ marginTop: "15px" }}
-                >
+                <div className="entry__author-info" style={{ marginTop: "15px" }}>
                   <h5
                     className="entry__author-name entry__author-name-settings"
                     style={{ marginBottom: "5px", fontSize: "3rem" }}
@@ -136,15 +122,10 @@ const Settings = () => {
                       >
                         {" / "}
                       </span>
-                      <span>
-                        {selectedSection}
-                      </span>
+                      <span>{selectedSection}</span>
                     </div>
                   </h5>
-                  <p
-                    className="settings-span"
-                    style={{ margin: "0", fontSize: "1.8rem" }}
-                  >
+                  <p className="settings-span" style={{ margin: "0", fontSize: "1.8rem" }}>
                     {sectionInfo}
                   </p>
                 </div>
@@ -155,9 +136,7 @@ const Settings = () => {
               <div className="profile-settings-container">
                 <div className="profile-settings-menu-container">
                   <ul className="profile-settings-options">
-                    <li
-                      className={pSection === "general" ? "options-active" : ""}
-                    >
+                    <li className={pSection === "general" ? "options-active" : ""}>
                       <span
                         style={{ cursor: "pointer" }}
                         onClick={() => handleSectionChange("general")}
@@ -165,9 +144,7 @@ const Settings = () => {
                         General
                       </span>
                     </li>
-                    <li
-                      className={pSection === "profile" ? "options-active" : ""}
-                    >
+                    <li className={pSection === "profile" ? "options-active" : ""}>
                       <span
                         style={{ cursor: "pointer" }}
                         onClick={() => handleSectionChange("profile")}
@@ -175,11 +152,7 @@ const Settings = () => {
                         Edit Profile
                       </span>
                     </li>
-                    <li
-                      className={
-                        pSection === "password" ? "options-active" : ""
-                      }
-                    >
+                    <li className={pSection === "password" ? "options-active" : ""}>
                       <span
                         style={{ cursor: "pointer" }}
                         onClick={() => handleSectionChange("password")}
@@ -187,11 +160,7 @@ const Settings = () => {
                         Password
                       </span>
                     </li>
-                    <li
-                      className={
-                        pSection === "notifications" ? "options-active" : ""
-                      }
-                    >
+                    <li className={pSection === "notifications" ? "options-active" : ""}>
                       <span
                         style={{ cursor: "pointer" }}
                         onClick={() => handleSectionChange("notifications")}
@@ -199,9 +168,7 @@ const Settings = () => {
                         Email Notifications
                       </span>
                     </li>
-                    <li
-                      className={pSection === "delete" ? "options-active" : ""}
-                    >
+                    <li className={pSection === "delete" ? "options-active" : ""}>
                       <span
                         style={{ cursor: "pointer" }}
                         onClick={() => handleSectionChange("delete")}
@@ -210,22 +177,13 @@ const Settings = () => {
                       </span>
                     </li>
                   </ul>
-                  <DropDownMenu
-                    pSection={pSection}
-                    handleSectionChange={handleSectionChange}
-                  />
+                  <DropDownMenu pSection={pSection} handleSectionChange={handleSectionChange} />
                 </div>
-                <div
-                  className={`profile-settings-menu-section ${
-                    fade ? "fade-in" : "fade-out"
-                  }`}
-                >
+                <div className={`profile-settings-menu-section ${fade ? "fade-in" : "fade-out"}`}>
                   {pSection === "general" && <General />}
                   {pSection === "profile" && <Profile />}
                   {pSection === "password" && <Password />}
-                  {pSection === "notifications" && (
-                    <Notifications pSection="notifications" />
-                  )}
+                  {pSection === "notifications" && <Notifications pSection="notifications" />}
                   {pSection === "delete" && <DeleteAccount />}
                 </div>
               </div>

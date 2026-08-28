@@ -1,7 +1,6 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 const SuccessMessage = ({ isSuccess, successMssg }) => {
-
   const handleClose = (event) => {
     const box = event.target.parentElement;
     box.classList.add("hideit");
@@ -24,7 +23,7 @@ const SuccessMessage = ({ isSuccess, successMssg }) => {
 
 SuccessMessage.propTypes = {
   isSuccess: PropTypes.bool,
-  successMssg: PropTypes.string
+  successMssg: PropTypes.string,
 };
 
 export default SuccessMessage;

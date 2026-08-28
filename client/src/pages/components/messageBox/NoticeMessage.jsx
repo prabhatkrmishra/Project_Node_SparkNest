@@ -1,7 +1,6 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 const NoticeMessage = ({ showMssg, noticeMssg }) => {
-
   const handleClose = (event) => {
     const box = event.target.parentElement;
     box.classList.add("hideit");
@@ -24,7 +23,7 @@ const NoticeMessage = ({ showMssg, noticeMssg }) => {
 
 NoticeMessage.propTypes = {
   showMssg: PropTypes.bool,
-  noticeMssg: PropTypes.string
+  noticeMssg: PropTypes.string,
 };
 
 export default NoticeMessage;

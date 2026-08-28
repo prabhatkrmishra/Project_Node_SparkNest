@@ -3,11 +3,7 @@ import Cookies from "js-cookie";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 
-import {
-  checkLikedArticle,
-  likeArticleUser,
-  unlikeArticleUser,
-} from "../../../api/ARTICLESAPI";
+import { checkLikedArticle, likeArticleUser, unlikeArticleUser } from "../../../api/ARTICLESAPI";
 
 const likeDisabled = (props) => (
   <Tooltip id="button-tooltip" {...props}>
@@ -84,11 +80,7 @@ const Like = ({ articleId }) => {
     <span className="like-article-span">
       {!liked && (
         <span className="disabled-like-article" onClick={likeArticle}>
-          <OverlayTrigger
-            placement="right"
-            delay={{ show: 250, hide: 400 }}
-            overlay={likeDisabled}
-          >
+          <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={likeDisabled}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               x="0px"
@@ -104,11 +96,7 @@ const Like = ({ articleId }) => {
       )}
       {liked && (
         <span className="enabled-like-article" onClick={unLikeArticle}>
-          <OverlayTrigger
-            placement="right"
-            delay={{ show: 250, hide: 400 }}
-            overlay={likeEnabled}
-          >
+          <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={likeEnabled}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               x="0px"

@@ -59,16 +59,9 @@ const ForgotPassword = () => {
       </Helmet>
       <PreLoader />
       <div id="page" className="s-pagewrap">
-        <section
-          id="content"
-          className="s-content"
-          style={{ paddingTop: "130px" }}
-        >
+        <section id="content" className="s-content" style={{ paddingTop: "130px" }}>
           <div className="row d-flex justify-content-center mb-lg-5">
-            <div
-              className="column lg-6 tab-12"
-              style={{ paddingBottom: "50px" }}
-            >
+            <div className="column lg-6 tab-12" style={{ paddingBottom: "50px" }}>
               <SuccessMessage isSuccess={isSuccess} successMssg={mssg} />
               {countdown < 1 && (
                 <p>
@@ -77,8 +70,7 @@ const ForgotPassword = () => {
               )}
               {countdown > 0 && (
                 <p>
-                  Please wait <b>{countdown}</b> seconds before requesting a new
-                  link.
+                  Please wait <b>{countdown}</b> seconds before requesting a new link.
                 </p>
               )}
               <form onSubmit={handleSubmit}>

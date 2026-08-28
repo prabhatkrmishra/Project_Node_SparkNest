@@ -1,10 +1,10 @@
 import express from "express";
 
 import {
-    fetchComment,
-    createComment,
-    updateComment,
-    deleteComment,
+  fetchComment,
+  createComment,
+  updateComment,
+  deleteComment,
 } from "../controllers/commentController.js";
 
 const commentRouter = express.Router();

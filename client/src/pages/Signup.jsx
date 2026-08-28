@@ -90,16 +90,9 @@ const SignUp = () => {
       <PreLoader />
       <div id="page" className="s-pagewrap">
         <Header />
-        <section
-          id="content"
-          className="s-content"
-          style={{ paddingTop: "130px" }}
-        >
+        <section id="content" className="s-content" style={{ paddingTop: "130px" }}>
           <div className="row d-flex justify-content-center mb-lg-5">
-            <div
-              className="column lg-6 tab-12"
-              style={{ paddingBottom: "50px" }}
-            >
+            <div className="column lg-6 tab-12" style={{ paddingBottom: "50px" }}>
               <div>
                 <h2
                   className="d-flex justify-content-center u-add-bottom mb-xxl-5"
@@ -138,10 +131,7 @@ const SignUp = () => {
                   />
                 </div>
                 {/*  <!-- Mid Text --> */}
-                <div
-                  className="text-center fw-bold mx-3 text-muted"
-                  style={{ textWrap: "nowrap" }}
-                >
+                <div className="text-center fw-bold mx-3 text-muted" style={{ textWrap: "nowrap" }}>
                   OR
                 </div>
                 {/* <!-- Right horizontal border --> */}
@@ -238,10 +228,7 @@ const SignUp = () => {
                 <button type="submit" className="btn--primary u-fullwidth mb-5">
                   Sign Up
                 </button>
-                <label
-                  className="u-add-bottom"
-                  style={{ margin: "0 0", textAlign: "center" }}
-                >
+                <label className="u-add-bottom" style={{ margin: "0 0", textAlign: "center" }}>
                   <span className="label-text" htmlFor="loginCheck">
                     Already have an account?{" "}
                     <a className="label-text " href="/session/new">

@@ -1,7 +1,4 @@
-import {
-  getCategories,
-  getAllCategories
-} from "../models/categoriesModel.js";
+import { getCategories, getAllCategories } from "../models/categoriesModel.js";
 
 /**
  * Fetch image for article body

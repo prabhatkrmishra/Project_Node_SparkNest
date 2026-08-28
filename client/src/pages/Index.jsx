@@ -22,7 +22,7 @@ const Index = () => {
         <Header />
         <section id="content" className="s-content">
           <HomeBanner />
-          <RenderPreviews url={url} type={type}/>
+          <RenderPreviews url={url} type={type} />
         </section>
         <Footer />
       </div>

@@ -5,8 +5,8 @@ import Like from "./Like";
 const Main = ({ articleId }) => {
   return (
     <div className="save-like">
-      <Save articleId={articleId}/>
-      <Like articleId={articleId}/>
+      <Save articleId={articleId} />
+      <Like articleId={articleId} />
     </div>
   );
 };

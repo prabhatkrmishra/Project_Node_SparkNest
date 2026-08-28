@@ -50,9 +50,7 @@ const Categories = () => {
   }, []);
 
   useEffect(() => {
-    setHasCategories(
-      groupedCategories && Object.keys(groupedCategories).length > 0
-    );
+    setHasCategories(groupedCategories && Object.keys(groupedCategories).length > 0);
   }, [groupedCategories]);
 
   useEffect(() => {
@@ -61,8 +59,7 @@ const Categories = () => {
       const checkIfBricksLoaded = () => {
         const bricksContainer = bricksRef.current;
         if (bricksContainer) {
-          const brickElements =
-            bricksContainer.querySelectorAll(".brick.entry");
+          const brickElements = bricksContainer.querySelectorAll(".brick.entry");
           if (brickElements.length === Object.keys(groupedCategories).length) {
             setShouldAnimate(!shouldAnimate);
           }
@@ -85,10 +82,7 @@ const Categories = () => {
         <section id="content" className="s-content">
           <div className="s-pageheader">
             <div id="bricks" className="bricks" style={{ paddingTop: "0px" }}>
-              <div
-                className={`masonry ${!hasCategories ? "no-articles" : ""}`}
-                ref={bricksRef}
-              >
+              <div className={`masonry ${!hasCategories ? "no-articles" : ""}`} ref={bricksRef}>
                 <div className="bricks-wrapper" data-animate-block>
                   <div className="grid-sizer"></div>
                   {hasCategories &&
@@ -100,9 +94,7 @@ const Categories = () => {
                         <ul className="categories-ul">
                           {groupedCategories[word].map((category) => (
                             <li className="categories-li" key={category.id}>
-                              <a href={`/category/${category.name}`}>
-                                {category.name}
-                              </a>
+                              <a href={`/category/${category.name}`}>{category.name}</a>
                             </li>
                           ))}
                         </ul>

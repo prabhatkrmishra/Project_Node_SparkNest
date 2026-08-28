@@ -121,7 +121,7 @@ export async function getAllLikedArticles(userId, limit, offset) {
     LIMIT $2 OFFSET $3;
     `;
 
-    const countQuery = `
+  const countQuery = `
     SELECT
     COUNT
       (la.user_id) AS total_count

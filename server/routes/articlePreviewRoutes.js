@@ -1,9 +1,9 @@
 import express from "express";
 
 import {
-    getArticlePreview,
-    getAllArticlePreview,
-    getAllArticlePreviewCategory
+  getArticlePreview,
+  getAllArticlePreview,
+  getAllArticlePreviewCategory,
 } from "../controllers/articlePreviewController.js";
 
 const articlePreviewRouter = express.Router();

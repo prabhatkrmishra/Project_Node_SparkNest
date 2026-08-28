@@ -49,7 +49,9 @@ const DeleteAccount = () => {
     <>
       <form onSubmit={handleSubmit}>
         <div>
-          <label className="profile-label-styles" htmlFor="consentBox">Type {`'YES'`}</label>
+          <label className="profile-label-styles" htmlFor="consentBox">
+            Type {`'YES'`}
+          </label>
           <input
             className="u-fullwidth profile-input-styles"
             type="text"
@@ -59,7 +61,10 @@ const DeleteAccount = () => {
             value={consent}
           />
         </div>
-        <button className="btn--primary u-quartorwidth profile-button-styles delete-button" type="submit">
+        <button
+          className="btn--primary u-quartorwidth profile-button-styles delete-button"
+          type="submit"
+        >
           DELETE
         </button>
       </form>

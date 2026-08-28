@@ -181,14 +181,8 @@ export async function updateArticle(req, res) {
     });
   }
 
-  const {
-    article_id,
-    article_title,
-    article_body,
-    preview_id,
-    preview_title,
-    preview_subtitle,
-  } = req.body;
+  const { article_id, article_title, article_body, preview_id, preview_title, preview_subtitle } =
+    req.body;
 
   const imageFile = req.file;
 

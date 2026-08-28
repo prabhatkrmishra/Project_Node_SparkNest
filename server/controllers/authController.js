@@ -44,7 +44,9 @@ export async function signup(req, res) {
       console.warn("subscribeUser failed:", e.message);
     }
 
-    res.status(201).json({ message: "User registered successfully.", user: stripPassword(newUser) });
+    res
+      .status(201)
+      .json({ message: "User registered successfully.", user: stripPassword(newUser) });
   } catch (err) {
     console.error("Error during signup:", err);
     res.status(500).json({ message: "Internal Server Error" });
@@ -139,4 +141,4 @@ export const googleAuthCallback = (req, res) => {
       return res.redirect(`${env.FRONTEND_ADDRESS}/google/success`);
     });
   })(req, res);
-}
+};

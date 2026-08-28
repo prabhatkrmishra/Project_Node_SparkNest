@@ -37,10 +37,7 @@ const CreateComment = (prop) => {
       });
     } catch (error) {
       console.log(error);
-      if (
-        error &&
-        (error.response.status == 403 || error.response.status == 400)
-      ) {
+      if (error && (error.response.status == 403 || error.response.status == 400)) {
         window.location.href = "/session/new";
       }
     }
@@ -49,12 +46,7 @@ const CreateComment = (prop) => {
   return (
     <div className="comment-respond">
       <div id="respond">
-        <form
-          name="contactForm"
-          id="contactForm"
-          onSubmit={handleSubmit}
-          autoComplete="off"
-        >
+        <form name="contactForm" id="contactForm" onSubmit={handleSubmit} autoComplete="off">
           <fieldset className="row">
             <div className="column lg-12 message form-field">
               <textarea
@@ -84,12 +76,7 @@ const CreateComment = (prop) => {
         </form>
       </div>
       <div className="comment-login-modal">
-        <Modal
-          show={show}
-          onHide={handleClose}
-          backdrop="static"
-          keyboard={false}
-        >
+        <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
           <Modal.Body>For adding comment you have to login/singup.</Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleLogin}>

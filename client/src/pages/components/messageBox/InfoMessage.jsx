@@ -1,7 +1,6 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 const InfoMessage = ({ showMssg, infoMssg }) => {
-
   const handleClose = (event) => {
     const box = event.target.parentElement;
     box.classList.add("hideit");
@@ -24,7 +23,7 @@ const InfoMessage = ({ showMssg, infoMssg }) => {
 
 InfoMessage.propTypes = {
   showMssg: PropTypes.bool,
-  infoMssg: PropTypes.string
+  infoMssg: PropTypes.string,
 };
 
 export default InfoMessage;

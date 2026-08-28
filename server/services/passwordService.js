@@ -164,8 +164,7 @@ export const updateNewPasswords = async (req, res) => {
     const updateResult = await updateResetPassword(email, hashedPassword);
     if (!updateResult) {
       return res.status(400).json({
-        message:
-          "There was an error updating your password. Please try again later.",
+        message: "There was an error updating your password. Please try again later.",
       });
     }
 

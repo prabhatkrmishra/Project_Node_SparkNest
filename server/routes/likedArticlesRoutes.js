@@ -13,10 +13,7 @@ const likedArticlesRouter = express.Router();
  * @description Check if a user has saved a specific article
  * @access Private
  */
-likedArticlesRouter.get(
-  "/articles/checkliked/:userId/:articleId",
-  isLikedArticle
-);
+likedArticlesRouter.get("/articles/checkliked/:userId/:articleId", isLikedArticle);
 
 /**
  * @route POST /articles/like

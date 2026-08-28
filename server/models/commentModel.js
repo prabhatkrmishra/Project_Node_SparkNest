@@ -98,7 +98,7 @@ export async function setComment(article_id, commentBody) {
       parent_comment_id,
       name,
       email,
-      body
+      body,
     ]);
     return result.rows[0];
   } catch (error) {

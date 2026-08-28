@@ -271,9 +271,7 @@ export async function updatePreviewArticle(id, updatedPreview) {
   });
   values.push(id);
 
-  const query = `UPDATE articles_preview SET ${setClauses.join(
-    ", "
-  )} WHERE id = $${index}`;
+  const query = `UPDATE articles_preview SET ${setClauses.join(", ")} WHERE id = $${index}`;
 
   try {
     const result = await db.query(query, values);

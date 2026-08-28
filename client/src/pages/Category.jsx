@@ -30,10 +30,7 @@ const Category = () => {
             <div className="row">
               <div className="column large-12">
                 <h1 className="page-title">
-                  <span
-                    className="page-title__small-type"
-                    style={{ marginBottom: "25px" }}
-                  >
+                  <span className="page-title__small-type" style={{ marginBottom: "25px" }}>
                     Category:
                   </span>
                   {category}
@@ -41,7 +38,7 @@ const Category = () => {
               </div>
             </div>
           </div>
-          <RenderPreviews url={url} type={ctype}/>
+          <RenderPreviews url={url} type={ctype} />
         </section>
         <Footer />
       </div>

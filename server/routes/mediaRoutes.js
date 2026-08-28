@@ -1,11 +1,11 @@
 import express from "express";
 import {
-    fetchMedia,
-    fetchPreviewMedia,
-    fetchAllProfileAvatar,
-    fetchSingleProfileAvatar,
-    fetchCustomProfileAvatar,
-    fetchCommentDefaultAvatar
+  fetchMedia,
+  fetchPreviewMedia,
+  fetchAllProfileAvatar,
+  fetchSingleProfileAvatar,
+  fetchCustomProfileAvatar,
+  fetchCommentDefaultAvatar,
 } from "../controllers/mediaController.js";
 
 const mediaRouter = express.Router();

@@ -43,11 +43,7 @@ const UserProfile = () => {
       <PreLoader />
       <div id="page" className="s-pagewrap">
         <Header />
-        <section
-          id="content"
-          className="s-content user-profile"
-          style={{ paddingTop: "130px" }}
-        >
+        <section id="content" className="s-content user-profile" style={{ paddingTop: "130px" }}>
           <div
             className="d-flex flex-column justify-content-center align-items-center row entry-wrap"
             style={{
@@ -97,10 +93,12 @@ const UserProfile = () => {
               </div>
             </div>
             <div className="profile-creation-box">
-              <h3 className="profile-creation-heading"><span>CREATIONS</span></h3>
+              <h3 className="profile-creation-heading">
+                <span>CREATIONS</span>
+              </h3>
             </div>
           </div>
-          <RenderPreviews url={url} type={type}/>
+          <RenderPreviews url={url} type={type} />
         </section>
         <Footer />
       </div>

@@ -12,14 +12,11 @@ const MobileMenu = () => {
 
     const handleResize = () => {
       if (window.matchMedia("(min-width: 1201px)").matches) {
-        if (siteBody.classList.contains("menu-is-open"))
-          siteBody.classList.remove("menu-is-open");
+        if (siteBody.classList.contains("menu-is-open")) siteBody.classList.remove("menu-is-open");
         if (toggleButton.classList.contains("is-clicked"))
           toggleButton.classList.remove("is-clicked");
         if (!scrollLock.getScrollState()) scrollLock.enablePageScroll();
-        parentMenus.forEach((current) =>
-          current.classList.remove("sub-menu-is-open")
-        );
+        parentMenus.forEach((current) => current.classList.remove("sub-menu-is-open"));
       }
     };
 
@@ -38,9 +35,7 @@ const MobileMenu = () => {
       const target = e.target.closest(".has-children");
       if (!target) return;
       if (!target.classList.contains("sub-menu-is-open")) {
-        parentMenus.forEach((current) =>
-          current.classList.remove("sub-menu-is-open")
-        );
+        parentMenus.forEach((current) => current.classList.remove("sub-menu-is-open"));
         target.classList.add("sub-menu-is-open");
       } else {
         target.classList.remove("sub-menu-is-open");

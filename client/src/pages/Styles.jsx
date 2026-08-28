@@ -39,15 +39,12 @@ const Styles = () => {
                 <div className="row">
                   <div className="column lg-12">
                     <p className="lead">
-                      Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-                      Donec libero. Suspendisse bibendum. Cras id urna. Morbi
-                      tincidunt, orci ac convallis aliquam, lectus turpis varius
-                      lorem, eu posuere nunc justo tempus leo. Donec mattis,
-                      purus nec placerat bibendum. Aut magni nemo rerum iure
-                      illo. Odit aperiam doloribus fuga qui architecto
-                      consectetur rerum commodi. Quidem nihil molestiae
-                      veritatis quis. Inventore non voluptatem ratione magni
-                      nemo.
+                      Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec libero.
+                      Suspendisse bibendum. Cras id urna. Morbi tincidunt, orci ac convallis
+                      aliquam, lectus turpis varius lorem, eu posuere nunc justo tempus leo. Donec
+                      mattis, purus nec placerat bibendum. Aut magni nemo rerum iure illo. Odit
+                      aperiam doloribus fuga qui architecto consectetur rerum commodi. Quidem nihil
+                      molestiae veritatis quis. Inventore non voluptatem ratione magni nemo.
                     </p>
                   </div>
                 </div>
@@ -66,33 +63,27 @@ const Styles = () => {
                           src="/images/sample-image.jpg"
                         />
                       </a>
-                      Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-                      Donec libero. Suspendisse bibendum.Cras id urna. Morbi
-                      tincidunt, orci ac convallis aliquam, lectus turpis varius
-                      lorem, eu posuere nunc justo tempus leo. Donec mattis,
-                      purus nec placerat bibendum, dui pede condimentum odio, ac
-                      blandit ante orci ut diam. Cras fringilla magna. Phasellus
-                      suscipit, leo a pharetra condimentum, lorem tellus
-                      eleifend magna, eget fringilla velit magna id neque
-                      posuere nunc justo tempus leo.{" "}
+                      Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec libero.
+                      Suspendisse bibendum.Cras id urna. Morbi tincidunt, orci ac convallis aliquam,
+                      lectus turpis varius lorem, eu posuere nunc justo tempus leo. Donec mattis,
+                      purus nec placerat bibendum, dui pede condimentum odio, ac blandit ante orci
+                      ut diam. Cras fringilla magna. Phasellus suscipit, leo a pharetra condimentum,
+                      lorem tellus eleifend magna, eget fringilla velit magna id neque posuere nunc
+                      justo tempus leo.{" "}
                     </p>
 
                     <p>
-                      Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-                      Donec libero. Suspendisse bibendum. Cras id urna. Morbi
-                      tincidunt, orci ac convallis aliquam, lectus turpis varius
-                      lorem, eu posuere nunc justo tempus leo. Donec mattis,
-                      purus nec placerat bibendum, dui pede condimentumodio, ac
-                      blandit ante orci ut diam.
+                      Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec libero.
+                      Suspendisse bibendum. Cras id urna. Morbi tincidunt, orci ac convallis
+                      aliquam, lectus turpis varius lorem, eu posuere nunc justo tempus leo. Donec
+                      mattis, purus nec placerat bibendum, dui pede condimentumodio, ac blandit ante
+                      orci ut diam.
                     </p>
 
                     <p>
                       A <a href="#">link</a>,
-                      <abbr title="this really isn't a very good description">
-                        abbrebation
-                      </abbr>
-                      ,<strong>strong text</strong>,<em>em text</em>,
-                      <del>deleted text</del>, and
+                      <abbr title="this really isn't a very good description">abbrebation</abbr>,
+                      <strong>strong text</strong>,<em>em text</em>,<del>deleted text</del>, and
                       <mark>this is a mark text.</mark>
                       <code>.code</code>
                     </p>
@@ -102,26 +93,22 @@ const Styles = () => {
                     <h3>Drop Caps</h3>
 
                     <p className="drop-cap">
-                      Far far away, behind the word mountains, far from the
-                      countries Vokalia and Consonantia, there live the blind
-                      texts. Separated they live in Bookmarksgrove right at the
-                      coast of the Semantics, a large language ocean. A small
-                      river named Duden flows by their place and supplies it
-                      with the necessary regelialia. Morbi tincidunt, orci ac
-                      convallis aliquam, lectus turpis varius lorem, euposuere
-                      nunc justo tempus leo. Donec mattis, purus nec placerat
-                      bibendum, dui pede condimentum odio, ac blandit ante orci
-                      ut diam. Cras fringilla magna. Phasellus suscipit, leo a
-                      pharetra condimentum, lorem tellus eleifend magna, eget
-                      fringilla velit magna id neque.
+                      Far far away, behind the word mountains, far from the countries Vokalia and
+                      Consonantia, there live the blind texts. Separated they live in Bookmarksgrove
+                      right at the coast of the Semantics, a large language ocean. A small river
+                      named Duden flows by their place and supplies it with the necessary
+                      regelialia. Morbi tincidunt, orci ac convallis aliquam, lectus turpis varius
+                      lorem, euposuere nunc justo tempus leo. Donec mattis, purus nec placerat
+                      bibendum, dui pede condimentum odio, ac blandit ante orci ut diam. Cras
+                      fringilla magna. Phasellus suscipit, leo a pharetra condimentum, lorem tellus
+                      eleifend magna, eget fringilla velit magna id neque.
                     </p>
 
                     <h3>Small Print</h3>
 
                     <p>
                       <small>
-                        Lorem ipsum dolor sit amet, consectetuer adipiscing
-                        elit. Donec libero.
+                        Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec libero.
                       </small>
                     </p>
                   </div>
@@ -132,20 +119,17 @@ const Styles = () => {
                     <h3 className="u-add-bottom">Pull Quotes</h3>
 
                     <p>
-                      Perspiciatis nemo unde et nobis modi consequatur officia
-                      amet. Ut enim tenetur provident maiores. Perspiciatis
-                      asperiores incidunt sequi quisquam. Enim aut.
+                      Perspiciatis nemo unde et nobis modi consequatur officia amet. Ut enim tenetur
+                      provident maiores. Perspiciatis asperiores incidunt sequi quisquam. Enim aut.
                     </p>
 
                     <figure className="pull-quote">
                       <blockquote>
                         <p>
-                          When you look in the eyes of grace, when you meet
-                          grace, when you embrace grace, when you see the nail
-                          prints in grace’s hands and the fire in his eyes, when
-                          you feel his relentless love for you - it will not
-                          motivate you to sin. It will motivate you to
-                          righteousness.
+                          When you look in the eyes of grace, when you meet grace, when you embrace
+                          grace, when you see the nail prints in grace’s hands and the fire in his
+                          eyes, when you feel his relentless love for you - it will not motivate you
+                          to sin. It will motivate you to righteousness.
                         </p>
 
                         <footer>
@@ -160,11 +144,10 @@ const Styles = () => {
 
                     <blockquote cite="http://where-i-got-my-info-from.com">
                       <p>
-                        For God so loved the world, that he gave his only Son,
-                        that whoever believes in him should not perish but have
-                        eternal life. For God did not send his Son into the
-                        world to condemn the world, but in order that the world
-                        might be saved through him.
+                        For God so loved the world, that he gave his only Son, that whoever believes
+                        in him should not perish but have eternal life. For God did not send his Son
+                        into the world to condemn the world, but in order that the world might be
+                        saved through him.
                       </p>
 
                       <footer>
@@ -176,9 +159,8 @@ const Styles = () => {
 
                     <blockquote>
                       <p>
-                        There is a God-shaped vacuum in the heart of each man
-                        which cannot be satisfied by any created thing but only
-                        by God the Creator.
+                        There is a God-shaped vacuum in the heart of each man which cannot be
+                        satisfied by any created thing but only by God the Creator.
                       </p>
 
                       <footer>
@@ -220,17 +202,15 @@ const Styles = () => {
                         <strong>This is a term</strong>
                       </dt>
                       <dd>
-                        this is the definition of that term, which both live in
-                        a <code>dl</code>.
+                        this is the definition of that term, which both live in a <code>dl</code>.
                       </dd>
                       <dt>
                         <strong>Another Term</strong>
                       </dt>
                       <dd>And it gets a definition too, which is this line</dd>
                       <dd>
-                        This is a 2<sup>nd</sup> definition for a single term. A{" "}
-                        <code>dt</code> may be followed by multiple{" "}
-                        <code>dd</code>s.
+                        This is a 2<sup>nd</sup> definition for a single term. A <code>dt</code> may
+                        be followed by multiple <code>dd</code>s.
                       </dd>
                     </dl>
 
@@ -358,71 +338,53 @@ const Styles = () => {
 
                 <div className="row u-add-half-bottom">
                   <div className="column lg-6 tab-12">
-                    <h1>
-                      H1 Heading Doloremque dolor voluptas est sequi omnis.
-                    </h1>
+                    <h1>H1 Heading Doloremque dolor voluptas est sequi omnis.</h1>
                     <p>
-                      Doloremque dolor voluptas est sequi omnis. Pariatur ut
-                      aut. Sed enim tempora qui veniam qui cum vel. Voluptas
-                      odit at vitae minima. In assumenda ut. Voluptatem totam
-                      impedit accusantium reiciendis excepturi aut qui accusamus
+                      Doloremque dolor voluptas est sequi omnis. Pariatur ut aut. Sed enim tempora
+                      qui veniam qui cum vel. Voluptas odit at vitae minima. In assumenda ut.
+                      Voluptatem totam impedit accusantium reiciendis excepturi aut qui accusamus
                       praesentium.
                     </p>
 
-                    <h2>
-                      H2 Heading Doloremque dolor voluptas est sequi omnis.
-                    </h2>
+                    <h2>H2 Heading Doloremque dolor voluptas est sequi omnis.</h2>
                     <p>
-                      Doloremque dolor voluptas est sequi omnis. Pariatur ut
-                      aut. Sed enim tempora qui veniam qui cum vel. Voluptas
-                      odit at vitae minima. In assumenda ut. Voluptatem totam
-                      impedit accusantium reiciendis excepturi aut qui accusamus
+                      Doloremque dolor voluptas est sequi omnis. Pariatur ut aut. Sed enim tempora
+                      qui veniam qui cum vel. Voluptas odit at vitae minima. In assumenda ut.
+                      Voluptatem totam impedit accusantium reiciendis excepturi aut qui accusamus
                       praesentium.
                     </p>
 
-                    <h3>
-                      H3 Heading Doloremque dolor voluptas est sequi omnis.
-                    </h3>
+                    <h3>H3 Heading Doloremque dolor voluptas est sequi omnis.</h3>
                     <p>
-                      Doloremque dolor voluptas est sequi omnis. Pariatur ut
-                      aut. Sed enim tempora qui veniam qui cum vel. Voluptas
-                      odit at vitae minima. In assumenda ut. Voluptatem totam
-                      impedit accusantium reiciendis excepturi aut qui accusamus
+                      Doloremque dolor voluptas est sequi omnis. Pariatur ut aut. Sed enim tempora
+                      qui veniam qui cum vel. Voluptas odit at vitae minima. In assumenda ut.
+                      Voluptatem totam impedit accusantium reiciendis excepturi aut qui accusamus
                       praesentium.
                     </p>
                   </div>
 
                   <div className="column lg-6 tab-12">
-                    <h4>
-                      H4 Heading Doloremque dolor voluptas est sequi omnis.
-                    </h4>
+                    <h4>H4 Heading Doloremque dolor voluptas est sequi omnis.</h4>
                     <p>
-                      Doloremque dolor voluptas est sequi omnis. Pariatur ut
-                      aut. Sed enim tempora qui veniam qui cum vel. Voluptas
-                      odit at vitae minima. In assumenda ut. Voluptatem totam
-                      impedit accusantium reiciendis excepturi aut qui accusamus
+                      Doloremque dolor voluptas est sequi omnis. Pariatur ut aut. Sed enim tempora
+                      qui veniam qui cum vel. Voluptas odit at vitae minima. In assumenda ut.
+                      Voluptatem totam impedit accusantium reiciendis excepturi aut qui accusamus
                       praesentium.
                     </p>
 
-                    <h5>
-                      H5 Heading Doloremque dolor voluptas est sequi omnis.
-                    </h5>
+                    <h5>H5 Heading Doloremque dolor voluptas est sequi omnis.</h5>
                     <p>
-                      Doloremque dolor voluptas est sequi omnis. Pariatur ut
-                      aut. Sed enim tempora qui veniam qui cum vel. Voluptas
-                      odit at vitae minima. In assumenda ut. Voluptatem totam
-                      impedit accusantium reiciendis excepturi aut qui accusamus
+                      Doloremque dolor voluptas est sequi omnis. Pariatur ut aut. Sed enim tempora
+                      qui veniam qui cum vel. Voluptas odit at vitae minima. In assumenda ut.
+                      Voluptatem totam impedit accusantium reiciendis excepturi aut qui accusamus
                       praesentium.
                     </p>
 
-                    <h6>
-                      H6 Heading Doloremque dolor voluptas est sequi omnis.
-                    </h6>
+                    <h6>H6 Heading Doloremque dolor voluptas est sequi omnis.</h6>
                     <p>
-                      Doloremque dolor voluptas est sequi omnis. Pariatur ut
-                      aut. Sed enim tempora qui veniam qui cum vel. Voluptas
-                      odit at vitae minima. In assumenda ut. Voluptatem totam
-                      impedit accusantium reiciendis excepturi aut qui accusamus
+                      Doloremque dolor voluptas est sequi omnis. Pariatur ut aut. Sed enim tempora
+                      qui veniam qui cum vel. Voluptas odit at vitae minima. In assumenda ut.
+                      Voluptatem totam impedit accusantium reiciendis excepturi aut qui accusamus
                       praesentium.
                     </p>
                   </div>
@@ -461,9 +423,8 @@ const Styles = () => {
                   <div className="column lg-12">
                     <h3>Tables</h3>
                     <p>
-                      Be sure to use properly formed table markup with{" "}
-                      <code>&lt;thead&gt;</code> and <code>&lt;tbody&gt;</code>{" "}
-                      when building a <code>table</code>.
+                      Be sure to use properly formed table markup with <code>&lt;thead&gt;</code>{" "}
+                      and <code>&lt;tbody&gt;</code> when building a <code>table</code>.
                     </p>
 
                     <div className="table-responsive">
@@ -503,12 +464,7 @@ const Styles = () => {
                       <ul>
                         <li>
                           <a className="pgn__prev" href="#0">
-                            <svg
-                              width="24"
-                              height="24"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                            >
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
                               <path
                                 stroke="currentColor"
                                 strokeLinecap="round"
@@ -559,12 +515,7 @@ const Styles = () => {
                         </li>
                         <li>
                           <a className="pgn__next" href="#0">
-                            <svg
-                              width="24"
-                              height="24"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                            >
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
                               <path
                                 stroke="currentColor"
                                 strokeLinecap="round"
@@ -602,14 +553,9 @@ const Styles = () => {
                         />
                       </div>
                       <div>
-                        <label htmlFor="sampleRecipientInput">
-                          Reason for contacting
-                        </label>
+                        <label htmlFor="sampleRecipientInput">Reason for contacting</label>
                         <div className="ss-custom-select">
-                          <select
-                            className="u-fullwidth"
-                            id="sampleRecipientInput"
-                          >
+                          <select className="u-fullwidth" id="sampleRecipientInput">
                             <option value="Option 1">Questions</option>
                             <option value="Option 2">Report</option>
                             <option value="Option 3">Others</option>
@@ -626,16 +572,10 @@ const Styles = () => {
 
                       <label className="u-add-bottom">
                         <input type="checkbox" />
-                        <span className="label-text">
-                          Send a copy to yourself
-                        </span>
+                        <span className="label-text">Send a copy to yourself</span>
                       </label>
 
-                      <input
-                        className="btn--primary u-fullwidth"
-                        type="submit"
-                        value="Submit"
-                      />
+                      <input className="btn--primary u-fullwidth" type="submit" value="Submit" />
                     </form>
                   </div>
 
@@ -675,28 +615,25 @@ const Styles = () => {
                 <div className="row">
                   <div className="lg-4 mob-12 column">
                     <p>
-                      Cras aliquet. Integer faucibus, eros ac molestie placerat,
-                      enim tellus varius lacus, nec dictum nunc tortor id urna.
-                      Suspendisse dapibus ullamcorper pede. Vivamus ligula
-                      ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
+                      Cras aliquet. Integer faucibus, eros ac molestie placerat, enim tellus varius
+                      lacus, nec dictum nunc tortor id urna. Suspendisse dapibus ullamcorper pede.
+                      Vivamus ligula ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
                     </p>
                   </div>
 
                   <div className="lg-4 mob-12 column">
                     <p>
-                      Cras aliquet. Integer faucibus, eros ac molestie placerat,
-                      enim tellus varius lacus, nec dictum nunc tortor id urna.
-                      Suspendisse dapibus ullamcorper pede. Vivamus ligula
-                      ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
+                      Cras aliquet. Integer faucibus, eros ac molestie placerat, enim tellus varius
+                      lacus, nec dictum nunc tortor id urna. Suspendisse dapibus ullamcorper pede.
+                      Vivamus ligula ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
                     </p>
                   </div>
 
                   <div className="lg-4 mob-12 column">
                     <p>
-                      Cras aliquet. Integer faucibus, eros ac molestie placerat,
-                      enim tellus varius lacus, nec dictum nunc tortor id urna.
-                      Suspendisse dapibus ullamcorper pede. Vivamus ligula
-                      ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
+                      Cras aliquet. Integer faucibus, eros ac molestie placerat, enim tellus varius
+                      lacus, nec dictum nunc tortor id urna. Suspendisse dapibus ullamcorper pede.
+                      Vivamus ligula ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
                     </p>
                   </div>
                 </div>
@@ -704,37 +641,33 @@ const Styles = () => {
                 <div className="row">
                   <div className="lg-3 tab-6 mob-12 column">
                     <p>
-                      Cras aliquet. Integer faucibus, eros ac molestie placerat,
-                      enim tellus varius lacus, nec dictum nunc tortor id urna.
-                      Suspendisse dapibus ullamcorper pede. Vivamus ligula
-                      ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
+                      Cras aliquet. Integer faucibus, eros ac molestie placerat, enim tellus varius
+                      lacus, nec dictum nunc tortor id urna. Suspendisse dapibus ullamcorper pede.
+                      Vivamus ligula ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
                     </p>
                   </div>
 
                   <div className="lg-3 tab-6 mob-12 column">
                     <p>
-                      Cras aliquet. Integer faucibus, eros ac molestie placerat,
-                      enim tellus varius lacus, nec dictum nunc tortor id urna.
-                      Suspendisse dapibus ullamcorper pede. Vivamus ligula
-                      ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
+                      Cras aliquet. Integer faucibus, eros ac molestie placerat, enim tellus varius
+                      lacus, nec dictum nunc tortor id urna. Suspendisse dapibus ullamcorper pede.
+                      Vivamus ligula ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
                     </p>
                   </div>
 
                   <div className="lg-3 tab-6 mob-12 column">
                     <p>
-                      Cras aliquet. Integer faucibus, eros ac molestie placerat,
-                      enim tellus varius lacus, nec dictum nunc tortor id urna.
-                      Suspendisse dapibus ullamcorper pede. Vivamus ligula
-                      ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
+                      Cras aliquet. Integer faucibus, eros ac molestie placerat, enim tellus varius
+                      lacus, nec dictum nunc tortor id urna. Suspendisse dapibus ullamcorper pede.
+                      Vivamus ligula ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
                     </p>
                   </div>
 
                   <div className="lg-3 tab-6 mob-12 column">
                     <p>
-                      Cras aliquet. Integer faucibus, eros ac molestie placerat,
-                      enim tellus varius lacus, nec dictum nunc tortor id urna.
-                      Suspendisse dapibus ullamcorper pede. Vivamus ligula
-                      ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
+                      Cras aliquet. Integer faucibus, eros ac molestie placerat, enim tellus varius
+                      lacus, nec dictum nunc tortor id urna. Suspendisse dapibus ullamcorper pede.
+                      Vivamus ligula ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
                     </p>
                   </div>
                 </div>
@@ -742,19 +675,17 @@ const Styles = () => {
                 <div className="row">
                   <div className="lg-6 mob-12 column">
                     <p>
-                      Cras aliquet. Integer faucibus, eros ac molestie placerat,
-                      enim tellus varius lacus, nec dictum nunc tortor id urna.
-                      Suspendisse dapibus ullamcorper pede. Vivamus ligula
-                      ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
+                      Cras aliquet. Integer faucibus, eros ac molestie placerat, enim tellus varius
+                      lacus, nec dictum nunc tortor id urna. Suspendisse dapibus ullamcorper pede.
+                      Vivamus ligula ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
                     </p>
                   </div>
 
                   <div className="lg-6 mob-12 column">
                     <p>
-                      Cras aliquet. Integer faucibus, eros ac molestie placerat,
-                      enim tellus varius lacus, nec dictum nunc tortor id urna.
-                      Suspendisse dapibus ullamcorper pede. Vivamus ligula
-                      ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
+                      Cras aliquet. Integer faucibus, eros ac molestie placerat, enim tellus varius
+                      lacus, nec dictum nunc tortor id urna. Suspendisse dapibus ullamcorper pede.
+                      Vivamus ligula ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
                     </p>
                   </div>
                 </div>
@@ -762,23 +693,20 @@ const Styles = () => {
                 <div className="row">
                   <div className="lg-8 tab-7 mob-12 column">
                     <p>
-                      Cras aliquet. Integer faucibus, eros ac molestie placerat,
-                      enim tellus varius lacus, nec dictum nunc tortor id urna.
-                      Suspendisse dapibus ullamcorper pede. Vivamus ligula
-                      ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
-                      Integer faucibus, eros ac molestie placerat, enim tellus
-                      varius lacus, nec dictum nunc tortor id urna. Suspendisse
-                      dapibus ullamcorper pede. Vivamus ligula ipsum, faucibus
-                      at, tincidunt eget, porttitor non, dolor.
+                      Cras aliquet. Integer faucibus, eros ac molestie placerat, enim tellus varius
+                      lacus, nec dictum nunc tortor id urna. Suspendisse dapibus ullamcorper pede.
+                      Vivamus ligula ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
+                      Integer faucibus, eros ac molestie placerat, enim tellus varius lacus, nec
+                      dictum nunc tortor id urna. Suspendisse dapibus ullamcorper pede. Vivamus
+                      ligula ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
                     </p>
                   </div>
 
                   <div className="lg-4 tab-5 mob-12 column">
                     <p>
-                      Cras aliquet. Integer faucibus, eros ac molestie placerat,
-                      enim tellus varius lacus, nec dictum nunc tortor id urna.
-                      Suspendisse dapibus ullamcorper pede. Vivamus ligula
-                      ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
+                      Cras aliquet. Integer faucibus, eros ac molestie placerat, enim tellus varius
+                      lacus, nec dictum nunc tortor id urna. Suspendisse dapibus ullamcorper pede.
+                      Vivamus ligula ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
                     </p>
                   </div>
                 </div>
@@ -786,27 +714,23 @@ const Styles = () => {
                 <div className="row">
                   <div className="lg-3 tab-5 mob-12 column">
                     <p>
-                      Cras aliquet. Integer faucibus, eros ac molestie placerat,
-                      enim tellus varius lacus, nec dictum nunc tortor id urna.
-                      Suspendisse dapibus ullamcorper pede. Vivamus ligula
-                      ipsum, faucibus at.
+                      Cras aliquet. Integer faucibus, eros ac molestie placerat, enim tellus varius
+                      lacus, nec dictum nunc tortor id urna. Suspendisse dapibus ullamcorper pede.
+                      Vivamus ligula ipsum, faucibus at.
                     </p>
                   </div>
 
                   <div className="lg-9 tab-7 mob-12 column">
                     <p>
-                      Cras aliquet. Integer faucibus, eros ac molestie placerat,
-                      enim tellus varius lacus, nec dictum nunc tortor id urna.
-                      Suspendisse dapibus ullamcorper pede. Vivamus ligula
-                      ipsum, faucibus at, tincidunt eget, porttitor non,
-                      dolor.Integer faucibus, eros ac molestie placerat, enim
-                      tellus varius lacus, nec dictum nunc tortor id urna.
-                      Suspendisse dapibus ullamcorper pede. Vivamus ligula
-                      ipsum, faucibus at, tincidunt eget, porttitor non, dolor.
-                      Integer faucibus, eros ac molestie placerat, enim tellus
-                      varius lacus, nec dictum nunc tortor id urna. Suspendisse
-                      dapibus ullamcorper pede. Vivamus ligula ipsum, faucibus
-                      at, tincidunt eget, porttitor non, dolor.
+                      Cras aliquet. Integer faucibus, eros ac molestie placerat, enim tellus varius
+                      lacus, nec dictum nunc tortor id urna. Suspendisse dapibus ullamcorper pede.
+                      Vivamus ligula ipsum, faucibus at, tincidunt eget, porttitor non,
+                      dolor.Integer faucibus, eros ac molestie placerat, enim tellus varius lacus,
+                      nec dictum nunc tortor id urna. Suspendisse dapibus ullamcorper pede. Vivamus
+                      ligula ipsum, faucibus at, tincidunt eget, porttitor non, dolor. Integer
+                      faucibus, eros ac molestie placerat, enim tellus varius lacus, nec dictum nunc
+                      tortor id urna. Suspendisse dapibus ullamcorper pede. Vivamus ligula ipsum,
+                      faucibus at, tincidunt eget, porttitor non, dolor.
                     </p>
                   </div>
                 </div>

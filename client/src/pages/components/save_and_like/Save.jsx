@@ -3,11 +3,7 @@ import Cookies from "js-cookie";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 
-import {
-  checkSavedArticle,
-  saveArticleUser,
-  unsaveArticleUser,
-} from "../../../api/ARTICLESAPI";
+import { checkSavedArticle, saveArticleUser, unsaveArticleUser } from "../../../api/ARTICLESAPI";
 
 const saveDisabled = (props) => (
   <Tooltip id="button-tooltip" {...props}>
@@ -84,11 +80,7 @@ const Save = ({ articleId }) => {
     <span className="save-article-span">
       {!saved && (
         <span className="disabled-save-article" onClick={saveArticle}>
-          <OverlayTrigger
-            placement="left"
-            delay={{ show: 250, hide: 400 }}
-            overlay={saveDisabled}
-          >
+          <OverlayTrigger placement="left" delay={{ show: 250, hide: 400 }} overlay={saveDisabled}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               x="0px"
@@ -104,11 +96,7 @@ const Save = ({ articleId }) => {
       )}
       {saved && (
         <span className="enabled-save-article" onClick={unSaveArticle}>
-          <OverlayTrigger
-            placement="left"
-            delay={{ show: 250, hide: 400 }}
-            overlay={saveEnabled}
-          >
+          <OverlayTrigger placement="left" delay={{ show: 250, hide: 400 }} overlay={saveEnabled}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               x="0px"
