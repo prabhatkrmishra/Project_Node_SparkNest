@@ -10,8 +10,9 @@ RUN if [ -f package-lock.json ]; then npm ci --omit=dev; else npm install --omit
 
 COPY . .
 
-# Run as non-root
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup && chown -R appuser:appgroup /app
+# Run as non-root and ensure data volume is writable
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup \
+  && mkdir -p /data && chown -R appuser:appgroup /app /data
 USER appuser
 
 EXPOSE 3000
