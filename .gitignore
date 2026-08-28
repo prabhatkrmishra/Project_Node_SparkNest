@@ -23,6 +23,12 @@ logs/
 coverage/
 client/coverage/
 server/coverage/
+# playwright
+playwright-report/
+test-results/
+client/playwright-report/
+client/test-results/
+client/blob-report/
 # flyway
 flyway.conf.local
 # secrets

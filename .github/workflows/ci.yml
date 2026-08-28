@@ -36,7 +36,8 @@ jobs:
           PG_PORT: 5432
       - run: npm --workspace=server test -- --coverage
       - run: npm --workspace=client test -- --coverage
-      - run: npx --workspace=client playwright install --with-deps chromium
+      - run: npx playwright install --with-deps chromium
+        working-directory: client
       - run: npm --workspace=client run test:e2e
       - run: docker compose config
       - run: docker compose build
