@@ -52,7 +52,7 @@
     "react-syntax-highlighter": "^16.1.1",
     "scroll-lock": "^2.1.5",
     "swiper": "^14.2.0",
-    "zod": "3.23.8",
+    "zod": "4.4.3",
     "zustand": "5.0.2"
   },
   "devDependencies": {
