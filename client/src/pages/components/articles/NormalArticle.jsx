@@ -94,6 +94,7 @@ const NormalArticle = (prop) => {
               src={prop.previewImage[0]}
               srcSet={`${prop.previewImage[0]} 1x, ${prop.previewImage[1]} 2x`}
               alt="Article preview"
+              loading="lazy"
             />
           </a>
         </div>
