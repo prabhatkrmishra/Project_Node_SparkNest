@@ -19,6 +19,10 @@ Thumbs.db
 npm-debug.log*
 *.log
 logs/
+# coverage
+coverage/
+client/coverage/
+server/coverage/
 # flyway
 flyway.conf.local
 # secrets
