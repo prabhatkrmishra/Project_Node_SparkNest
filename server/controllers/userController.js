@@ -80,9 +80,7 @@ export async function checkUsernameExists(req, res) {
  */
 export async function getUserDetails(req, res) {
   if (!req.isAuthenticated()) {
-    return res
-      .status(403)
-      .json({ message: "Not authenticated to get user details" });
+    return res.status(403).json({ message: "Not authenticated to get user details" });
   }
 
   const { email } = req.params;
@@ -128,9 +126,7 @@ export async function getUserPublic(req, res) {
  */
 export async function updateUserDetails(req, res) {
   if (!req.isAuthenticated()) {
-    return res
-      .status(403)
-      .json({ message: "Not authenticated to update user details" });
+    return res.status(403).json({ message: "Not authenticated to update user details" });
   }
 
   const current_uid = req.session.passport ? req.session.passport.user : null;
@@ -141,9 +137,7 @@ export async function updateUserDetails(req, res) {
   }
 
   if (!req.body.id) {
-    return res
-      .status(400)
-      .json({ message: "Cannot update details, user ID is empty" });
+    return res.status(400).json({ message: "Cannot update details, user ID is empty" });
   }
 
   if (req.body.id != current_uid) {
@@ -154,21 +148,12 @@ export async function updateUserDetails(req, res) {
 
   const { id, ...updatedData } = req.body;
   const idnum = parseInt(id, 10);
-  const {
-    fname,
-    lname,
-    username,
-    region,
-    bio,
-    email,
-    avatar,
-    oldpassword,
-    password} = updatedData;
-    const updatedDetails = new Map();
+  const { fname, lname, username, region, bio, email, avatar, oldpassword, password } = updatedData;
+  const updatedDetails = new Map();
 
   if (fname) updatedDetails.set("fname", fname);
   if (lname) updatedDetails.set("lname", lname);
-  if (username) { 
+  if (username) {
     const newUsername = makeValidUsername(username);
     updatedDetails.set("username", newUsername);
   }
@@ -179,11 +164,8 @@ export async function updateUserDetails(req, res) {
   if (avatar) updatedDetails.set("avatar", avatar);
   if (!avatar) {
     const imageFile = req.file;
-    if(imageFile) {
-      const imagePath = await processAndSaveAvatarImage(
-        imageFile,
-        idnum,
-      );
+    if (imageFile) {
+      const imagePath = await processAndSaveAvatarImage(imageFile, idnum);
       updatedDetails.set("avatar", imagePath.avatar);
     }
   }
@@ -196,9 +178,7 @@ export async function updateUserDetails(req, res) {
     const storedPasswordHash = user.password;
     const isMatch = await verifyPassword(oldpassword, storedPasswordHash);
     if (!isMatch) {
-      return res
-        .status(400)
-        .json({ message: "Old password is incorrect, cannot update" });
+      return res.status(400).json({ message: "Old password is incorrect, cannot update" });
     }
 
     const hashedNewPassword = await hashPassword(password);
@@ -206,37 +186,27 @@ export async function updateUserDetails(req, res) {
   }
 
   if (updatedDetails.size === 0) {
-    return res
-      .status(400)
-      .json({ message: "User details are empty, cannot update" });
+    return res.status(400).json({ message: "User details are empty, cannot update" });
   }
 
   if (updatedDetails.has("username")) {
-    const checkUsernameExist = await getUserByUsername(
-      updatedDetails.get("username")
-    );
+    const checkUsernameExist = await getUserByUsername(updatedDetails.get("username"));
     if (checkUsernameExist) {
-      return res
-        .status(400)
-        .json({ message: "Username already exists, cannot update" });
+      return res.status(400).json({ message: "Username already exists, cannot update" });
     }
   }
 
   if (updatedDetails.has("email")) {
     const checkEmailExist = await getUserByEmail(updatedDetails.get("email"));
     if (checkEmailExist) {
-      return res
-        .status(400)
-        .json({ message: "Email already exists, cannot update" });
+      return res.status(400).json({ message: "Email already exists, cannot update" });
     }
   }
 
   try {
     const existingUser = await getUserDetailId(idnum);
     if (!existingUser) {
-      return res
-        .status(400)
-        .json({ message: "User does not exists, cannot update" });
+      return res.status(400).json({ message: "User does not exists, cannot update" });
     }
 
     const detailsUpdated = await updateUser(idnum, updatedDetails);
@@ -260,9 +230,7 @@ export async function updateUserDetails(req, res) {
  */
 export async function deleteUserAccount(req, res) {
   if (!req.isAuthenticated()) {
-    return res
-      .status(403)
-      .json({ message: "Not authenticated to delete user" });
+    return res.status(403).json({ message: "Not authenticated to delete user" });
   }
 
   const current_uid = req.session.passport ? req.session.passport.user : null;
@@ -272,7 +240,7 @@ export async function deleteUserAccount(req, res) {
     });
   }
 
-  if(!req.body.idtodelete) {
+  if (!req.body.idtodelete) {
     return res.status(400).json({
       message: `Cannot delete user, user id is empty`,
     });
@@ -286,9 +254,7 @@ export async function deleteUserAccount(req, res) {
 
   const { idtodelete, email, allowed } = req.body;
   if (idtodelete && email && allowed) {
-    console.log(
-      `User with id:${idtodelete} has allowed to delete their account:${allowed}`
-    );
+    console.log(`User with id:${idtodelete} has allowed to delete their account:${allowed}`);
 
     try {
       const userResult = await getUserByEmail(email);

@@ -19,11 +19,10 @@ export async function storeResetCredentials(email, token, expires) {
   try {
     // Remove old tokens for this email to keep single active token
     await db.query("DELETE FROM password_resets WHERE email = $1", [email]);
-    const result = await db.query("INSERT INTO password_resets (email, token, expires) VALUES ($1, $2, $3)", [
-      email,
-      hashed,
-      expires,
-    ]);
+    const result = await db.query(
+      "INSERT INTO password_resets (email, token, expires) VALUES ($1, $2, $3)",
+      [email, hashed, expires]
+    );
     return result.rowCount > 0;
   } catch (error) {
     console.error("Error saving password reset credentials:", error);

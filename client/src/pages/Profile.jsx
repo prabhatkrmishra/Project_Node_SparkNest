@@ -105,11 +105,7 @@ const Profile = () => {
   const dismiss = useDismiss(context);
   const role = useRole(context);
 
-  const { getReferenceProps, getFloatingProps } = useInteractions([
-    click,
-    dismiss,
-    role,
-  ]);
+  const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss, role]);
   const headingId = useId();
 
   const handleSectionChange = (newSection) => {
@@ -125,11 +121,7 @@ const Profile = () => {
       <PreLoader />
       <div id="page" className="s-pagewrap">
         <Header />
-        <section
-          id="content"
-          className="s-content"
-          style={{ paddingTop: "130px" }}
-        >
+        <section id="content" className="s-content" style={{ paddingTop: "130px" }}>
           <div
             className="d-flex flex-column justify-content-center align-items-center row entry-wrap"
             style={{
@@ -195,24 +187,9 @@ const Profile = () => {
                       fill="none"
                       role="img"
                     >
-                      <circle
-                        cx="2"
-                        cy="8"
-                        r="1.5"
-                        fill="currentColor"
-                      ></circle>
-                      <circle
-                        cx="8"
-                        cy="8"
-                        r="1.5"
-                        fill="currentColor"
-                      ></circle>
-                      <circle
-                        cx="14"
-                        cy="8"
-                        r="1.5"
-                        fill="currentColor"
-                      ></circle>
+                      <circle cx="2" cy="8" r="1.5" fill="currentColor"></circle>
+                      <circle cx="8" cy="8" r="1.5" fill="currentColor"></circle>
+                      <circle cx="14" cy="8" r="1.5" fill="currentColor"></circle>
                     </svg>
                   </span>
                   {isOpen && (
@@ -265,9 +242,7 @@ const Profile = () => {
               </button>
               <button
                 className={`btn btn--pill-small profile-buttons-style-menu ${
-                  highlighted === "collections"
-                    ? "profile-buttons-highlight"
-                    : ""
+                  highlighted === "collections" ? "profile-buttons-highlight" : ""
                 }`}
                 onClick={() => handleSectionChange("collections")}
               >
@@ -286,9 +261,7 @@ const Profile = () => {
               <hr className="profile-hr" />
             </div>
           </div>
-          {user && (
-            <GetPreviews renderCategory={highlighted} userId={ user.id ? user.id : 0} />
-          )}
+          {user && <GetPreviews renderCategory={highlighted} userId={user.id ? user.id : 0} />}
         </section>
         <Footer />
       </div>

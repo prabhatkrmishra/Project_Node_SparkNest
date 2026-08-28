@@ -39,10 +39,9 @@ const RenderPreviews = ({ url, type }) => {
     const fetchArticles = async () => {
       try {
         setShouldAnimate(false);
-        const response = await axios.get(
-          `${url}?page=${currentPage}&limit=12`,
-          { withCredentials: true }
-        );
+        const response = await axios.get(`${url}?page=${currentPage}&limit=12`, {
+          withCredentials: true,
+        });
         setArticles(response.data.articles);
         setTotalPages(response.data.totalPages);
       } catch (error) {
@@ -77,8 +76,7 @@ const RenderPreviews = ({ url, type }) => {
       const checkIfBricksLoaded = () => {
         const bricksContainer = bricksRef.current;
         if (bricksContainer) {
-          const brickElements =
-            bricksContainer.querySelectorAll(".brick.entry");
+          const brickElements = bricksContainer.querySelectorAll(".brick.entry");
           if (brickElements.length === articles.length) {
             setShouldAnimate(true);
           }
@@ -93,10 +91,7 @@ const RenderPreviews = ({ url, type }) => {
   return (
     <>
       <div id="bricks" className="bricks">
-        <div
-          className={`masonry ${!hasArticles ? "no-articles" : ""}`}
-          ref={bricksRef}
-        >
+        <div className={`masonry ${!hasArticles ? "no-articles" : ""}`} ref={bricksRef}>
           <div className="bricks-wrapper" data-animate-block>
             <div className="grid-sizer"></div>
             {hasArticles ? (

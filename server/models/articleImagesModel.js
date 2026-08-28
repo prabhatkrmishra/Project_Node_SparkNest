@@ -20,7 +20,7 @@ export async function inserImagestPath(imagesPath, articleId) {
       imagesPath.featuredPaths,
       imagesPath.thumbs,
     ]);
-    return (result.rows.length > 0 ? true : false);
+    return result.rows.length > 0 ? true : false;
   } catch (error) {
     console.error("Error creating article:", error);
     throw new Error("Could not create article.");

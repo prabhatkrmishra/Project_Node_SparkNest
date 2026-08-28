@@ -8,7 +8,7 @@ const ShowSaved = (prop) => {
 
   return (
     <>
-      <RenderPreviews url={url} type={type}/>
+      <RenderPreviews url={url} type={type} />
     </>
   );
 };

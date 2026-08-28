@@ -53,7 +53,7 @@ export async function getFeaturedArticles() {
   try {
     const result = await db.query(query);
     return result.rows;
-  } catch(error) {
+  } catch (error) {
     console.log(error);
     return [];
   }
@@ -75,25 +75,26 @@ export async function clearFeaturedArticles() {
  * and clearing the previous entries in the featured articles table.
  */
 export async function updateFeaturedArticles() {
-    const db = getDBClient();
-  
-    try {
-      await db.query("DELETE FROM featured_articles");
-  
-      const result = await db.query(`
+  const db = getDBClient();
+
+  try {
+    await db.query("DELETE FROM featured_articles");
+
+    const result = await db.query(`
         SELECT article_id
         FROM liked_articles
         GROUP BY article_id
         ORDER BY COUNT(user_id) DESC
         LIMIT 3
       `);
-  
-      const topLikedArticleIds = result.rows.map(row => row.article_id);
-  
-      const currentCount = topLikedArticleIds.length;
-      if (currentCount < 3) {
-        const remainingCount = 3 - currentCount;
-        const randomArticlesResult = await db.query(`
+
+    const topLikedArticleIds = result.rows.map((row) => row.article_id);
+
+    const currentCount = topLikedArticleIds.length;
+    if (currentCount < 3) {
+      const remainingCount = 3 - currentCount;
+      const randomArticlesResult = await db.query(
+        `
           SELECT id
           FROM articles
           WHERE id NOT IN (
@@ -101,20 +102,22 @@ export async function updateFeaturedArticles() {
           )
           ORDER BY RANDOM()
           LIMIT $1
-        `, [remainingCount]);
-  
-        const randomArticleIds = randomArticlesResult.rows.map(row => row.id);
-        topLikedArticleIds.push(...randomArticleIds);
-      }
-  
-      const insertPromises = topLikedArticleIds.map(async (articleId) => {
-        await db.query("INSERT INTO featured_articles (article_id) VALUES ($1)", [articleId]);
-      });
-  
-      await Promise.all(insertPromises);
-  
-      console.log("Featured articles updated successfully");
-    } catch (error) {
-      console.error("Error updating featured articles:", error);
+        `,
+        [remainingCount]
+      );
+
+      const randomArticleIds = randomArticlesResult.rows.map((row) => row.id);
+      topLikedArticleIds.push(...randomArticleIds);
     }
+
+    const insertPromises = topLikedArticleIds.map(async (articleId) => {
+      await db.query("INSERT INTO featured_articles (article_id) VALUES ($1)", [articleId]);
+    });
+
+    await Promise.all(insertPromises);
+
+    console.log("Featured articles updated successfully");
+  } catch (error) {
+    console.error("Error updating featured articles:", error);
   }
+}

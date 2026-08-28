@@ -12,9 +12,7 @@ import { getDBClient } from "../db/db.js";
  */
 export async function getSubscriptionByEmail(email) {
   const db = getDBClient();
-  const result = await db.query("SELECT * FROM subscription WHERE email = $1", [
-    email,
-  ]);
+  const result = await db.query("SELECT * FROM subscription WHERE email = $1", [email]);
   return result.rows.length > 0 ? result.rows[0] : null;
 }
 
@@ -54,9 +52,7 @@ export async function updateSubscription(email, updatedData) {
   }
   values.push(email);
 
-  const query = `UPDATE subscription SET ${setClauses.join(
-    ", "
-  )} WHERE email = $${index}`;
+  const query = `UPDATE subscription SET ${setClauses.join(", ")} WHERE email = $${index}`;
   await db.query(query, values);
 }
 

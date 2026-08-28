@@ -35,10 +35,7 @@ const ResetPass = ({ isSuccess, mssg, email, token }) => {
 
   const handleBlur = () => {
     if (!password.newPassword || !password.confirmPassword) return;
-    const isSame = comparePasswords(
-      password.newPassword,
-      password.confirmPassword
-    );
+    const isSame = comparePasswords(password.newPassword, password.confirmPassword);
     if (!isSame) {
       setErrorMssg("Passwords do not match");
       setIsError(true);

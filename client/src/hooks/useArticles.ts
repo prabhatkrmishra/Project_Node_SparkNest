@@ -11,7 +11,9 @@ export const useArticlePreviews = (page: number, limit = 12) =>
   useQuery({
     queryKey: ["previews", page, limit],
     queryFn: async () => {
-      const { data } = await api.get<PaginatedResponse>(`/article/previews?page=${page}&limit=${limit}`);
+      const { data } = await api.get<PaginatedResponse>(
+        `/article/previews?page=${page}&limit=${limit}`
+      );
       return data;
     },
   });

@@ -13,9 +13,7 @@ const FeaturedArticle = (props) => {
         <div className="hero__entry-meta">
           {props.categories.length > 0 && (
             <span className="cat-links">
-              <a href={`/category/${props.categories[0]}`}>
-                {props.categories[0]}
-              </a>
+              <a href={`/category/${props.categories[0]}`}>{props.categories[0]}</a>
             </span>
           )}
         </div>

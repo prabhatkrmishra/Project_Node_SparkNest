@@ -1,12 +1,12 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 const AnimateBricks = () => {
   const animateBlocksRef = useRef(null);
   const pageWrapRef = useRef(null);
 
   useEffect(() => {
-    animateBlocksRef.current = document.querySelectorAll('[data-animate-block]');
-    pageWrapRef.current = document.querySelector('.s-pagewrap');
+    animateBlocksRef.current = document.querySelectorAll("[data-animate-block]");
+    pageWrapRef.current = document.querySelector(".s-pagewrap");
 
     const animateBlocks = animateBlocksRef.current;
     const pageWrap = pageWrapRef.current;
@@ -14,14 +14,14 @@ const AnimateBricks = () => {
     if (!(pageWrap && animateBlocks.length > 0)) return;
 
     const doAnimate = (current) => {
-      const els = current.querySelectorAll('[data-animate-el]');
+      const els = current.querySelectorAll("[data-animate-el]");
 
       els.forEach((el, index) => {
         const dly = index * 200;
-        el.style.setProperty('--transition-delay', `${dly}ms`);
+        el.style.setProperty("--transition-delay", `${dly}ms`);
       });
 
-      current.classList.add('ss-animated');
+      current.classList.add("ss-animated");
       current.offsetHeight;
     };
 
@@ -35,7 +35,7 @@ const AnimateBricks = () => {
         const blockSpace = triggerTop + blockHeight;
 
         const inView = scrollY > triggerTop && scrollY <= blockSpace;
-        const isAnimated = current.classList.contains('ss-animated');
+        const isAnimated = current.classList.contains("ss-animated");
 
         if (inView && !isAnimated) {
           doAnimate(current);
@@ -45,22 +45,22 @@ const AnimateBricks = () => {
 
     const handleLoad = () => {
       animateBlocks.forEach((block) => {
-        if (!block.classList.contains('ss-animated')) {
+        if (!block.classList.contains("ss-animated")) {
           doAnimate(block);
         }
       });
     };
 
-    if (pageWrap.classList.contains('ss-home')) {
-      window.addEventListener('scroll', animateOnScroll);
+    if (pageWrap.classList.contains("ss-home")) {
+      window.addEventListener("scroll", animateOnScroll);
     } else {
       handleLoad();
     }
 
     return () => {
-      window.removeEventListener('scroll', animateOnScroll);
+      window.removeEventListener("scroll", animateOnScroll);
     };
-  },[]);
+  }, []);
 
   return null;
 };

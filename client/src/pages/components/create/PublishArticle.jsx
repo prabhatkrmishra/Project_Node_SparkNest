@@ -48,9 +48,7 @@ const PublishArticle = () => {
     const getCategories = async () => {
       if (inputValue) {
         const response = await fetchCategories(inputValue);
-        setFilteredCategories(
-          Array.isArray(response.data) ? response.data : []
-        );
+        setFilteredCategories(Array.isArray(response.data) ? response.data : []);
       } else {
         setFilteredCategories([]);
       }
@@ -210,11 +208,7 @@ const PublishArticle = () => {
       <PreLoader />
       <div id="page" className="s-pagewrap">
         <Header />
-        <section
-          id="content"
-          className="s-content s-content--page"
-          style={{ paddingTop: "100px" }}
-        >
+        <section id="content" className="s-content s-content--page" style={{ paddingTop: "100px" }}>
           <div
             className="u-fullwidth d-flex flex-column justify-content-center align-items-center"
             style={{ marginTop: "50px" }}
@@ -222,10 +216,7 @@ const PublishArticle = () => {
             <div className="publish-page-columns" style={{ margin: "5px 0" }}>
               <div className="top-container">
                 <div className="category-input-container">
-                  <label
-                    htmlFor="categoryInput"
-                    style={{ marginBottom: "8px" }}
-                  >
+                  <label htmlFor="categoryInput" style={{ marginBottom: "8px" }}>
                     Article Category
                   </label>
                   <input
@@ -252,9 +243,7 @@ const PublishArticle = () => {
                             key={category.id}
                             onClick={() => handleSelectCategory(category)}
                             style={{ cursor: "pointer" }}
-                            className={`dropdown-item ${
-                              category.id ? "dropdown-item-active" : ""
-                            }`}
+                            className={`dropdown-item ${category.id ? "dropdown-item-active" : ""}`}
                           >
                             {category.name}
                           </li>
@@ -277,8 +266,7 @@ const PublishArticle = () => {
                         style={{ marginBottom: "8px" }}
                         className="tags-label"
                       >
-                        Selected Categories{" "}
-                        {selectedCategories.length > 1 ? "(only 5)" : null}
+                        Selected Categories {selectedCategories.length > 1 ? "(only 5)" : null}
                       </label>
                       <div className="tags-div">
                         {selectedCategories.map((category) => (
@@ -286,9 +274,7 @@ const PublishArticle = () => {
                             <span className="selected-tagspan">
                               {category.name}
                               <span
-                                onClick={() =>
-                                  handleRemoveCategory(category.id)
-                                }
+                                onClick={() => handleRemoveCategory(category.id)}
                                 className="selected-tagspan-cross"
                               >
                                 ✖
@@ -302,10 +288,7 @@ const PublishArticle = () => {
                 </div>
               </div>
             </div>
-            <div
-              className="publish-page-columns mid-page"
-              style={{ margin: "5px 0" }}
-            >
+            <div className="publish-page-columns mid-page" style={{ margin: "5px 0" }}>
               <div className="column lg-5">
                 {/* Hidden input for file selection */}
                 <label htmlFor="imageInput" style={{ marginBottom: "8px" }}>
@@ -323,9 +306,7 @@ const PublishArticle = () => {
                 <div
                   className="input-image"
                   style={{
-                    backgroundImage: selectedImage
-                      ? `url(${selectedImage})`
-                      : "none",
+                    backgroundImage: selectedImage ? `url(${selectedImage})` : "none",
                   }}
                   onClick={() => document.getElementById("imageInput").click()}
                 >
@@ -341,8 +322,8 @@ const PublishArticle = () => {
                 </div>
                 <div style={{ marginTop: "15px" }}>
                   <p className="publish-input-info-text">
-                    Include a high-quality image in your article to make it more
-                    attractive to readers.
+                    Include a high-quality image in your article to make it more attractive to
+                    readers.
                   </p>
                 </div>
                 {/*selectedImage && (
@@ -359,10 +340,7 @@ const PublishArticle = () => {
               <div className="column lg-5">
                 <div>
                   <div style={{ position: "relative" }}>
-                    <label
-                      htmlFor="previewTitle"
-                      style={{ marginBottom: "8px" }}
-                    >
+                    <label htmlFor="previewTitle" style={{ marginBottom: "8px" }}>
                       Preview Title
                     </label>
                     <input
@@ -386,8 +364,8 @@ const PublishArticle = () => {
                         color: charCount > maxCharLimit ? "red" : "gray",
                       }}
                     >
-                      {maxCharLimit - `${charCount ? charCount : title.length}`}{" "}
-                      characters remaining
+                      {maxCharLimit - `${charCount ? charCount : title.length}`} characters
+                      remaining
                     </p>
                   </div>
 
@@ -405,9 +383,8 @@ const PublishArticle = () => {
                 </div>
                 <div>
                   <p className="publish-input-info-text">
-                    Changes here will affect how the story appears in public
-                    places like SparkNest homepage, preview banners but not the
-                    contents of the articles.
+                    Changes here will affect how the story appears in public places like SparkNest
+                    homepage, preview banners but not the contents of the articles.
                   </p>
                 </div>
               </div>
@@ -422,9 +399,7 @@ const PublishArticle = () => {
                     onClick={handleSave}
                     style={{ marginTop: "32px !important" }}
                   >
-                    <span style={{ display: "block", textAlign: "center" }}>
-                      Publish
-                    </span>
+                    <span style={{ display: "block", textAlign: "center" }}>Publish</span>
                   </button>
                 </div>
               </div>

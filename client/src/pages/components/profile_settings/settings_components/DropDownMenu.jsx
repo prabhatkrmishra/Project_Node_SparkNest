@@ -35,9 +35,7 @@ const DropDownMenu = (prop) => {
             </li>
           </Dropdown.Item>
           <Dropdown.Item>
-            <li
-              className={prop.pSection === "password" ? "options-active" : ""}
-            >
+            <li className={prop.pSection === "password" ? "options-active" : ""}>
               <span
                 className="dropdown-menu-span"
                 style={{ cursor: "pointer" }}
@@ -48,11 +46,7 @@ const DropDownMenu = (prop) => {
             </li>
           </Dropdown.Item>
           <Dropdown.Item>
-            <li
-              className={
-                prop.pSection === "notifications" ? "options-active" : ""
-              }
-            >
+            <li className={prop.pSection === "notifications" ? "options-active" : ""}>
               <span
                 className="dropdown-menu-span"
                 style={{ cursor: "pointer" }}

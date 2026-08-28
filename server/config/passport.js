@@ -11,11 +11,7 @@
 
 import { Strategy as LocalStrategy } from "passport-local";
 import GoogleStrategy from "passport-google-oauth2";
-import {
-  getUserDetailId,
-  getUserDetailEmail,
-  CreateGoogleUser,
-} from "../models/userModel.js";
+import { getUserDetailId, getUserDetailEmail, CreateGoogleUser } from "../models/userModel.js";
 import { subscribeUser } from "../services/newsletterService.js";
 import { verifyPassword } from "../services/bcryptService.js";
 

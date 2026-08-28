@@ -1,8 +1,5 @@
 import express from "express";
-import {
-    fetchCategory,
-    fetchAllCategory
-} from "../controllers/categoriesController.js";
+import { fetchCategory, fetchAllCategory } from "../controllers/categoriesController.js";
 
 const categoriesRouter = express.Router();
 

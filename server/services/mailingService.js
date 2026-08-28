@@ -35,9 +35,7 @@ export const sendContactEmail = async (req, res) => {
 
     await transporter.sendMail(mailOptions);
 
-    res
-      .status(200)
-      .json({ message: "Your message has been sent successfully!" });
+    res.status(200).json({ message: "Your message has been sent successfully!" });
   } catch (error) {
     console.error("Error sending email:", error);
     res.status(500).json({

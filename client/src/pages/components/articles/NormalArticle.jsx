@@ -24,7 +24,7 @@ const NormalArticle = (prop) => {
         data = response.data;
       } catch (error) {
         if (error.response.status === 403) {
-         // logout();
+          // logout();
         }
       }
     };
@@ -60,9 +60,7 @@ const NormalArticle = (prop) => {
         if (response.state == 200) {
           alert("Article deleted successfully");
         }
-        prop.setArticles(
-          prop.articles.filter((article) => article.article_id !== article_id)
-        );
+        prop.setArticles(prop.articles.filter((article) => article.article_id !== article_id));
       } catch (error) {
         if (error.response.status === 403) {
           logout();
@@ -104,9 +102,7 @@ const NormalArticle = (prop) => {
           <div className="entry__header">
             <div className="entry__meta">
               <span className="cat-links">
-                <a href={`/category/${prop.categories[0]}`}>
-                  {prop.categories[0]}
-                </a>
+                <a href={`/category/${prop.categories[0]}`}>{prop.categories[0]}</a>
               </span>
               <span className="byline">
                 By:

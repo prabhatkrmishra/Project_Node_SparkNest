@@ -29,9 +29,7 @@ const EmptyPreviews = () => {
 
   return (
     <div className="nothing-menu">
-      {message.current && (
-        <span className="nothing-menu-span">{message.current}</span>
-      )}
+      {message.current && <span className="nothing-menu-span">{message.current}</span>}
     </div>
   );
 };

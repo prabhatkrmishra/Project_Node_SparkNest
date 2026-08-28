@@ -13,8 +13,7 @@ const Header = () => {
   const currentPath = location.pathname;
   const sessionLogged = Cookies.get("sessionLogged");
 
-  const isActivePath = (path) =>
-    currentPath === path || currentPath.startsWith(path);
+  const isActivePath = (path) => currentPath === path || currentPath.startsWith(path);
 
   const [searchValue, setSearchValue] = useState("");
 
@@ -42,11 +41,7 @@ const Header = () => {
             <li className={currentPath === "/" ? "current-menu-item" : ""}>
               <a href="/">Home</a>
             </li>
-            <li
-              className={`has-children ${
-                isActivePath("/category") ? "current-menu-item" : ""
-              }`}
-            >
+            <li className={`has-children ${isActivePath("/category") ? "current-menu-item" : ""}`}>
               <a href="#" onClick={toggleMenu}>
                 Categories
               </a>
@@ -76,18 +71,14 @@ const Header = () => {
             </li>
             <li
               className={
-                currentPath === "/create" || currentPath === "/publish"
-                  ? "current-menu-item"
-                  : ""
+                currentPath === "/create" || currentPath === "/publish" ? "current-menu-item" : ""
               }
             >
               <a href="/create">Create</a>
             </li>
             {sessionLogged ? (
               <li
-                className={` has-children ${
-                  currentPath === "/profile" ? "current-menu-item" : ""
-                }`}
+                className={` has-children ${currentPath === "/profile" ? "current-menu-item" : ""}`}
               >
                 <a href="#" onClick={toggleMenu}>
                   User
@@ -113,9 +104,7 @@ const Header = () => {
                 </ul>
               </li>
             ) : (
-              <li
-                className={currentPath === "/login" ? "current-menu-item" : ""}
-              >
+              <li className={currentPath === "/login" ? "current-menu-item" : ""}>
                 <a className="text-dark-emphasis" href="/session/new">
                   Log in
                 </a>
@@ -127,12 +116,7 @@ const Header = () => {
       <div className="s-header__search">
         <div className="s-header__search-inner">
           <div className="row">
-            <form
-              role="search"
-              method="get"
-              className="s-header__search-form"
-              action="#"
-            >
+            <form role="search" method="get" className="s-header__search-form" action="#">
               <label>
                 <span className="u-screen-reader-text">Search for:</span>
                 <input
@@ -146,17 +130,9 @@ const Header = () => {
                   autoComplete="off"
                 />
               </label>
-              <input
-                type="submit"
-                className="s-header__search-submit"
-                value="Search"
-              />
+              <input type="submit" className="s-header__search-submit" value="Search" />
             </form>
-            <a
-              href="#0"
-              title="Close Search"
-              className="s-header__search-close"
-            >
+            <a href="#0" title="Close Search" className="s-header__search-close">
               Close
             </a>
           </div>

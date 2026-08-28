@@ -41,8 +41,7 @@ const Password = () => {
   };
 
   const matchPassword = () => {
-    if (newUserData.newpassword !== newUserData.confirmpassword)
-      setNotMatch(true);
+    if (newUserData.newpassword !== newUserData.confirmpassword) setNotMatch(true);
   };
 
   const clearPasswords = () => {
@@ -54,11 +53,7 @@ const Password = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSuccess(false);
-    if (
-      !newUserData.oldpassword ||
-      !newUserData.newpassword ||
-      !newUserData.confirmpassword
-    ) {
+    if (!newUserData.oldpassword || !newUserData.newpassword || !newUserData.confirmpassword) {
       alert("Input field are mpty");
       return;
     }
@@ -105,10 +100,7 @@ const Password = () => {
         <ErrorMessage isError={isError} errorMssg={responseMssg} />
         <SuccessMessage isSuccess={isSuccess} successMssg={responseMssg} />
         <div>
-          <label
-            className="profile-label-styles"
-            htmlFor="pOldPass"
-          >
+          <label className="profile-label-styles" htmlFor="pOldPass">
             Old Password
           </label>
           <input
@@ -122,10 +114,7 @@ const Password = () => {
           />
         </div>
         <div>
-          <label
-            className="profile-label-styles"
-            htmlFor="pNewPass"
-          >
+          <label className="profile-label-styles" htmlFor="pNewPass">
             New Password
           </label>
           <input
@@ -139,10 +128,7 @@ const Password = () => {
           />
         </div>
         <div>
-          <label
-            className="profile-label-styles"
-            htmlFor="pNewPassConfirm"
-          >
+          <label className="profile-label-styles" htmlFor="pNewPassConfirm">
             Confirm New Password
           </label>
           <input
@@ -156,14 +142,8 @@ const Password = () => {
             ref={confirmPasswordRef}
           />
         </div>
-        <ErrorMessage
-          isError={notMatch}
-          errorMssg={"New Passwords does not match"}
-        />
-        <button
-          className="btn--primary u-quartorwidth profile-button-styles"
-          type="submit"
-        >
+        <ErrorMessage isError={notMatch} errorMssg={"New Passwords does not match"} />
+        <button className="btn--primary u-quartorwidth profile-button-styles" type="submit">
           Update
         </button>
       </form>

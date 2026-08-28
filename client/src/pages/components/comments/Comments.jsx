@@ -13,12 +13,7 @@ import { fetchComments, dropComment } from "../../../api/COMMENTSAPI";
 // eslint-disable-next-line react/prop-types
 function DeleteModel(prop) {
   return (
-    <Modal
-      {...prop}
-      size="lg"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-    >
+    <Modal {...prop} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
       <Modal.Body className="delete-modal-body">
         <p className="delete-modal-p">Comment deleted from comment section.</p>
       </Modal.Body>
@@ -140,9 +135,7 @@ const Comments = ({ articleId }) => {
       try {
         const response = await fetchComments(articleId);
         if (response.status == 200) {
-          const fetchedComments = Array.isArray(response.data)
-            ? response.data
-            : [];
+          const fetchedComments = Array.isArray(response.data) ? response.data : [];
           const nested = nestComments(fetchedComments);
           setComments(nested);
         }
@@ -168,7 +161,7 @@ const Comments = ({ articleId }) => {
           element.scrollIntoView({ behavior: "smooth", block: "start" });
         }
       }, 100);
-  
+
       return () => clearTimeout(scrollToCommentBox);
     }
   }, [replyComment, addComment]);

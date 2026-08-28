@@ -59,7 +59,9 @@ async function fallbackDirectMigrate() {
     )
   `);
 
-  const applied = await pool.query("SELECT version FROM flyway_schema_history ORDER BY installed_rank");
+  const applied = await pool.query(
+    "SELECT version FROM flyway_schema_history ORDER BY installed_rank"
+  );
   const appliedVersions = new Set(applied.rows.map((r) => r.version));
 
   let rank = applied.rows.length + 1;

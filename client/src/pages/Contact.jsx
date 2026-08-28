@@ -82,28 +82,27 @@ const Contact = () => {
                 <div className="content-primary">
                   <div className="entry__content">
                     <p className="lead" style={{ textAlign: "justify" }}>
-                      At SparkNest, we are committed to fostering meaningful
-                      connections with our community. Whether you have feedback,
-                      suggestions, or just want to say hello, we’re here to
-                      listen. Your input helps us grow and create better
-                      experiences for everyone.
+                      At SparkNest, we are committed to fostering meaningful connections with our
+                      community. Whether you have feedback, suggestions, or just want to say hello,
+                      we’re here to listen. Your input helps us grow and create better experiences
+                      for everyone.
                     </p>
                     <p style={{ textAlign: "justify" }}>
-                      We believe in open communication and value your thoughts.
-                      Feel free to reach out for any inquiries, suggestions or
-                      collaborations. Our team is always ready to assist and
-                      ensure your voice is heard. Simply fill out the form
-                      below, and we’ll get back to you as soon as possible.
-                      Thank you for being a part of SparkNest! We look forward
-                      to hearing from you.
+                      We believe in open communication and value your thoughts. Feel free to reach
+                      out for any inquiries, suggestions or collaborations. Our team is always ready
+                      to assist and ensure your voice is heard. Simply fill out the form below, and
+                      we’ll get back to you as soon as possible. Thank you for being a part of
+                      SparkNest! We look forward to hearing from you.
                     </p>
                     <div className="row block-large-1-2 block-tab-whole entry__blocks">
                       <div className="column">
                         <h4>Contact Info</h4>
-                        <p style={{marginBottom: "8px"}}>
-                          <b>Mail</b>: <a href="mailto:mprabhat774@gmail.com">mprabhat774@gmail.com</a>
+                        <p style={{ marginBottom: "8px" }}>
+                          <b>Mail</b>:{" "}
+                          <a href="mailto:mprabhat774@gmail.com">mprabhat774@gmail.com</a>
                           <br />
-                          <b>Service</b>: <a href="mailto:mprabhat774@gmail.com">spark.nest.service@gmail.com</a>
+                          <b>Service</b>:{" "}
+                          <a href="mailto:mprabhat774@gmail.com">spark.nest.service@gmail.com</a>
                         </p>
                       </div>
                     </div>

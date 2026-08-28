@@ -66,7 +66,6 @@ const Notifications = (prop) => {
 
     if (!userData.email) return;
 
-    
     const formData = new FormData();
     formData.append("email", userData.email);
     if (responseData.current.data) {
@@ -86,8 +85,7 @@ const Notifications = (prop) => {
         setIsUpdated(true);
         if (responseData.current.data)
           responseData.current.data.newsletter = sanitizedData.newsletter;
-        if (errorData.current)
-          errorData.current.newsletter = sanitizedData.newsletter;
+        if (errorData.current) errorData.current.newsletter = sanitizedData.newsletter;
       } else {
         alert("Something went wrong !");
         window.location.href = "/";

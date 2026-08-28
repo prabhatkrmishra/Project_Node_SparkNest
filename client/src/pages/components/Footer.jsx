@@ -57,10 +57,9 @@ const Footer = () => {
         <div className="column lg-5 md-6 tab-12 s-footer__about">
           <h4>SparkNest</h4>
           <p>
-            SparkNest serves as a haven for human narratives and ideas. It
-            empowers anyone to share their insights and knowledge with the
-            world—no need to build a mailing list or cultivate a following
-            beforehand.
+            SparkNest serves as a haven for human narratives and ideas. It empowers anyone to share
+            their insights and knowledge with the world—no need to build a mailing list or cultivate
+            a following beforehand.
           </p>
         </div>
 

@@ -81,7 +81,16 @@ export async function getUserDetailEmail(email) {
   return result.rows.length > 0 ? result.rows[0] : null;
 }
 
-const ALLOWED_USER_COLS = new Set(["username", "email", "fname", "lname", "avatar", "bio", "region", "id"]);
+const ALLOWED_USER_COLS = new Set([
+  "username",
+  "email",
+  "fname",
+  "lname",
+  "avatar",
+  "bio",
+  "region",
+  "id",
+]);
 
 /**
  * Get specific user details by id.
@@ -158,9 +167,7 @@ export async function updateUser(id, updatedDetails) {
   });
   values.push(id);
 
-  const query = `UPDATE users SET ${setClauses.join(
-    ", "
-  )} WHERE id = $${index}`;
+  const query = `UPDATE users SET ${setClauses.join(", ")} WHERE id = $${index}`;
 
   try {
     const result = await db.query(query, values);

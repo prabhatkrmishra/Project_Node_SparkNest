@@ -9,12 +9,8 @@ import ErrorMessage from "../messageBox/ErrorMessage";
 import SuccessMessage from "../messageBox/SuccessMessage";
 
 const General = () => {
-  const user = useRef(
-    Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null
-  );
-  const days = Cookies.get("sessionDays")
-    ? Number(Cookies.get("sessionDays"))
-    : 0;
+  const user = useRef(Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null);
+  const days = Cookies.get("sessionDays") ? Number(Cookies.get("sessionDays")) : 0;
   if (user.current == null || days == 0) {
     window.location.href == "/profile";
   }
@@ -22,9 +18,7 @@ const General = () => {
 
   useEffect(() => {
     if (updateCookie) {
-      user.current = Cookies.get("sessionUser")
-        ? JSON.parse(Cookies.get("sessionUser"))
-        : null;
+      user.current = Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null;
     }
     setUpdateCookie(false);
   }, [updateCookie]);
@@ -111,8 +105,7 @@ const General = () => {
     if (!unameExists && !emailExists) {
       const formData = new FormData();
       formData.append("id", Id);
-      if (newUserData.email !== user.current.email)
-        formData.append("email", newUserData.email);
+      if (newUserData.email !== user.current.email) formData.append("email", newUserData.email);
       if (newUserData.username !== user.current.username)
         formData.append("username", newUserData.username);
 
@@ -187,10 +180,7 @@ const General = () => {
           />
         </div>
         <ErrorMessage isError={emailExists} errorMssg={errorMssg} />
-        <button
-          className="btn--primary u-quartorwidth profile-button-styles"
-          type="submit"
-        >
+        <button className="btn--primary u-quartorwidth profile-button-styles" type="submit">
           Update
         </button>
       </form>

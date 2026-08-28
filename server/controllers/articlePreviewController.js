@@ -1,7 +1,7 @@
 import {
   fetchArticlePreviews,
   fetchArticlePreview,
-  fetchArticlePreviewsCategory
+  fetchArticlePreviewsCategory,
 } from "../models/articlePreviewModel.js";
 
 /**
@@ -82,18 +82,12 @@ export async function getArticlePreview(req, res) {
 
   try {
     const offset = (page - 1) * limit;
-    const { articles, totalCount } = await fetchArticlePreview(
-      id,
-      limit,
-      offset
-    );
+    const { articles, totalCount } = await fetchArticlePreview(id, limit, offset);
 
     const totalPages = Math.ceil(totalCount / limit);
 
     if (articles && articles.length < 1) {
-      return res
-        .status(200)
-        .json({ message: `Article with user id:${id} doesn't exist` });
+      return res.status(200).json({ message: `Article with user id:${id} doesn't exist` });
     }
 
     res.status(200).json({

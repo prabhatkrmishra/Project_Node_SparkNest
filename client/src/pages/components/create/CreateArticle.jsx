@@ -156,11 +156,7 @@ const CreateArticle = () => {
       <PreLoader />
       <div id="page" className="s-pagewrap">
         <Header />
-        <section
-          id="content"
-          className="s-content s-content--page"
-          style={{ paddingTop: "100px" }}
-        >
+        <section id="content" className="s-content s-content--page" style={{ paddingTop: "100px" }}>
           <div className="row">
             <div className="column lg-6 tab-12" style={{ width: "100%" }}>
               <form onSubmit={handleSave}>

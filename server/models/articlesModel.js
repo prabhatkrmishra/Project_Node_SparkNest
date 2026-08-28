@@ -126,11 +126,7 @@ export async function newArticle(article) {
     "INSERT INTO articles (user_id, title, body) VALUES ($1, $2, $3) RETURNING id, user_id";
 
   try {
-    const result = await db.query(query, [
-      article.user_id,
-      article.title,
-      article.body,
-    ]);
+    const result = await db.query(query, [article.user_id, article.title, article.body]);
     return result.rows.length > 0 ? result.rows[0] : null;
   } catch (error) {
     console.error("Error creating article:", error);
@@ -159,9 +155,7 @@ export async function patchArticle(id, updatedArticle) {
   });
   values.push(id);
 
-  const query = `UPDATE articles SET ${setClauses.join(
-    ", "
-  )} WHERE id = $${index}`;
+  const query = `UPDATE articles SET ${setClauses.join(", ")} WHERE id = $${index}`;
 
   try {
     const result = await db.query(query, values);
