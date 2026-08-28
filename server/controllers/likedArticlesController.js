@@ -86,21 +86,13 @@ export async function unlikeArticle(req, res) {
  * @param {Object} res - The response object.
  */
 export async function fetchLikedArticles(req, res) {
-  if (!req.isAuthenticated()) {
-    return res.status(403).json({ message: "Not authenticated to delete user" });
-  }
-
   const current_uid = req.session.passport ? req.session.passport.user : null;
   if (!current_uid) {
-    return res.status(200).json({
-      message: `Done !`,
-    });
+    return res.status(401).json({ message: "Not authenticated" });
   }
 
-  if (req.params.userId != current_uid) {
-    return res.status(400).json({
-      message: `Not authorized to get liked article !`,
-    });
+  if (String(req.params.userId) !== String(current_uid)) {
+    return res.status(403).json({ message: `Not authorized to get liked article !` });
   }
 
   const { userId } = req.params;
