@@ -46,7 +46,7 @@ const RenderPreviews = ({ url, type }) => {
         setArticles(response.data.articles);
         setTotalPages(response.data.totalPages);
       } catch (error) {
-        if (error.response.status === 403) {
+        if (error.response?.status === 403) {
           logout();
         }
       }

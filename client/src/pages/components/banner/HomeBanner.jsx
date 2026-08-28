@@ -15,7 +15,7 @@ const HomeBanner = () => {
         setArticles(response.data);
         setImagesLoaded(true);
       } catch (error) {
-        console.log("Error fetching featured articles:", error.response);
+        console.log("Error fetching featured articles:", error.response?.data || error.message);
       }
     };
     fetchFeatured();

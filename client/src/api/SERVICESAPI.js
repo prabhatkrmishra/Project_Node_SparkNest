@@ -1,8 +1,7 @@
-import axios from "axios";
-import { WEB_URL } from "./API";
+import { api, WEB_URL } from "./API";
 
 export const sendMessage = (body) => {
-  return axios.post(`${WEB_URL}/send/message`, body, {
+  return api.post(`/send/message`, body, {
     headers: {
       "Content-Type": "application/json",
     },
@@ -10,7 +9,7 @@ export const sendMessage = (body) => {
 };
 
 export const resetPassword = (email) => {
-  return axios.post(`${WEB_URL}/password/request/email`, email, {
+  return api.post(`/password/request/email`, email, {
     headers: {
       "Content-Type": "application/json",
     },
@@ -18,17 +17,19 @@ export const resetPassword = (email) => {
 };
 
 export const verifyToken = (body) => {
-  return axios.post(`${WEB_URL}/password/verify`, body, {
+  return api.post(`/password/verify`, body, {
     headers: {
       "Content-Type": "application/json",
     },
   });
-}
+};
 
 export const patchPasswords = (body) => {
-  return axios.post(`${WEB_URL}/password/new`, body, {
+  return api.post(`/password/new`, body, {
     headers: {
       "Content-Type": "application/json",
     },
   });
-}
+};
+
+export { WEB_URL };
