@@ -1,13 +1,12 @@
 import express from "express";
-import {
-    sendContactEmail
-} from "../services/mailingService.js";
+import { sendContactEmail } from "../services/mailingService.js";
 
 import {
-    sendResetEmail,
-    verifyResetToken,
-    updateNewPasswords
+  sendResetEmail,
+  verifyResetToken,
+  updateNewPasswords,
 } from "../services/passwordService.js";
+import { authLimiter } from "../middlewares/rateLimiter.js";
 
 const serviceRoutes = express.Router();
 
@@ -23,7 +22,7 @@ serviceRoutes.post("/send/message", sendContactEmail);
  * @description Initiates a password reset request by sending a reset email
  * @access Private
  */
-serviceRoutes.post("/password/request/email", sendResetEmail);
+serviceRoutes.post("/password/request/email", authLimiter, sendResetEmail);
 
 /**
  * @route POST /password/verify
@@ -37,6 +36,6 @@ serviceRoutes.post("/password/verify", verifyResetToken);
  * @description Updates the user's password if the provided token is valid
  * @access Private
  */
-serviceRoutes.post("/password/new", updateNewPasswords);
+serviceRoutes.post("/password/new", authLimiter, updateNewPasswords);
 
 export default serviceRoutes;

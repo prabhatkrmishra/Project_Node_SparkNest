@@ -8,23 +8,24 @@ import {
   updateArticle,
   deleteArticle,
 } from "../controllers/articlesController.js";
+import { writeLimiter } from "../middlewares/rateLimiter.js";
 
 const articlesRouter = express.Router();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(process.cwd(), './uploads'));
+    cb(null, path.join(process.cwd(), "./uploads"));
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + '-' + file.originalname);
-  }
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + "-" + file.originalname);
+  },
 });
 const upload = multer({
   storage: storage,
   limits: {
     fileSize: 10 * 1024 * 1024,
-    fieldSize: 10 * 1024 * 1024
+    fieldSize: 10 * 1024 * 1024,
   },
 });
 
@@ -47,14 +48,14 @@ articlesRouter.get("/article/fetch/:id", fetchArticle);
  * @description Create new article
  * @access Private
  */
-articlesRouter.post("/article/create", upload.single('preview_image'), createArticle);
+articlesRouter.post("/article/create", writeLimiter, upload.single("preview_image"), createArticle);
 
 /**
  * @route PATCH /article/update
  * @description Update the article
  * @access Private
  */
-articlesRouter.patch("/article/update", upload.single('updated_preview_image'), updateArticle);
+articlesRouter.patch("/article/update", writeLimiter, upload.single("updated_preview_image"), updateArticle);
 
 /**
  * @route DELETE /user/details

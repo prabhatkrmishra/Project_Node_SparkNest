@@ -6,6 +6,9 @@ import {
   googleAuth,
   googleAuthCallback,
 } from "../controllers/authController.js";
+import { validate } from "../validators/validate.js";
+import { signupSchema, loginSchema } from "../validators/auth.validator.js";
+import { authLimiter } from "../middlewares/rateLimiter.js";
 
 const authRouter = express.Router();
 
@@ -14,14 +17,14 @@ const authRouter = express.Router();
  * @description Register a new user
  * @access Public
  */
-authRouter.post("/signup", signup);
+authRouter.post("/signup", authLimiter, validate(signupSchema), signup);
 
 /**
  * @route POST /login
  * @description Log in an existing user
  * @access Public
  */
-authRouter.post("/login", login);
+authRouter.post("/login", authLimiter, validate(loginSchema), login);
 
 /**
  * @route POST /logout

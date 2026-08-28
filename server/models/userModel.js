@@ -81,14 +81,19 @@ export async function getUserDetailEmail(email) {
   return result.rows.length > 0 ? result.rows[0] : null;
 }
 
+const ALLOWED_USER_COLS = new Set(["username", "email", "fname", "lname", "avatar", "bio", "region", "id"]);
+
 /**
  * Get specific user details by id.
  *
  * @param {number} id - The user's ID.
- * @param {string} col - The user's column.
+ * @param {string} col - The user's column (allowlisted).
  * @returns {Promise<Object|null>} - The user object or null if not found.
  */
 export async function getUserDetail(id, col) {
+  if (!ALLOWED_USER_COLS.has(col)) {
+    throw new Error(`Invalid column: ${col}`);
+  }
   const db = getDBClient();
   const query = `SELECT ${col} FROM users WHERE id = $1`;
   const result = await db.query(query, [id]);
