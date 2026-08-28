@@ -11,7 +11,9 @@
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "db:migrate": "node db/migrate.js",
+    "db:generate-categories": "node db/scripts/csv-to-sql.js"
   },
   "engines": {
     "node": ">=20.18.0",

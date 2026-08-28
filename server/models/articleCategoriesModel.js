@@ -8,25 +8,26 @@ import { getDBClient } from "../db/db.js";
  * @returns {Promise<true|false>} - Returns true if all categories were inserted successfully, otherwise false.
  */
 export async function insertArticleCategories(articleId, categories) {
-  const db = getDBClient();
+  const pool = getDBClient();
   const insertCategoryQuery = `
     INSERT INTO articles_categories (article_id, category_id) 
     VALUES ($1, $2)
   `;
 
-  await db.query('BEGIN');
-  
+  const client = await pool.connect();
   try {
+    await client.query("BEGIN");
     for (let i = 0; i < categories.length; i++) {
-      await db.query(insertCategoryQuery, [articleId, categories[i].id]);
+      await client.query(insertCategoryQuery, [articleId, categories[i].id]);
     }
-
-    await db.query('COMMIT');
+    await client.query("COMMIT");
     return true;
   } catch (error) {
-    await db.query('ROLLBACK');
+    await client.query("ROLLBACK");
     console.error("Error inserting categories for article:", error);
     return false;
+  } finally {
+    client.release();
   }
 }
 
@@ -44,7 +45,7 @@ export async function dropArticleCategories(id) {
     await db.query(query, [id]);
     return true;
   } catch (error) {
-    console.log('Error in deleting article categories', error);
+    console.log("Error in deleting article categories", error);
     return false;
   }
 }
