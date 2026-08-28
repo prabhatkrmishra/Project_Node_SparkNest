@@ -4,7 +4,7 @@ import type { User } from "../types/api";
 
 type AuthState = {
   user: User | null;
-  setUser: (u: User | null) => void;
+  setUser: (_u: User | null) => void;
   logout: () => void;
 };
 
