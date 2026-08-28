@@ -54,7 +54,7 @@
     "zod": "3.23.8"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "^3.2.6",
+    "@vitest/coverage-v8": "^4.1.11",
     "eslint": "8.57.1",
     "supertest": "7.0.0",
     "vitest": "^3.2.6"
