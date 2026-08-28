@@ -2,6 +2,14 @@ import express from "express";
 import multer from "multer";
 import { resolveDataPath } from "../services/storageService.js";
 import { AppError } from "../middlewares/errorMiddleware.js";
+import { validate } from "../validators/validate.js";
+import {
+  checkEmailSchema,
+  checkUsernameSchema,
+  getUserDetailsSchema,
+  getUserPublicSchema,
+} from "../validators/user.validator.js";
+import { requireAuth } from "../middlewares/authMiddleware.js";
 
 import {
   checkEmailExists,
@@ -39,43 +47,43 @@ const upload = multer({
 /**
  * @route GET /check/email/:email
  * @description Check if email already used
- * @access Private
+ * @access Public
  */
-userRouter.get("/check/email/:email", checkEmailExists);
+userRouter.get("/check/email/:email", validate(checkEmailSchema), checkEmailExists);
 
 /**
  * @route GET /check/username/:uname
  * @description Check if username already used
- * @access Private
+ * @access Public
  */
-userRouter.get("/check/username/:uname", checkUsernameExists);
+userRouter.get("/check/username/:uname", validate(checkUsernameSchema), checkUsernameExists);
 
 /**
  * @route GET /user/details/:email
  * @description Get details of a user by email
  * @access Private
  */
-userRouter.get("/user/details/:email", getUserDetails);
+userRouter.get("/user/details/:email", requireAuth, validate(getUserDetailsSchema), getUserDetails);
 
 /**
  * @route GET /public/user/:id
  * @description Get details of a user by id
- * @access Private
+ * @access Public
  */
-userRouter.get("/public/user/:id", getUserPublic);
+userRouter.get("/public/user/:id", validate(getUserPublicSchema), getUserPublic);
 
 /**
  * @route PATCH /user/details
  * @description Update user details
  * @access Private
  */
-userRouter.patch("/user/details", upload.single("avatar_image"), updateUserDetails);
+userRouter.patch("/user/details", requireAuth, upload.single("avatar_image"), updateUserDetails);
 
 /**
  * @route DELETE /user/account/delete/yes
  * @description Delete user account
  * @access Private
  */
-userRouter.delete("/user/account/delete/yes", deleteUserAccount);
+userRouter.delete("/user/account/delete/yes", requireAuth, deleteUserAccount);
 
 export default userRouter;

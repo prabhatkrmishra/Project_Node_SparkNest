@@ -31,10 +31,6 @@ export const fetchComment = async (req, res) => {
  * @param {Object} res - The response object.
  */
 export const createComment = async (req, res) => {
-  if (!req.isAuthenticated()) {
-    return res.status(403).json({ message: "Not authenticated to create comments" });
-  }
-
   const { article_id } = req.params;
   const { user_id, name, email, body, parent_comment_id } = req.body;
 
@@ -64,10 +60,6 @@ export const createComment = async (req, res) => {
  * @param {Object} res - The response object.
  */
 export const updateComment = async (req, res) => {
-  if (!req.isAuthenticated()) {
-    return res.status(403).json({ message: "Not authenticated to update comments" });
-  }
-
   const { comment_id } = req.params;
   const { body } = req.body;
 
@@ -91,15 +83,9 @@ export const updateComment = async (req, res) => {
  * @param {Object} res - The response object.
  */
 export const deleteComment = async (req, res) => {
-  if (!req.isAuthenticated()) {
-    return res.status(403).json({ message: "Not authenticated to update comments" });
-  }
-
   const current_uid = req.session.passport ? req.session.passport.user : null;
   if (!current_uid) {
-    return res.status(200).json({
-      message: `Done !`,
-    });
+    return res.status(401).json({ message: "Not authenticated" });
   }
 
   const { comment_id } = req.params;
@@ -107,13 +93,11 @@ export const deleteComment = async (req, res) => {
   try {
     const exist = await checkComment(comment_id);
     if (!exist) {
-      res.status(400).send(`Comment with ${comment_id} does not exist`);
+      return res.status(404).send(`Comment with ${comment_id} does not exist`);
     }
 
-    if (current_uid != exist.user_id) {
-      return res.status(400).json({
-        message: `Not authorized to delete comment`,
-      });
+    if (String(current_uid) !== String(exist.user_id)) {
+      return res.status(403).json({ message: `Not authorized to delete comment` });
     }
 
     const result = await dropComment(comment_id);

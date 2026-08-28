@@ -7,6 +7,7 @@ import {
   getUserByUsername,
   getUserDetailId,
   getUserDetailPublic,
+  getUserDetailEmail,
   updateUser,
   deleteUser,
 } from "../models/userModel.js";
@@ -79,18 +80,17 @@ export async function checkUsernameExists(req, res) {
  * @param {Object} res - The response object.
  */
 export async function getUserDetails(req, res) {
-  if (!req.isAuthenticated()) {
-    return res.status(403).json({ message: "Not authenticated to get user details" });
-  }
-
   const { email } = req.params;
 
   try {
-    const user = await getUserByEmail(email);
+    const user = await getUserDetailEmail(email);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.status(200).json(user);
+    // Strip password before returning
+    // eslint-disable-next-line no-unused-vars
+    const { password, ...safe } = user;
+    res.status(200).json(safe);
   } catch (error) {
     console.error("Error getting user details:", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -125,25 +125,17 @@ export async function getUserPublic(req, res) {
  * @param {Object} res - The response object.
  */
 export async function updateUserDetails(req, res) {
-  if (!req.isAuthenticated()) {
-    return res.status(403).json({ message: "Not authenticated to update user details" });
-  }
-
   const current_uid = req.session.passport ? req.session.passport.user : null;
   if (!current_uid) {
-    return res.status(200).json({
-      message: `Done !`,
-    });
+    return res.status(401).json({ message: "Not authenticated" });
   }
 
   if (!req.body.id) {
     return res.status(400).json({ message: "Cannot update details, user ID is empty" });
   }
 
-  if (req.body.id != current_uid) {
-    return res.status(400).json({
-      message: `Not authorized to Update user data!`,
-    });
+  if (String(req.body.id) !== String(current_uid)) {
+    return res.status(403).json({ message: `Not authorized to Update user data!` });
   }
 
   const { id, ...updatedData } = req.body;
@@ -229,27 +221,17 @@ export async function updateUserDetails(req, res) {
  * @param {Object} res - The response object.
  */
 export async function deleteUserAccount(req, res) {
-  if (!req.isAuthenticated()) {
-    return res.status(403).json({ message: "Not authenticated to delete user" });
-  }
-
   const current_uid = req.session.passport ? req.session.passport.user : null;
   if (!current_uid) {
-    return res.status(200).json({
-      message: `Done !`,
-    });
+    return res.status(401).json({ message: "Not authenticated" });
   }
 
   if (!req.body.idtodelete) {
-    return res.status(400).json({
-      message: `Cannot delete user, user id is empty`,
-    });
+    return res.status(400).json({ message: `Cannot delete user, user id is empty` });
   }
 
-  if (req.body.idtodelete != current_uid) {
-    return res.status(400).json({
-      message: `Not authorized to delete !`,
-    });
+  if (String(req.body.idtodelete) !== String(current_uid)) {
+    return res.status(403).json({ message: `Not authorized to delete !` });
   }
 
   const { idtodelete, email, allowed } = req.body;
