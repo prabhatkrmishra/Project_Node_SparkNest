@@ -34,30 +34,30 @@ function App() {
         <ErrorBoundary>
           <Router>
             <Routes>
-              <Route exact path="/" element={<Index />} />
-              <Route exact path="/article/view/:selector" element={<Article />} />
-              <Route exact path="/category/:type" element={<Category />} />
-              <Route exact path="/category" element={<Category />} />
-              <Route exact path="/categories" element={<Categories />} />
-              <Route exact path="/create" element={<CreateArticle />} />
-              <Route exact path="/publish" element={<PublishArticle />} />
-              <Route exact path="/article/edit" element={<UpdateArticle />} />
-              <Route exact path="/article/update/publish" element={<UpdatePublish />} />
-              <Route exact path="/session/new" element={<Login />} />
-              <Route exact path="/signup/new" element={<Signup />} />
-              <Route exact path="/password/request" element={<ForgotPassword />} />
-              <Route exact path="/password/reset/:email/:token" element={<ResetMain />} />
-              <Route exact path="/google/login" element={<GoogleLogin />} />
-              <Route exact path="/google/success" element={<GoogleLogin />} />
-              <Route exact path="/profile" element={<Profile />} />
-              <Route exact path="/profile/details" element={<Details />} />
-              <Route exact path="/profile/:section" element={<Profile />} />
-              <Route exact path="/account/settings" element={<Settings />} />
-              <Route exact path="/account/settings/:section" element={<Settings />} />
-              <Route exact path="/user/:usertag" element={<UserProfile />} />
-              <Route exact path="/about" element={<About />} />
-              <Route exact path="/contact" element={<Contact />} />
-              <Route exact path="/styles" element={<Styles />} />
+              <Route path="/" element={<Index />} />
+              <Route path="/article/view/:selector" element={<Article />} />
+              <Route path="/category/:type" element={<Category />} />
+              <Route path="/category" element={<Category />} />
+              <Route path="/categories" element={<Categories />} />
+              <Route path="/create" element={<CreateArticle />} />
+              <Route path="/publish" element={<PublishArticle />} />
+              <Route path="/article/edit" element={<UpdateArticle />} />
+              <Route path="/article/update/publish" element={<UpdatePublish />} />
+              <Route path="/session/new" element={<Login />} />
+              <Route path="/signup/new" element={<Signup />} />
+              <Route path="/password/request" element={<ForgotPassword />} />
+              <Route path="/password/reset/:email/:token" element={<ResetMain />} />
+              <Route path="/google/login" element={<GoogleLogin />} />
+              <Route path="/google/success" element={<GoogleLogin />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/profile/details" element={<Details />} />
+              <Route path="/profile/:section" element={<Profile />} />
+              <Route path="/account/settings" element={<Settings />} />
+              <Route path="/account/settings/:section" element={<Settings />} />
+              <Route path="/user/:usertag" element={<UserProfile />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/styles" element={<Styles />} />
               <Route path="*" element={<Error />} />
             </Routes>
           </Router>
