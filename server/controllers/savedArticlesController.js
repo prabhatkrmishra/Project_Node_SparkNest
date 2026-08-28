@@ -4,12 +4,10 @@ import {
   setUnSaveArticle,
   getAllSavedArticles,
 } from "../models/savedArticlesModel.js";
+import { ok, paginated } from "../utils/response.js";
 
 /**
  * Check if the user has saved a particular article
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
 export async function isSavedArticle(req, res) {
   const { userId, articleId } = req.params;
@@ -29,9 +27,6 @@ export async function isSavedArticle(req, res) {
 
 /**
  * Save an article for the user
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
 export async function saveArticle(req, res) {
   const { user_id, article_id } = req.body;
@@ -43,9 +38,9 @@ export async function saveArticle(req, res) {
   try {
     const response = await setSaveArticle(user_id, article_id);
     if (response) {
-      res.status(200).json({ message: "Article saved successfully" });
+      return ok(res, null, { message: "Article saved successfully" });
     } else {
-      res.status(200).json({ message: "Error in saving article" });
+      return res.status(200).json({ message: "Error in saving article" });
     }
   } catch (error) {
     console.error("Error saving article:", error);
@@ -55,9 +50,6 @@ export async function saveArticle(req, res) {
 
 /**
  * Unsave an article for the user
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
 export async function unsaveArticle(req, res) {
   const { user_id, article_id } = req.body;
@@ -69,9 +61,9 @@ export async function unsaveArticle(req, res) {
   try {
     const response = await setUnSaveArticle(user_id, article_id);
     if (response) {
-      res.status(200).json({ message: "Article unsaved successfully" });
+      return ok(res, null, { message: "Article unsaved successfully" });
     } else {
-      res.status(200).json({ message: "Article was not saved" });
+      return res.status(200).json({ message: "Article was not saved" });
     }
   } catch (error) {
     console.error("Error unsaving article:", error);
@@ -81,9 +73,6 @@ export async function unsaveArticle(req, res) {
 
 /**
  * Get all saved articles for the user
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
  */
 export async function fetchSavedArticles(req, res) {
   const current_uid = req.session.passport ? req.session.passport.user : null;
@@ -112,7 +101,7 @@ export async function fetchSavedArticles(req, res) {
       return res.status(200).json({ message: `No saved article found` });
     }
 
-    res.status(200).json({ articles, totalPages });
+    return paginated(res, articles, totalPages, totalCount);
   } catch (error) {
     console.error("Error fetching saved articles:", error);
     res.status(500).json({ message: "Internal Server Error" });

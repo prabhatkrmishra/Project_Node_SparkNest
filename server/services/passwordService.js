@@ -1,15 +1,30 @@
 import nodemailer from "nodemailer";
 import { v4 as uuidv4 } from "uuid";
 import config from "../config/config.js";
-
 import { getUserDetailEmail } from "../models/userModel.js";
 import {
   storeResetCredentials,
   verifyToken,
   updateResetPassword,
 } from "../models/passwordResetModel.js";
-
 import { hashPassword } from "./bcryptService.js";
+
+// Per-email rate limit: 3 requests per hour
+const emailRateLimit = new Map();
+
+function checkEmailRateLimit(email) {
+  const now = Date.now();
+  const windowMs = 60 * 60 * 1000;
+  const max = 3;
+  const entry = emailRateLimit.get(email);
+  if (!entry || now - entry.start > windowMs) {
+    emailRateLimit.set(email, { count: 1, start: now });
+    return true;
+  }
+  if (entry.count >= max) return false;
+  entry.count++;
+  return true;
+}
 
 // Initialize Nodemailer
 const transporter = nodemailer.createTransport({
@@ -33,6 +48,10 @@ export const sendResetEmail = async (req, res) => {
     return res.status(400).json({
       error: "Cannot generate link, email is empty",
     });
+  }
+
+  if (!checkEmailRateLimit(email)) {
+    return res.status(429).json({ message: "Too many password reset requests, please try again later." });
   }
 
   const token = uuidv4();
