@@ -6,16 +6,30 @@ import pkg from "pg";
 const { Pool } = pkg;
 import config from "../config/config.js";
 
-const pool = new Pool({
-  user: config.pg.user,
-  host: config.pg.host,
-  database: config.pg.database,
-  password: config.pg.password,
-  port: config.pg.port ? Number(config.pg.port) : 5432,
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 5000,
-});
+const pool = new Pool(
+  config.databaseUrl
+    ? {
+        connectionString: config.databaseUrl,
+        ssl:
+          config.databaseUrl.includes("sslmode=require") ||
+          process.env.PGSSLMODE === "require"
+            ? { rejectUnauthorized: false }
+            : false,
+        max: 20,
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 5000,
+      }
+    : {
+        user: config.pg.user,
+        host: config.pg.host,
+        database: config.pg.database,
+        password: config.pg.password,
+        port: config.pg.port ? Number(config.pg.port) : 5432,
+        max: 20,
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 5000,
+      }
+);
 
 pool.on("error", (err) => {
   console.error("PG Pool error:", err);

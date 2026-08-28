@@ -18,11 +18,26 @@ import config from "../config/config.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+function getFlywayCredentials() {
+  if (config.databaseUrl) {
+    const u = new URL(config.databaseUrl);
+    const jdbcUrl = `jdbc:postgresql://${u.host}${u.pathname}${u.search}`;
+    return {
+      url: jdbcUrl,
+      user: decodeURIComponent(u.username),
+      password: decodeURIComponent(u.password),
+    };
+  }
+  return {
+    url: `jdbc:postgresql://${config.pg.host}:${config.pg.port || 5432}/${config.pg.database}`,
+    user: config.pg.user || "",
+    password: config.pg.password || "",
+  };
+}
+
 function dockerFlywayCommand(flywayCmd) {
   const projectRoot = path.resolve(__dirname, "../..");
-  const url = `jdbc:postgresql://${config.pg.host}:${config.pg.port || 5432}/${config.pg.database}`;
-  const user = config.pg.user || "";
-  const password = config.pg.password || "";
+  const { url, user, password } = getFlywayCredentials();
   const cmd = [
     "docker run --rm",
     "--network host",
@@ -182,7 +197,7 @@ export async function runMigrations() {
     console.log("Skipping migrations in test env");
     return;
   }
-  if (!config.pg.database || !config.pg.host) {
+  if (!config.databaseUrl && (!config.pg.database || !config.pg.host)) {
     console.log("DB not configured, skipping migrations");
     return;
   }

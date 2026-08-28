@@ -6,6 +6,7 @@ dotenv.config();
 const envSchema = z.object({
   SERVER_HOSTNAME: z.string().default("localhost"),
   SERVER_PORT: z.coerce.number().default(3000),
+  DATABASE_URL: z.string().optional(),
   PG_USER: z.string().optional().default(""),
   PG_HOST: z.string().optional().default("localhost"),
   PG_DATABASE: z.string().optional().default(""),

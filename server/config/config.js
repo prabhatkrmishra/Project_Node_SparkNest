@@ -7,6 +7,7 @@ import { env } from "./env.js";
 const config = {
   hostname: env.SERVER_HOSTNAME,
   port: env.SERVER_PORT,
+  databaseUrl: env.DATABASE_URL || "",
   pg: {
     user: env.PG_USER,
     host: env.PG_HOST,

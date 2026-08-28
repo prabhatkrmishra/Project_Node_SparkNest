@@ -1,37 +1,8 @@
 services:
-  db:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_USER: ${PG_USER:-pkm774}
-      POSTGRES_PASSWORD: ${PG_PASSWORD:-pass}
-      POSTGRES_DB: ${PG_DATABASE:-sparknest}
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${PG_USER:-pkm774} -d ${PG_DATABASE:-sparknest}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
-  flyway:
-    image: flyway/flyway:10.20
-    volumes:
-      - .:/flyway/project
-    command: -url=jdbc:postgresql://db:5432/${PG_DATABASE:-sparknest} -user=${PG_USER:-pkm774} -password=${PG_PASSWORD:-pass} -configFiles=/flyway/project/flyway.conf migrate
-    depends_on:
-      db:
-        condition: service_healthy
-
   server:
     build: ./server
     environment:
-      PG_HOST: db
-      PG_USER: ${PG_USER:-pkm774}
-      PG_PASSWORD: ${PG_PASSWORD:-pass}
-      PG_DATABASE: ${PG_DATABASE:-sparknest}
-      PG_PORT: 5432
+      DATABASE_URL: ${DATABASE_URL}
       SESSION_SECRET: ${SESSION_SECRET:-change_me_32_chars_minimum_secret_here}
       FRONTEND_ADDRESS: http://localhost:8080
       BACKEND_ADDRESS: http://localhost:3000
@@ -43,9 +14,6 @@ services:
       - "3000:3000"
     volumes:
       - appdata:/data
-    depends_on:
-      flyway:
-        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
       interval: 10s
@@ -61,5 +29,4 @@ services:
         condition: service_healthy
 
 volumes:
-  pgdata:
   appdata:
