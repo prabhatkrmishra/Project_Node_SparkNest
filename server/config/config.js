@@ -22,7 +22,7 @@ const config = {
     port: process.env.PG_PORT,
   },
   session: {
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || "test-secret-32-chars-minimum-for-tests",
     cookie: {
       secure: process.env.SECURE_COOKIE,
       httpOnly: process.env.HTTP_ONLY,

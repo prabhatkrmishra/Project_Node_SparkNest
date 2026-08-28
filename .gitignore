@@ -1,7 +1,31 @@
-*.txt
+# deps
+node_modules/
+# build
+dist/
+build/
+dist-ssr/
+# env
+.env
+.env.local
+.env.*.local
+# data & uploads (never commit)
+data/
+server/uploads/*
+!server/uploads/.placeholder
+# OS
+.DS_Store
+Thumbs.db
+# logs
+npm-debug.log*
+*.log
+logs/
+# flyway
+flyway.conf.local
+# secrets
 *.crt
 *.key
-.env
-
+# keep required txt
 !commands.txt
 !ngix.txt
+!server/commands.txt
+!server/ngix.txt

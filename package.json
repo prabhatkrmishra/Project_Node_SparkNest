@@ -1,0 +1,38 @@
+{
+  "private": true,
+  "name": "sparknest-root",
+  "version": "2.5.0",
+  "type": "module",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "engines": {
+    "node": ">=20.18.0",
+    "npm": ">=10"
+  },
+  "scripts": {
+    "dev:client": "npm --workspace=client run dev",
+    "dev:server": "npm --workspace=server run dev",
+    "lint": "npm run lint --workspaces --if-present",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
+    "test": "npm run test --workspaces --if-present",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css}": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "eslint": "8.57.1",
+    "husky": "9.1.7",
+    "lint-staged": "15.5.0",
+    "prettier": "3.3.3"
+  }
+}
