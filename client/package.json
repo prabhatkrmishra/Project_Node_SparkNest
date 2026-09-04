@@ -59,7 +59,7 @@
     "@eslint/js": "^9.9.0",
     "@playwright/test": "^1.55.1",
     "@testing-library/jest-dom": "6.6.3",
-    "@testing-library/react": "16.1.0",
+    "@testing-library/react": "16.3.3",
     "@types/imagesloaded": "^4.1.7",
     "@types/js-cookie": "^3.0.6",
     "@types/masonry-layout": "^4.2.8",
