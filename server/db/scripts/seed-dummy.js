@@ -28,7 +28,6 @@ import pool from "../db.js";
 import { env } from "../../config/env.js";
 import { hashPassword } from "../../services/bcryptService.js";
 import { resolveDataPath } from "../../services/storageService.js";
-import { updateFeaturedArticles } from "../../models/featuredArticlesModel.js";
 
 const FORCE = process.argv.includes("--force");
 const PASSWORD = "Password123!";
@@ -256,15 +255,17 @@ async function main() {
       "SELECT count(*)::int AS n FROM users WHERE email LIKE 'dummy.user.%@sparknest.dev' OR email LIKE 'dummy.author.%@sparknest.dev'"
     );
     if (existing.rows[0].n > 0 && !FORCE) {
+      // The single transaction either commits fully or rolls back fully, so
+      // this only triggers on genuinely completed runs.
       console.error(
-        `Dummy users already exist (${existing.rows[0].n}). Aborting to avoid duplicates. Re-run with --force to reuse them (articles will be duplicated).`
+        `Dummy users already exist (${existing.rows[0].n}). Aborting to avoid duplicates. Re-run with --force to insert another batch (articles will be duplicated).`
       );
       process.exit(2);
     }
 
     const passwordHash = await hashPassword(PASSWORD);
 
-    console.log("Phase 1: users and articles (single transaction)…");
+    console.log("Phase 1-5: seeding inside one transaction (rolls back cleanly on failure)…");
     await client.query("BEGIN");
 
     const userIds = [];
@@ -279,7 +280,6 @@ async function main() {
       userIds.push(result.rows[0].id);
     }
 
-    // subscription rows for the dummy users
     for (let i = 0; i < ALL_USERS.length; i += 1) {
       await client.query(
         `INSERT INTO subscription (email, newsletter) VALUES ($1, $2)
@@ -310,10 +310,10 @@ async function main() {
       );
       const articleId = result.rows[0].id;
 
-      await client.query("INSERT INTO articles_categories (article_id, category_id) VALUES ($1, $2)", [
-        articleId,
-        categoryId,
-      ]);
+      await client.query(
+        "INSERT INTO articles_categories (article_id, category_id) VALUES ($1, $2)",
+        [articleId, categoryId]
+      );
 
       await client.query(
         `INSERT INTO articles_preview (article_id, preview_by, preview_title, preview_subtitle)
@@ -321,11 +321,8 @@ async function main() {
         [articleId, ALL_USERS[authorIndex][0], title.slice(0, 210), subtitle]
       );
 
-      articlePlan.push({ articleId, userId, authorIndex, seed: rand() * 100000 });
+      articlePlan.push({ articleId, userId, authorIndex });
     }
-
-    await client.query("COMMIT");
-    console.log(`Phase 1 done: ${articlePlan.length} articles inserted`);
 
     console.log("Phase 2: downloading/generating images (picsum.photos with sharp fallback)…");
     const jobs = [];
@@ -346,7 +343,6 @@ async function main() {
     console.log(`Phase 2 done: ${jobs.length} images (${sources.picsum} downloaded, ${sources.generated} generated)`);
 
     console.log("Phase 3: article_images rows…");
-    await client.query("BEGIN");
     for (const { articleId, userId } of articlePlan) {
       const base = `${env.BACKEND_ADDRESS}/article/images/${userId}/${articleId}`;
       await client.query(
@@ -361,12 +357,9 @@ async function main() {
         ]
       );
     }
-    await client.query("COMMIT");
     console.log("Phase 3 done");
 
     console.log("Phase 4: likes, saves, comments…");
-    await client.query("BEGIN");
-    // Deterministic per article, but distinct users per like (UNIQUE constraint).
     for (const { articleId } of articlePlan) {
       const roll = rand();
       const likeTarget = roll < 0.15 ? randInt(19, 35) : roll < 0.45 ? randInt(9, 18) : randInt(0, 8);
@@ -388,12 +381,13 @@ async function main() {
       }
 
       const commentCount = rand() < 0.2 ? 0 : randInt(1, 4);
-      const article = (await client.query("SELECT created_at FROM articles WHERE id = $1", [articleId])).rows[0];
-      const articleAgeMs = Date.now() - new Date(article.created_at).getTime();
+      const articleAgeRow = (await client.query("SELECT created_at FROM articles WHERE id = $1", [articleId])).rows[0];
+      const articleAgeMs = Date.now() - new Date(articleAgeRow.created_at).getTime();
       let parentCommentId = null;
       for (let c = 0; c < commentCount; c += 1) {
-        const commenter = userIds[Math.floor(rand() * userIds.length)];
-        const commentUser = ALL_USERS[(userIds.indexOf(commenter)) % ALL_USERS.length];
+        const commenterIndex = Math.floor(rand() * userIds.length);
+        const commenter = userIds[commenterIndex];
+        const commentUser = ALL_USERS[commenterIndex];
         const isReply = parentCommentId !== null && rand() < 0.2;
         const createdAt = new Date(Date.now() - Math.floor(rand() * Math.max(articleAgeMs, 1)));
         const body = isReply ? pick(REPLY_TEMPLATES) : pick(COMMENT_BODIES);
@@ -414,12 +408,34 @@ async function main() {
         if (!isReply && parentCommentId === null) parentCommentId = result.rows[0].id;
       }
     }
-    await client.query("COMMIT");
     console.log("Phase 4 done");
 
-    console.log("Phase 5: recomputing featured articles…");
-    await updateFeaturedArticles();
+    console.log("Phase 5: recomputing featured articles (top 3 by likes)…");
+    await client.query("DELETE FROM featured_articles");
+    const top = await client.query(
+      "SELECT article_id FROM liked_articles GROUP BY article_id ORDER BY COUNT(user_id) DESC, article_id ASC LIMIT 3"
+    );
+    const topIds = top.rows.map((row) => row.article_id);
+    if (topIds.length < 3) {
+      const remaining = 3 - topIds.length;
+      const filler = await client.query(
+        `SELECT id FROM articles
+         WHERE id <> ALL($1::int[])
+         ORDER BY RANDOM()
+         LIMIT $2`,
+        [topIds.length ? topIds : [0], remaining]
+      );
+      topIds.push(...filler.rows.map((row) => row.id));
+    }
+    for (const articleId of topIds) {
+      await client.query("INSERT INTO featured_articles (article_id) VALUES ($1) ON CONFLICT DO NOTHING", [
+        articleId,
+      ]);
+    }
     console.log("Phase 5 done");
+
+    await client.query("COMMIT");
+    console.log("COMMITTED");
 
     const counts = await pool.query(`
       SELECT
@@ -434,7 +450,7 @@ async function main() {
     console.log(`Dummy logins: dummy.author.01@sparknest.dev … dummy.author.14@sparknest.dev (password ${PASSWORD})`);
   } catch (error) {
     await client.query("ROLLBACK").catch(() => {});
-    console.error("Seed-dummy failed:", error);
+    console.error("Seed-dummy failed (rolled back):", error);
     process.exit(1);
   } finally {
     client.release();

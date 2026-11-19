@@ -9,6 +9,8 @@ User=pkm
 Group=pkm
 WorkingDirectory=__APP_ROOT__/current/server
 EnvironmentFile=__APP_ROOT__/shared/.env
+# The VPS chroot reboots periodically; make sure postgres is up before the API boots (start is idempotent).
+ExecStartPre=/bin/sh -c "sudo -n /usr/bin/pg_ctlcluster 16 main start >/dev/null 2>&1; true"
 ExecStart=__NODE_BIN__ server.js
 Restart=always
 RestartSec=5
