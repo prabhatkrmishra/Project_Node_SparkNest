@@ -17,18 +17,20 @@ import { subscribeUser } from "../services/newsletterService.js";
  * @param {Object} res - The response object.
  */
 export async function subscribe(req, res) {
-  if (!req.isAuthenticated()) {
-    return res.status(403).json({ message: "Not authenticated to subscribe" });
-  }
   const { email, type } = req.body;
 
   try {
-    const newSubscription = await subscribeUser(email, type, true);
-    if (newSubscription) {
-      return res.status(200).json({ message: "Subscription successful" });
-    } else {
-      return res.status(200).json({ message: "Already subscribed" });
+    const status = await subscribeUser(email, type, true);
+    if (status === "already-subscribed") {
+      return res.status(409).json({ message: "You are already subscribed to the newsletter" });
     }
+    return res.status(200).json({
+      message:
+        status === "resubscribed"
+          ? "Welcome back! Your newsletter subscription is active again"
+          : "Subscription successful",
+      status,
+    });
   } catch (error) {
     console.error("Error during subscription:", error);
     res.status(500).json({ message: "Internal Server Error" });

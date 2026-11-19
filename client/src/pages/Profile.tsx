@@ -1,6 +1,5 @@
 // @ts-nocheck
 import { useState, useEffect } from "react";
-import Cookies from "js-cookie";
 import { Helmet } from "react-helmet-async";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -26,52 +25,37 @@ import GetPreviews from "./components/profile/GetPreviews";
 import MoveToEffect from "./components/effects/MoveToEffect";
 
 import updateProfile from "./components/UpdateProfile";
+import { useAuth } from "../components/auth/AuthProvider";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const login = Cookies.get("sessionLogged") || false;
-  if (!login) {
-    navigate("/session/new");
-  }
+  const { user, refresh } = useAuth();
 
-  const user = Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null;
-  if (user == null) {
-    logout();
-  }
-
-  if (user) {
-    if (user.username == null || user.region == null) {
-      Cookies.set("setProfile", "true");
-      navigate("/profile/details");
-    }
-  }
-
-  const [profileAvatar, setProfileAvatar] = useState(null);
   useEffect(() => {
+    if (user && (!user.username || !user.region)) {
+      navigate("/profile/details", { replace: true });
+    }
+  }, [user, navigate]);
+
+  const [profileAvatar, setProfileAvatar] = useState(user?.avatar || null);
+  useEffect(() => {
+    let active = true;
     const updateUser = async () => {
       await updateProfile();
-      const avatar = localStorage.getItem("avatar");
-      setProfileAvatar(avatar);
+      const nextUser = await refresh();
+      if (active) {
+        setProfileAvatar(nextUser?.avatar || localStorage.getItem("avatar"));
+      }
     };
-    updateUser();
-  }, []);
+    if (user?.id) void updateUser();
+    return () => {
+      active = false;
+    };
+  }, [refresh, user?.id]);
 
-  const userBio = localStorage.getItem("userBio") || "";
+  const userBio = user?.bio || localStorage.getItem("userBio") || "";
   const { section } = useParams();
   const [highlighted, setHighlighted] = useState(section || "articles");
-
-  useEffect(() => {
-    const originalWarn = console.error;
-    console.error = (message, ...args) => {
-      if (message.includes("Warning: Cannot update a component")) {
-        return;
-      }
-      originalWarn(message, ...args);
-    };
-    return () => {
-      console.error = originalWarn;
-    };
-  }, []);
 
   useEffect(() => {
     const allowedSections = ["articles", "collections", "liked"];
@@ -117,7 +101,7 @@ const Profile = () => {
   return (
     <>
       <Helmet>
-        <title>{user ? user.fname + user.lname : ""}</title>
+        <title>{user ? `${user.fname} ${user.lname}` : "Your profile"}</title>
       </Helmet>
       <PreLoader />
       <div id="page" className="s-pagewrap">
@@ -137,29 +121,51 @@ const Profile = () => {
                   </figure>
                   <div className="entry__author-info-profile">
                     <h5 className="entry__author-name-profile">
-                      <a className="profile-name-height" href={`/user/${user ? user.id : 0}`}>
+                      <a
+                        className="profile-name-height"
+                        href={`/user/${user ? user.username || user.id : 0}`}
+                      >
                         {user ? user.fname + " " + user.lname : ""}
                       </a>
                     </h5>
                     <div className="profil-info">
                       <div className="d-flex flex-row gap-2 entry__author-detail-profile">
-                        <img
+                        <svg
+                          className="profile-detail-icon"
                           width="20"
                           height="20"
-                          src="https://img.icons8.com/ios-filled/20/user-male-circle.png"
-                          alt="user-male-circle"
-                          id="profilesvg"
-                        />
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          aria-hidden="true"
+                        >
+                          <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.6" />
+                          <circle cx="12" cy="9.5" r="3" stroke="currentColor" strokeWidth="1.6" />
+                          <path
+                            d="M6.5 18c.9-2.4 2.9-3.6 5.5-3.6s4.6 1.2 5.5 3.6"
+                            stroke="currentColor"
+                            strokeWidth="1.6"
+                            strokeLinecap="round"
+                          />
+                        </svg>
                         <p>{user ? user.username : ""}</p>
                       </div>
                       <div className="d-flex flex-row gap-2 entry__author-detail-profile">
-                        <img
+                        <svg
+                          className="profile-detail-icon"
                           width="20"
                           height="20"
-                          src="https://img.icons8.com/ios-filled/25/marker.png"
-                          alt="marker"
-                          id="profilesvg"
-                        />
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M12 21s6-5.1 6-10a6 6 0 1 0-12 0c0 4.9 6 10 6 10Z"
+                            stroke="currentColor"
+                            strokeWidth="1.6"
+                            strokeLinejoin="round"
+                          />
+                          <circle cx="12" cy="11" r="2.2" stroke="currentColor" strokeWidth="1.6" />
+                        </svg>
                         <p>{user ? user.region : ""}</p>
                       </div>
                     </div>
@@ -205,9 +211,7 @@ const Profile = () => {
                         <div className="d-flex flex-column">
                           <button
                             className="btn btn--pill-small profile-buttons-svg-menu"
-                            onClick={() => {
-                              window.location.href = "/account/settings";
-                            }}
+                            onClick={() => navigate("/account/settings")}
                           >
                             <span>Settings</span>
                           </button>
@@ -219,9 +223,7 @@ const Profile = () => {
                           </button>
                           <button
                             className="btn btn--pill-small profile-buttons-svg-menu"
-                            onClick={() => {
-                              window.location.href = "/contact";
-                            }}
+                            onClick={() => navigate("/contact")}
                           >
                             <span>Contact</span>
                           </button>

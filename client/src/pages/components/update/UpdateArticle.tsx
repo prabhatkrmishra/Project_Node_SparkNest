@@ -52,6 +52,14 @@ const UpdateArticle = () => {
   const editorRef = useRef(null);
   const quillRef = useRef(null);
 
+  // Deep links have no router state; send the user somewhere useful instead
+  // of crashing on UpdateData.* below.
+  useEffect(() => {
+    if (!UpdateData && login) {
+      navigate("/profile", { replace: true });
+    }
+  }, [UpdateData, login, navigate]);
+
   useEffect(() => {
     const toolbarOptions = [
       [
@@ -127,6 +135,7 @@ const UpdateArticle = () => {
 
   useEffect(() => {
     const loadContent = async () => {
+      if (!UpdateData) return;
       const savedTitle = localStorage.getItem("articleUpdateTitle") || "";
       const savedContent = await getItem("articleUpdateContent");
       if (savedTitle && savedContent) {

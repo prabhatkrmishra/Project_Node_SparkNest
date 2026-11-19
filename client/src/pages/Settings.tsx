@@ -1,10 +1,7 @@
 // @ts-nocheck
 import { Helmet } from "react-helmet-async";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import Cookies from "js-cookie";
-
-import logout from "./components/tools/auth";
 
 import PreLoader from "./components/PreLoader";
 import Header from "./components/Header";
@@ -16,31 +13,29 @@ import Profile from "./components/profile_settings/Profile";
 import DropDownMenu from "./components/profile_settings/settings_components/DropDownMenu";
 
 import updateProfile from "./components/UpdateProfile";
+import { useAuth } from "../components/auth/AuthProvider";
 
 const Settings = () => {
   const { section } = useParams();
   const navigate = useNavigate();
   const pSection = section ? section : "general";
+  const { user, refresh } = useAuth();
 
-  const login = Cookies.get("sessionLogged") || false;
-  if (!login) {
-    window.location.href = "/session/new";
-  }
-
-  const user = Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null;
-  if (user == null) {
-    logout();
-  }
-
-  const [profileAvatar, setProfileAvatar] = useState(null);
+  const [profileAvatar, setProfileAvatar] = useState(user?.avatar || null);
   useEffect(() => {
+    let active = true;
     const updateUser = async () => {
       await updateProfile();
-      const avatar = localStorage.getItem("avatar");
-      setProfileAvatar(avatar);
+      const nextUser = await refresh();
+      if (active) {
+        setProfileAvatar(nextUser?.avatar || localStorage.getItem("avatar"));
+      }
     };
-    updateUser();
-  }, []);
+    if (user?.id) void updateUser();
+    return () => {
+      active = false;
+    };
+  }, [refresh, user?.id]);
 
   const [fade, setFade] = useState(false);
 
@@ -67,19 +62,21 @@ const Settings = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => setFade(true), 300);
-    if (user.username == null || user.region == null) {
-      Cookies.set("setProfile", "true");
-      window.location.href = "/profile/details";
-    }
     return () => clearTimeout(timer);
-  }, [pSection, user]);
+  }, [pSection]);
 
-  if (validSections.includes(pSection)) {
-    selectedSection = sectionMap.get(pSection);
-    sectionInfo = sectionInfoMap.get(pSection);
-  } else {
-    return (window.location.href = "/error");
+  useEffect(() => {
+    if (user && (!user.username || !user.region)) {
+      navigate("/profile/details", { replace: true });
+    }
+  }, [navigate, user]);
+
+  if (!validSections.includes(pSection)) {
+    return <Navigate to="/error" replace />;
   }
+
+  selectedSection = sectionMap.get(pSection);
+  sectionInfo = sectionInfoMap.get(pSection);
 
   const handleSectionChange = (newSection) => {
     setFade(false);
@@ -89,7 +86,7 @@ const Settings = () => {
   return (
     <>
       <Helmet>
-        <title>Settings : {selectedSection}</title>
+        <title>{`Settings : ${selectedSection}`}</title>
       </Helmet>
       <PreLoader />
       <div id="page" className="s-pagewrap">
@@ -104,7 +101,7 @@ const Settings = () => {
               <div className="entry__author-box-settings mainpage-settings-profile">
                 <div>
                   <figure className="entry__author-avatar profile-avatar-settings">
-                    <img alt="" src={profileAvatar} className="avatar avatar-settings" />
+                    <img alt="" src={profileAvatar || undefined} className="avatar avatar-settings" />
                   </figure>
                 </div>
                 <div className="entry__author-info" style={{ marginTop: "15px" }}>
@@ -114,7 +111,7 @@ const Settings = () => {
                   >
                     <a href="/profile">
                       <div className="settings-span">
-                        <span>{user.fname + " " + user.lname}</span>
+                        <span>{user ? `${user.fname} ${user.lname}` : ""}</span>
                       </div>
                     </a>
                     <div className="main-settings-name">

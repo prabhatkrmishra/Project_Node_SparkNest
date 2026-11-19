@@ -2,7 +2,7 @@
  * Controller for handling authentication-related requests.
  */
 
-import { createUser, getUserByEmail } from "../models/userModel.js";
+import { createUser, getUserByEmail, getUserDetailId } from "../models/userModel.js";
 import { hashPassword } from "../services/bcryptService.js";
 import { subscribeUser } from "../services/newsletterService.js";
 import passport from "passport";
@@ -92,6 +92,29 @@ export function login(req, res, next) {
       });
     });
   })(req, res, next);
+}
+
+/**
+ * Return the currently authenticated user from the session.
+ * Used by the client as the single source of truth instead of trusting
+ * long-lived client-side cookies.
+ */
+export async function getMe(req, res) {
+  const userId = req.session?.passport?.user;
+  if (!userId) {
+    return res.status(401).json({ message: "Not authenticated" });
+  }
+
+  try {
+    const user = await getUserDetailId(userId);
+    if (!user) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+    return res.status(200).json({ user: stripPassword(user) });
+  } catch (error) {
+    console.error("Error loading current user:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 }
 
 /**

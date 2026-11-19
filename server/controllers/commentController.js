@@ -32,11 +32,19 @@ export const fetchComment = async (req, res) => {
  */
 export const createComment = async (req, res) => {
   const { article_id } = req.params;
-  const { user_id, name, email, body, parent_comment_id } = req.body;
+  const { body, parent_comment_id } = req.body;
+  const currentUser = req.user;
 
-  if (!user_id) {
-    return res.status(400).json({ message: "Cannot create commment, user ID is empty" });
+  if (!currentUser?.id) {
+    return res.status(401).json({ message: "Not authenticated" });
   }
+
+  const user_id = currentUser.id;
+  const name =
+    [currentUser.fname, currentUser.lname].filter(Boolean).join(" ") ||
+    currentUser.username ||
+    "User";
+  const email = currentUser.email;
 
   try {
     const result = await setComment(article_id, {
@@ -62,8 +70,21 @@ export const createComment = async (req, res) => {
 export const updateComment = async (req, res) => {
   const { comment_id } = req.params;
   const { body } = req.body;
+  const current_uid = req.session.passport ? req.session.passport.user : null;
+
+  if (!current_uid) {
+    return res.status(401).json({ message: "Not authenticated" });
+  }
 
   try {
+    const exist = await checkComment(comment_id);
+    if (!exist) {
+      return res.status(404).send("Comment not found.");
+    }
+    if (String(current_uid) !== String(exist.user_id)) {
+      return res.status(403).json({ message: "Not authorized to update comment" });
+    }
+
     const result = await patchComment(comment_id, { body });
     if (result) {
       res.status(200).json(result);

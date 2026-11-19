@@ -56,7 +56,20 @@ export async function getUserDetailId(id) {
 }
 
 /**
- * Get all user details by id.
+ * Resolve a username to its numeric id.
+ *
+ * @param {string} username - The user's username.
+ * @returns {Promise<number|null>} - The user's id or null if not found.
+ */
+export async function getUserIdByUsername(username) {
+  const db = getDBClient();
+  const query = "SELECT id FROM users WHERE LOWER(username) = LOWER($1)";
+  const result = await db.query(query, [username]);
+  return result.rows.length > 0 ? result.rows[0].id : null;
+}
+
+/**
+ * Get publicly safe user details by id.
  *
  * @param {number} id - The user's ID.
  * @returns {Promise<Object|null>} - The user object or null if not found.
@@ -65,6 +78,20 @@ export async function getUserDetailPublic(id) {
   const db = getDBClient();
   const query = "SELECT fname, lname, username, region, bio, avatar FROM users WHERE id = $1";
   const result = await db.query(query, [id]);
+  return result.rows.length > 0 ? result.rows[0] : null;
+}
+
+/**
+ * Get publicly safe user details by username.
+ *
+ * @param {string} username - The user's username.
+ * @returns {Promise<Object|null>} - The user object or null if not found.
+ */
+export async function getUserDetailPublicByUsername(username) {
+  const db = getDBClient();
+  const query =
+    "SELECT fname, lname, username, region, bio, avatar FROM users WHERE LOWER(username) = LOWER($1)";
+  const result = await db.query(query, [username]);
   return result.rows.length > 0 ? result.rows[0] : null;
 }
 

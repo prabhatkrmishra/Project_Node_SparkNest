@@ -1,18 +1,18 @@
 // @ts-nocheck
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
-import Cookies from "js-cookie";
-import "bootstrap/dist/css/bootstrap-utilities.css";
 
 import MobileMenu from "./effects/MobileMenu";
 import SearchEffect from "./effects/SearchEffect";
 
 import logout from "../components/tools/auth";
+import { useAuth } from "../../components/auth/AuthProvider";
 
 const Header = () => {
   const location = useLocation();
   const currentPath = location.pathname;
-  const sessionLogged = Cookies.get("sessionLogged");
+  const { user } = useAuth();
+  const sessionLogged = Boolean(user);
 
   const isActivePath = (path) => currentPath === path || currentPath.startsWith(path);
 

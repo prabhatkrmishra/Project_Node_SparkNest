@@ -1,9 +1,9 @@
 // @ts-nocheck
 import { useState, useEffect, useRef } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import PropTypes from "prop-types";
-import Cookies from "js-cookie";
 import { api } from "../../api/API";
+import { useAuth } from "../../components/auth/AuthProvider";
 
 import MasonryEffect from "./effects/MasonryEffect";
 import AnimateBricks from "./effects/AnimateBricks";
@@ -13,43 +13,40 @@ import EmptyPreviews from "./profile/EmptyPreviews";
 import logout from "../components/tools/auth";
 
 const RenderPreviews = ({ url, type }) => {
-  const navigate = useNavigate();
-  const login = Cookies.get("sessionLogged") || false;
-  const user = Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null;
-
-  if (type == 101 || type == 102 || type == 103) {
-    if (!login) {
-      navigate("/session/new");
-    }
-    if (user == null) {
-      logout();
-    }
-  }
-
+  const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const pageParam = parseInt(searchParams.get("page")) || 1;
   const [articles, setArticles] = useState([]);
   const [currentPage, setCurrentPage] = useState(pageParam);
   const [totalPages, setTotalPages] = useState(1);
-  const [shouldAnimate, setShouldAnimate] = useState(false);
   const [hasArticles, setHasArticles] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [accessWD, setAccess] = useState(false);
   const bricksRef = useRef(null);
 
   useEffect(() => {
+    const controller = new AbortController();
+    let active = true;
+
     const fetchArticles = async () => {
+      setLoading(true);
       try {
-        setShouldAnimate(false);
-        const response = await api.get(`${url}?page=${currentPage}&limit=12`);
+        const response = await api.get(`${url}?page=${currentPage}&limit=12`, {
+          signal: controller.signal,
+        });
+        if (!active) return;
         // Support both legacy {articles, totalPages} and new {success, data, meta}
         const articlesData = response.data.articles ?? response.data.data ?? [];
         const pages = response.data.totalPages ?? response.data.meta?.totalPages ?? 1;
         setArticles(articlesData);
         setTotalPages(pages);
       } catch (error) {
-        if (error.response?.status === 403) {
+        if (!active || controller.signal.aborted) return;
+        if (error.response?.status === 403 || error.response?.status === 401) {
           logout();
         }
+      } finally {
+        if (active) setLoading(false);
       }
     };
 
@@ -58,6 +55,11 @@ const RenderPreviews = ({ url, type }) => {
     if (type === 101) {
       setAccess(true);
     }
+
+    return () => {
+      active = false;
+      controller.abort();
+    };
   }, [currentPage, type, url]);
 
   useEffect(() => {
@@ -73,23 +75,6 @@ const RenderPreviews = ({ url, type }) => {
     setCurrentPage(newPage);
   };
 
-  useEffect(() => {
-    if (hasArticles) {
-      const checkIfBricksLoaded = () => {
-        const bricksContainer = bricksRef.current;
-        if (bricksContainer) {
-          const brickElements = bricksContainer.querySelectorAll(".brick.entry");
-          if (brickElements.length === articles.length) {
-            setShouldAnimate(true);
-          }
-        }
-      };
-
-      const timer = setTimeout(checkIfBricksLoaded, 50);
-      return () => clearTimeout(timer);
-    }
-  }, [articles, hasArticles]);
-
   return (
     <>
       <div id="bricks" className="bricks">
@@ -97,9 +82,9 @@ const RenderPreviews = ({ url, type }) => {
           <div className="bricks-wrapper" data-animate-block>
             <div className="grid-sizer"></div>
             {hasArticles ? (
-              articles.map((article, index) => (
+              articles.map((article) => (
                 <NormalArticle
-                  key={index}
+                  key={article.preview_id}
                   articleId={article.article_id}
                   articlePreviewId={article.preview_id}
                   previewBy={article.preview_by}
@@ -114,6 +99,10 @@ const RenderPreviews = ({ url, type }) => {
                   setArticles={setArticles}
                 />
               ))
+            ) : loading ? (
+              <p className="bricks-status" role="status">
+                Loading articles…
+              </p>
             ) : (
               <EmptyPreviews />
             )}
@@ -127,8 +116,8 @@ const RenderPreviews = ({ url, type }) => {
           />
         )}
       </div>
-      {shouldAnimate && <MasonryEffect />}
-      {shouldAnimate && <AnimateBricks />}
+      {hasArticles && <MasonryEffect />}
+      {hasArticles && <AnimateBricks />}
     </>
   );
 };

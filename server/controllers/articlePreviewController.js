@@ -4,6 +4,7 @@ import {
   fetchArticlePreviewsCategory,
 } from "../models/articlePreviewModel.js";
 import { paginated } from "../utils/response.js";
+import { getUserIdByUsername } from "../models/userModel.js";
 
 /**
  * Fetch and send a articles preview from database
@@ -74,7 +75,11 @@ export async function getArticlePreview(req, res) {
 
   try {
     const offset = (page - 1) * limit;
-    const { articles, totalCount } = await fetchArticlePreview(id, limit, offset);
+    const userId = /^\d+$/.test(id) ? Number(id) : await getUserIdByUsername(id);
+    if (!userId) {
+      return res.status(200).json({ message: `Article with user id:${id} doesn't exist` });
+    }
+    const { articles, totalCount } = await fetchArticlePreview(userId, limit, offset);
 
     const totalPages = Math.ceil(totalCount / limit);
 

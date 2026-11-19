@@ -1,9 +1,12 @@
 services:
   server:
-    build: ./server
+    build:
+      context: .
+      dockerfile: server/Dockerfile
     environment:
       DATABASE_URL: ${DATABASE_URL}
       SESSION_SECRET: ${SESSION_SECRET:-change_me_32_chars_minimum_secret_here}
+      SERVER_HOSTNAME: 0.0.0.0
       FRONTEND_ADDRESS: http://localhost:8080
       BACKEND_ADDRESS: http://localhost:3000
       DATA_ROOT: /data
@@ -21,7 +24,9 @@ services:
       retries: 5
 
   client:
-    build: ./client
+    build:
+      context: .
+      dockerfile: client/Dockerfile
     ports:
       - "8080:80"
     depends_on:

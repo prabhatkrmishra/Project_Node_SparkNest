@@ -4,6 +4,9 @@ import {
   fetchFeaturedArticles,
   clearArticles,
 } from "../controllers/featuredArticlesController.js";
+import { validate } from "../validators/validate.js";
+import { featureArticleSchema } from "../validators/article.validator.js";
+import { requireAuth } from "../middlewares/authMiddleware.js";
 
 const featuredArticlesRouter = express.Router();
 
@@ -12,7 +15,12 @@ const featuredArticlesRouter = express.Router();
  * @description Feature an article
  * @access Private
  */
-featuredArticlesRouter.post("/articles/feature", featureArticle);
+featuredArticlesRouter.post(
+  "/articles/feature",
+  requireAuth,
+  validate(featureArticleSchema),
+  featureArticle
+);
 
 /**
  * @route GET /articles/featured
@@ -26,6 +34,6 @@ featuredArticlesRouter.get("/articles/featured", fetchFeaturedArticles);
  * @description Clear all featured articles (weekly update)
  * @access Private
  */
-featuredArticlesRouter.delete("/articles/featured", clearArticles);
+featuredArticlesRouter.delete("/articles/featured", requireAuth, clearArticles);
 
 export default featuredArticlesRouter;

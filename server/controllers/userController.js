@@ -7,6 +7,7 @@ import {
   getUserByUsername,
   getUserDetailId,
   getUserDetailPublic,
+  getUserDetailPublicByUsername,
   getUserDetailEmail,
   updateUser,
   deleteUser,
@@ -82,6 +83,10 @@ export async function checkUsernameExists(req, res) {
 export async function getUserDetails(req, res) {
   const { email } = req.params;
 
+  if (!req.user?.email || String(req.user.email).toLowerCase() !== String(email).toLowerCase()) {
+    return res.status(403).json({ message: "Not authorized to view this user" });
+  }
+
   try {
     const user = await getUserDetailEmail(email);
     if (!user) {
@@ -107,7 +112,11 @@ export async function getUserPublic(req, res) {
   const { id } = req.params;
 
   try {
-    const user = await getUserDetailPublic(id);
+    // Numeric ids keep working for backwards compatibility; everything else is
+    // resolved as a username (case-insensitive).
+    const user = /^\d+$/.test(id)
+      ? await getUserDetailPublic(Number(id))
+      : await getUserDetailPublicByUsername(id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -248,7 +257,7 @@ export async function deleteUserAccount(req, res) {
         await deleteUser(idtodelete);
       }
 
-      const userSubscription = getSubscriptionByEmail(email);
+      const userSubscription = await getSubscriptionByEmail(email);
       if (!userSubscription) {
         return res.status(200).json({
           message: `User with id:${idtodelete} not present in subscription database`,

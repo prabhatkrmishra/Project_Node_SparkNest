@@ -9,7 +9,7 @@ export const checkSavedSchema = z.object({
 
 export const saveArticleSchema = z.object({
   body: z.object({
-    user_id: z.coerce.number().int().positive(),
+    user_id: z.coerce.number().int().positive().optional(),
     article_id: z.coerce.number().int().positive(),
   }),
 });

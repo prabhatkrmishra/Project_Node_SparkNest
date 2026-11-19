@@ -20,7 +20,9 @@ export const getUserDetailsSchema = z.object({
 
 export const getUserPublicSchema = z.object({
   params: z.object({
-    id: z.coerce.number().int().positive(),
+    // Accepts either a numeric user id or a username so public profile links
+    // stay stable when usernames change and remain human readable.
+    id: z.string().trim().min(1).max(30),
   }),
 });
 

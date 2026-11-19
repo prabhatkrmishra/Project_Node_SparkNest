@@ -1,8 +1,8 @@
 // @ts-nocheck
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import "bootstrap/dist/css/bootstrap-utilities.css";
 
 import PreLoader from "./components/PreLoader";
 import ErrorMessage from "./components/messageBox/ErrorMessage";
@@ -10,8 +10,11 @@ import Header from "./components/Header";
 
 import { sendLoginCred } from "../api/API";
 import { WEB_URL } from "../api/API";
+import { useAuth } from "../components/auth/AuthProvider";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const { user, loading } = useAuth();
   const [userCred, setUserCred] = useState({
     useremail: "",
     password: "",
@@ -20,10 +23,9 @@ const Login = () => {
   const [isError, setError] = useState(false);
   const [errorMssg, SetErrorMssg] = useState("");
 
-  const sessionLogged = Cookies.get("sessionLogged") || null;
-  if (sessionLogged) {
-    window.location.href = `/profile`;
-  }
+  useEffect(() => {
+    if (!loading && user) navigate("/profile", { replace: true });
+  }, [loading, user, navigate]);
 
   function handleUserCred(event) {
     setUserCred((preVal) => {
@@ -49,7 +51,7 @@ const Login = () => {
     event.preventDefault();
     try {
       const response = await sendLoginCred(userCred);
-      if (response.status == 200) {
+      if (response.status === 200) {
         if (response.data.cookieAge && response.data.cookieAge !== false) {
           // persistent cookie
           const days = response.data.cookieAge / (1000 * 60 * 60 * 24);

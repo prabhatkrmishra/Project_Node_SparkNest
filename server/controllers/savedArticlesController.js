@@ -29,10 +29,14 @@ export async function isSavedArticle(req, res) {
  * Save an article for the user
  */
 export async function saveArticle(req, res) {
-  const { user_id, article_id } = req.body;
+  const user_id = req.user?.id ?? req.session?.passport?.user;
+  const { article_id } = req.body;
 
-  if (!user_id || !article_id) {
-    return res.status(400).json({ message: "Userid or Articleid is empty, cannot save" });
+  if (!user_id) {
+    return res.status(401).json({ message: "Not authenticated" });
+  }
+  if (!article_id) {
+    return res.status(400).json({ message: "Article id is empty, cannot save" });
   }
 
   try {
@@ -52,10 +56,14 @@ export async function saveArticle(req, res) {
  * Unsave an article for the user
  */
 export async function unsaveArticle(req, res) {
-  const { user_id, article_id } = req.body;
+  const user_id = req.user?.id ?? req.session?.passport?.user;
+  const { article_id } = req.body;
 
-  if (!user_id || !article_id) {
-    return res.status(400).json({ message: "Userid or Articleid is empty, cannot unsave" });
+  if (!user_id) {
+    return res.status(401).json({ message: "Not authenticated" });
+  }
+  if (!article_id) {
+    return res.status(400).json({ message: "Article id is empty, cannot unsave" });
   }
 
   try {

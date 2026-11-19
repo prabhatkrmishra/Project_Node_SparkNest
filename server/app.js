@@ -45,7 +45,13 @@ if (env.NODE_ENV !== "test") {
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
-    contentSecurityPolicy: false,
+    contentSecurityPolicy: {
+      useDefaults: false,
+      directives: {
+        "default-src": helmet.contentSecurityPolicy.dangerouslyDisableDefaultSrc,
+        frameAncestors: ["'none'"],
+      },
+    },
   })
 );
 app.use(hpp());
@@ -61,7 +67,9 @@ app.use(
     origin: function (origin, callback) {
       if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) return callback(null, true);
-      return callback(new Error(`CORS blocked: ${origin}`));
+      const err = new Error(`CORS blocked: ${origin}`);
+      err.statusCode = 403;
+      return callback(err);
     },
     methods: "GET,POST,PUT,PATCH,DELETE",
     allowedHeaders: "Content-Type,Authorization",
@@ -71,6 +79,12 @@ app.use(
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
+
+// Health, docs and media are mounted before the global limiter so container
+// healthchecks and image traffic don't consume the API request budget.
+app.use("/", healthRoutes);
+app.use("/", docsRoutes);
+app.use("/", mediaRouter);
 
 // Global rate limit
 app.use(applyRateLimit);
@@ -113,16 +127,11 @@ initializePassport(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Health + docs (before rate limit bypass if needed, but after logger)
-app.use("/", healthRoutes);
-app.use("/", docsRoutes);
-
 // Routes
 app.use("/", authRoutes);
 app.use("/", userRoutes);
 app.use("/", subscriptionRoutes);
 app.use("/", articlesRouter);
-app.use("/", mediaRouter);
 app.use("/", categoriesRouter);
 app.use("/", articlePreviewRouter);
 app.use("/", commentRouter);

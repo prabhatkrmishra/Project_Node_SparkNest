@@ -75,6 +75,62 @@ paths:
       responses:
         "200": { description: Logged out }
 
+  /auth/me:
+    get:
+      summary: Current session user
+      description: Authoritative client session check. Returns the session user without the password hash.
+      responses:
+        "200":
+          description: Authenticated user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user: { type: object }
+        "401": { description: Not authenticated }
+
+  /public/user/{identifier}:
+    get:
+      summary: Public profile by numeric id or username
+      parameters:
+        - in: path
+          name: identifier
+          required: true
+          description: Numeric user id or username
+          schema: { type: string, minLength: 1, maxLength: 30 }
+      responses:
+        "200": { description: Public profile and article previews }
+        "404": { description: User not found }
+
+  /article/profile/preview/{identifier}:
+    get:
+      summary: Public profile article previews by numeric id or username
+      parameters:
+        - in: path
+          name: identifier
+          required: true
+          schema: { type: string, minLength: 1, maxLength: 30 }
+      responses:
+        "200": { description: Paginated previews }
+
+  /subscribe/newsletter:
+    post:
+      summary: Subscribe to the newsletter (public, idempotent)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: { type: string, format: email }
+                type: { type: string, enum: [newsletter] }
+      responses:
+        "200": { description: Subscribed or updated }
+        "409": { description: Already subscribed }
+
   /article/previews:
     get:
       summary: List article previews (paginated)
@@ -108,6 +164,13 @@ paths:
       responses:
         "200": { description: Article }
         "404": { description: Not found }
+
+  /article/create:
+    post:
+      summary: Create an article (session required)
+      responses:
+        "401": { description: Not authenticated }
+        "201": { description: Created }
 
   /articles/featured:
     get:

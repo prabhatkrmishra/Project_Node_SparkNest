@@ -1,76 +1,71 @@
 // @ts-nocheck
-import Dropdown from "react-bootstrap/Dropdown";
+import { useEffect, useRef, useState } from "react";
 
-const DropDownMenu = (prop) => {
+const sections = [
+  ["general", "General"],
+  ["profile", "Edit Profile"],
+  ["password", "Password"],
+  ["notifications", "Email Notifications"],
+  ["delete", "Delete Account"],
+];
+
+const DropDownMenu = ({ pSection, handleSectionChange }) => {
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handleOutsideClick = (event) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open]);
+
   return (
-    <>
-      <Dropdown className="settings-navigation-dropdown">
-        <Dropdown.Toggle
-          className="dropdown-section-settings-width"
-          variant="success"
-          id="dropdown-basic"
-        >
-          Menu
-        </Dropdown.Toggle>
-        <Dropdown.Menu className="dropdown-section-settings-width dropdown-section-settings-menu">
-          <Dropdown.Item>
-            <li className={prop.pSection === "general" ? "options-active" : ""}>
-              <span
-                className="dropdown-menu-span"
-                style={{ cursor: "pointer" }}
-                onClick={() => prop.handleSectionChange("general")}
+    <div className="settings-navigation-dropdown" ref={containerRef}>
+      <button
+        type="button"
+        className="btn btn--primary dropdown-section-settings-width settings-dropdown__toggle"
+        aria-expanded={open}
+        aria-haspopup="true"
+        onClick={() => setOpen((value) => !value)}
+      >
+        Menu
+      </button>
+      {open && (
+        <ul className="settings-dropdown__menu" role="menu">
+          {sections.map(([value, label]) => (
+            <li key={value} role="none">
+              <button
+                type="button"
+                role="menuitem"
+                className={`settings-dropdown__item ${
+                  pSection === value ? "options-active" : ""
+                }`}
+                onClick={() => {
+                  setOpen(false);
+                  handleSectionChange(value);
+                }}
               >
-                General
-              </span>
+                {label}
+              </button>
             </li>
-          </Dropdown.Item>
-          <Dropdown.Item>
-            <li className={prop.pSection === "profile" ? "options-active" : ""}>
-              <span
-                className="dropdown-menu-span"
-                style={{ cursor: "pointer" }}
-                onClick={() => prop.handleSectionChange("profile")}
-              >
-                Edit Profile
-              </span>
-            </li>
-          </Dropdown.Item>
-          <Dropdown.Item>
-            <li className={prop.pSection === "password" ? "options-active" : ""}>
-              <span
-                className="dropdown-menu-span"
-                style={{ cursor: "pointer" }}
-                onClick={() => prop.handleSectionChange("password")}
-              >
-                Password
-              </span>
-            </li>
-          </Dropdown.Item>
-          <Dropdown.Item>
-            <li className={prop.pSection === "notifications" ? "options-active" : ""}>
-              <span
-                className="dropdown-menu-span"
-                style={{ cursor: "pointer" }}
-                onClick={() => prop.handleSectionChange("notifications")}
-              >
-                Email Notifications
-              </span>
-            </li>
-          </Dropdown.Item>
-          <Dropdown.Item>
-            <li className={prop.pSection === "delete" ? "options-active" : ""}>
-              <span
-                className="dropdown-menu-span"
-                style={{ cursor: "pointer" }}
-                onClick={() => prop.handleSectionChange("delete")}
-              >
-                Delete Account
-              </span>
-            </li>
-          </Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown>
-    </>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 };
 

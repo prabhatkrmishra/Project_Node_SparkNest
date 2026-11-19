@@ -47,6 +47,7 @@ function dockerFlywayCommand(flywayCmd) {
     `-user=${user}`,
     `-password=${password}`,
     "-configFiles=/flyway/project/flyway.conf",
+    "-workingDirectory=/flyway/project",
     flywayCmd,
   ].join(" ");
   execSync(cmd, { stdio: "inherit" });

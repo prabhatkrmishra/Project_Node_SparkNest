@@ -1,7 +1,6 @@
 // @ts-nocheck
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
-import "bootstrap/dist/css/bootstrap-utilities.css";
 
 import { checkEmail, sendSignupCred } from "../api/API";
 import { WEB_URL } from "../api/API";

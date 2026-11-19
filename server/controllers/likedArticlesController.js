@@ -29,10 +29,14 @@ export async function isLikedArticle(req, res) {
  * Like an article for the user
  */
 export async function likeArticle(req, res) {
-  const { user_id, article_id } = req.body;
+  const user_id = req.user?.id ?? req.session?.passport?.user;
+  const { article_id } = req.body;
 
-  if (!user_id || !article_id) {
-    return res.status(400).json({ message: "Userid or Articleid is empty, cannot LIKE" });
+  if (!user_id) {
+    return res.status(401).json({ message: "Not authenticated" });
+  }
+  if (!article_id) {
+    return res.status(400).json({ message: "Article id is empty, cannot LIKE" });
   }
 
   try {
@@ -52,10 +56,14 @@ export async function likeArticle(req, res) {
  * Unlike an article for the user
  */
 export async function unlikeArticle(req, res) {
-  const { user_id, article_id } = req.body;
+  const user_id = req.user?.id ?? req.session?.passport?.user;
+  const { article_id } = req.body;
 
-  if (!user_id || !article_id) {
-    return res.status(400).json({ message: "Userid or Articleid is empty, cannot unlike" });
+  if (!user_id) {
+    return res.status(401).json({ message: "Not authenticated" });
+  }
+  if (!article_id) {
+    return res.status(400).json({ message: "Article id is empty, cannot unlike" });
   }
 
   try {

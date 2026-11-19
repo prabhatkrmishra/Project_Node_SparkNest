@@ -8,15 +8,15 @@ import { getDBClient } from "../db/db.js";
  */
 export async function checkArticlePreview(id) {
   const db = getDBClient();
-  const query = "SELECT id FROM articles_preview WHERE id = $1";
+  const query = "SELECT id, article_id FROM articles_preview WHERE id = $1";
 
   try {
     const result = await db.query(query, [id]);
 
-    return result.rows.length > 0 ? true : false;
+    return result.rows.length > 0 ? result.rows[0] : null;
   } catch (error) {
     console.log("Error in getting article preview", error);
-    return false;
+    return null;
   }
 }
 
