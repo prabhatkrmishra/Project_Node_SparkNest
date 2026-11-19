@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 
 import PreLoader from "../PreLoader";
+import Header from "../Header";
 import SuccessMessage from "../messageBox/SuccessMessage";
 
 import { resetPassword } from "../../../api/SERVICESAPI";
@@ -56,10 +57,11 @@ const ForgotPassword = () => {
   return (
     <>
       <Helmet>
-        <title>Forgot Pasword</title>
+        <title>Forgot Password: SparkNest</title>
       </Helmet>
       <PreLoader />
       <div id="page" className="s-pagewrap">
+        <Header />
         <section id="content" className="s-content" style={{ paddingTop: "130px" }}>
           <div className="row d-flex justify-content-center mb-lg-5">
             <div className="column lg-6 tab-12" style={{ paddingBottom: "50px" }}>

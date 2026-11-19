@@ -5,6 +5,7 @@ import {
   logout,
   googleAuth,
   googleAuthCallback,
+  getMe,
 } from "../controllers/authController.js";
 import { validate } from "../validators/validate.js";
 import { signupSchema, loginSchema } from "../validators/auth.validator.js";
@@ -25,6 +26,13 @@ authRouter.post("/signup", authLimiter, validate(signupSchema), signup);
  * @access Public
  */
 authRouter.post("/login", authLimiter, validate(loginSchema), login);
+
+/**
+ * @route GET /auth/me
+ * @description Return the currently signed-in user
+ * @access Private
+ */
+authRouter.get("/auth/me", getMe);
 
 /**
  * @route POST /logout
