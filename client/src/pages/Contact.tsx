@@ -1,9 +1,9 @@
 // @ts-nocheck
 import { Helmet } from "react-helmet-async";
 import { useState } from "react";
-import Cookies from "js-cookie";
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
+
+import Modal from "./components/ui/Modal";
+import { useAuth } from "../components/auth/AuthProvider";
 
 import PreLoader from "./components/PreLoader";
 import Header from "./components/Header";
@@ -13,16 +13,17 @@ import MoveToEffect from "./components/effects/MoveToEffect";
 import { sendMessage } from "../api/SERVICESAPI";
 
 const Contact = () => {
-  const user = Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null;
+  const { user } = useAuth();
 
   const [message, setMessage] = useState({
-    name: user ? user.fname + " " + user.lname : "",
-    email: user ? user.email : "",
+    name: user ? `${user.fname} ${user.lname}` : "",
+    email: user?.email ?? "",
     message: "",
   });
   const [show, setShow] = useState(false);
   const [mssg, setMssg] = useState("");
-  const handleModal = () => setShow(!show);
+  const [succeeded, setSucceeded] = useState(false);
+  const [busy, setBusy] = useState(false);
 
   const handleChange = (e) => {
     setMessage((preVal) => {
@@ -35,30 +36,33 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (busy) return;
 
+    setBusy(true);
     try {
       const response = await sendMessage(message);
-      if (response.status == 200) {
-        setMssg(response.data.message);
+      if (response.status === 200) {
+        setSucceeded(true);
+        setMssg(response.data.message || "Your message has been sent.");
         setShow(true);
-        setMessage(() => {
-          return {
-            name: "",
-            email: "",
-            message: "",
-          };
-        });
+        setMessage({ name: "", email: "", message: "" });
       }
     } catch (error) {
-      setMssg(error.response.data.message);
+      setSucceeded(false);
+      setMssg(
+        error?.response?.data?.message ||
+          "Your message could not be sent. Please try again or email us directly."
+      );
       setShow(true);
+    } finally {
+      setBusy(false);
     }
   };
 
   return (
     <>
       <Helmet>
-        <title>Contact : SparkNest</title>
+        <title>Contact · SparkNest</title>
       </Helmet>
       <PreLoader />
       <div id="page" className="s-pagewrap">
@@ -103,7 +107,7 @@ const Contact = () => {
                           <a href="mailto:mprabhat774@gmail.com">mprabhat774@gmail.com</a>
                           <br />
                           <b>Service</b>:{" "}
-                          <a href="mailto:mprabhat774@gmail.com">spark.nest.service@gmail.com</a>
+                          <a href="mailto:spark.nest.service@gmail.com">spark.nest.service@gmail.com</a>
                         </p>
                       </div>
                     </div>
@@ -118,30 +122,41 @@ const Contact = () => {
                     >
                       <fieldset className="row">
                         <div className="column lg-6 tab-12 form-field">
+                          <label className="u-screen-reader-text" htmlFor="cName">
+                            Your name
+                          </label>
                           <input
                             className="u-fullwidth"
                             id="cName"
                             name="name"
                             placeholder="Your Name"
                             type="text"
+                            autoComplete="name"
                             value={message.name}
                             onChange={handleChange}
                             required
                           />
                         </div>
                         <div className="column lg-6 tab-12 form-field">
+                          <label className="u-screen-reader-text" htmlFor="cEmail">
+                            Your email
+                          </label>
                           <input
                             className="u-fullwidth"
                             id="cEmail"
                             name="email"
                             placeholder="Your Email"
                             type="email"
+                            autoComplete="email"
                             value={message.email}
                             onChange={handleChange}
                             required
                           />
                         </div>
                         <div className="column lg-12 message form-field">
+                          <label className="u-screen-reader-text" htmlFor="cMessage">
+                            Your message
+                          </label>
                           <textarea
                             className="u-fullwidth"
                             id="cMessage"
@@ -158,7 +173,8 @@ const Contact = () => {
                             id="submit"
                             name="submit"
                             type="submit"
-                            value="Send Message"
+                            value={busy ? "Sending…" : "Send Message"}
+                            disabled={busy}
                           />
                         </div>
                       </fieldset>
@@ -168,13 +184,17 @@ const Contact = () => {
               </article>
             </div>
           </div>
-          <Modal show={show} onHide={handleModal}>
-            <Modal.Body>{mssg}</Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleModal}>
+          <Modal
+            open={show}
+            onClose={() => setShow(false)}
+            title={succeeded ? "Message sent" : "Message not sent"}
+            footer={
+              <button type="button" className="btn btn--primary" onClick={() => setShow(false)}>
                 Close
-              </Button>
-            </Modal.Footer>
+              </button>
+            }
+          >
+            <p>{mssg}</p>
           </Modal>
         </section>
         <Footer />
