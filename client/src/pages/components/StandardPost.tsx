@@ -28,32 +28,45 @@ const StandardPost = () => {
   const [prevArticle, setPrevArticle] = useState({});
   const [nextArticle, setNextArticle] = useState({});
   const [date, setDate] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
 
   useEffect(() => {
+    let active = true;
+
     const fetchArticle = async () => {
-      const response = await viewArticle(selector);
+      setLoading(true);
+      setLoadError("");
       try {
-        if (response.status == 200) {
-          setArticle(response.data.article);
-          setPrevArticle(response.data.prev);
-          setNextArticle(response.data.next);
+        const response = await viewArticle(selector);
+        if (active && response.status === 200) {
+          setArticle(response.data.article ?? {});
+          setPrevArticle(response.data.prev ?? {});
+          setNextArticle(response.data.next ?? {});
         }
       } catch (error) {
-        if (error.response.status) {
-          alert("Error: " + error.response.status);
+        if (active) {
+          setLoadError(
+            error?.response?.status === 404
+              ? "This article could not be found."
+              : "This article could not be loaded. Please try again."
+          );
         }
+      } finally {
+        if (active) setLoading(false);
       }
     };
 
-    fetchArticle();
-    setDate(article.created_date);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    void fetchArticle();
+    return () => {
+      active = false;
+    };
   }, [selector]);
 
   useEffect(() => {
     if (article.created_date) {
-      const modDate = format(new Date(article.created_date), "MMMM dd, yyyy");
-      setDate(modDate);
+      const parsed = new Date(article.created_date);
+      setDate(Number.isNaN(parsed.getTime()) ? "" : format(parsed, "MMMM d, yyyy"));
     }
   }, [article.created_date]);
 
@@ -61,23 +74,24 @@ const StandardPost = () => {
   const quillRef = useRef(null);
 
   useEffect(() => {
-    const quill = new Quill(editorRef.current, {
-      readOnly: true,
-      modules: {
-        syntax: { hljs },
-        toolbar: false,
-      },
-      theme: "snow",
-    });
-
-    quillRef.current = quill;
-    quillRef.current.root.innerHTML = article.article_body;
-  }, [article]);
+    if (!editorRef.current) return;
+    if (!quillRef.current) {
+      quillRef.current = new Quill(editorRef.current, {
+        readOnly: true,
+        modules: {
+          syntax: { hljs },
+          toolbar: false,
+        },
+        theme: "snow",
+      });
+    }
+    quillRef.current.root.innerHTML = article.article_body || "";
+  }, [article.article_body]);
 
   return (
     <>
       <Helmet>
-        <title>Article : SparkNest</title>
+        <title>{article.article_title ? `${article.article_title} · SparkNest` : "Article · SparkNest"}</title>
       </Helmet>
       <PreLoader />
       <div id="page" className="s-pagewrap">
@@ -85,6 +99,22 @@ const StandardPost = () => {
         <section id="content" className="s-content s-content--blog">
           <div className="row entry-wrap">
             <div className="column lg-12">
+              {loading && (
+                <p className="bricks-status" role="status">
+                  Loading article…
+                </p>
+              )}
+              {!loading && loadError && (
+                <div className="article-error">
+                  <h1>Article unavailable</h1>
+                  <p>{loadError}</p>
+                  <a className="btn btn--primary" href="/">
+                    Back to home
+                  </a>
+                </div>
+              )}
+              {!loading && !loadError && (
+              <>
               <article className="entry format-standard">
                 <header className="entry__header">
                   <h1 className="entry__title">{article.article_title}</h1>
@@ -109,7 +139,9 @@ const StandardPost = () => {
                           d="M6.8475 19.25H17.1525C18.2944 19.25 19.174 18.2681 18.6408 17.2584C17.8563 15.7731 16.068 14 12 14C7.93201 14 6.14367 15.7731 5.35924 17.2584C4.82597 18.2681 5.70558 19.25 6.8475 19.25Z"
                         ></path>
                       </svg>
-                      <a href={`/user/${article.user_id}`}>{article.fname + " " + article.lname}</a>
+                      <a href={`/user/${article.username || article.user_id}`}>
+                        {[article.fname, article.lname].filter(Boolean).join(" ")}
+                      </a>
                     </div>
                     <div className="entry__meta-date">
                       <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -164,12 +196,16 @@ const StandardPost = () => {
                   <div className="entry__media">
                     <figure className="featured-image">
                       <img
-                        src={`${article.article_images[1]}`}
-                        srcSet={`${article.article_images[2]} 2400w,
-                                              ${article.article_images[1]} 1200w, 
-                                              ${article.article_images[0]} 600w`}
+                        src={article.article_images[1] || article.article_images[0]}
+                        srcSet={article.article_images
+                          .map((src, index) => `${src} ${[600, 1200, 2400][index] || 600}w`)
+                          .join(", ")}
                         sizes="(max-width: 2400px) 100vw, 2400px"
-                        alt=""
+                        alt={article.article_title || ""}
+                        onError={(event) => {
+                          event.currentTarget.onerror = null;
+                          event.currentTarget.src = "/images/sample-image.jpg";
+                        }}
                       />
                     </figure>
                   </div>
@@ -197,12 +233,19 @@ const StandardPost = () => {
 
                     <div className="entry__author-box customize-author-box">
                       <figure className="entry__author-avatar customize-article-avatar">
-                        <img alt="" src={`${article ? article.avatar : ""}`} className="avatar" />
+                        <img
+                          alt=""
+                          src={article.avatar || "/images/sample-image.jpg"}
+                          className="avatar"
+                          onError={(event) => {
+                            event.currentTarget.src = "/images/sample-image.jpg";
+                          }}
+                        />
                       </figure>
                       <div className="entry__author-info customize-author-info">
                         <h5 className="entry__author-name">
-                          <a href="#">
-                            {article.fname ? article.fname + " " + article.lname : "No Name"}
+                          <a href={`/user/${article.username || article.user_id || ""}`}>
+                            {article.fname ? `${article.fname} ${article.lname}` : "No Name"}
                           </a>
                         </h5>
                         <p>{article.bio ? article.bio : "No Bio"}</p>
@@ -238,6 +281,8 @@ const StandardPost = () => {
               </article>
 
               <Comments articleId={selector} />
+              </>
+              )}
             </div>
           </div>
         </section>
