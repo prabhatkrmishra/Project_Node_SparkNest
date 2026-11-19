@@ -1,7 +1,5 @@
 import express from "express";
-import multer from "multer";
-import { resolveDataPath } from "../services/storageService.js";
-import { AppError } from "../middlewares/errorMiddleware.js";
+import { createImageUpload } from "../middlewares/uploadMiddleware.js";
 import { validate } from "../validators/validate.js";
 import {
   checkEmailSchema,
@@ -21,28 +19,7 @@ import {
 } from "../controllers/userController.js";
 
 const userRouter = express.Router();
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, resolveDataPath("tmp", "uploads"));
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + "-" + file.originalname);
-  },
-});
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 20 * 1024 * 1024,
-    fieldSize: 20 * 1024 * 1024,
-  },
-  fileFilter: (req, file, cb) => {
-    if (!file.mimetype.startsWith("image/")) {
-      return cb(new AppError(400, "Only images allowed"), false);
-    }
-    cb(null, true);
-  },
-});
+const upload = createImageUpload({ maxFileSize: 20 * 1024 * 1024 });
 
 /**
  * @route GET /check/email/:email

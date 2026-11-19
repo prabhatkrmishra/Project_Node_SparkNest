@@ -13,6 +13,8 @@ export const DATA_ROOT = getDataRoot();
 
 export const resolveDataPath = (...segments) => path.join(DATA_ROOT, ...segments);
 
+export const UPLOAD_TMP_DIR = resolveDataPath("tmp", "uploads");
+
 export const ensureDir = async (dir) => fs.mkdir(dir, { recursive: true });
 
 export const removeDir = async (dir) => fs.rm(dir, { recursive: true, force: true });
