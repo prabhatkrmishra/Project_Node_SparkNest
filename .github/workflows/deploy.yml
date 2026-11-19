@@ -28,10 +28,16 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout the tested commit
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
-          persist-credentials: false
+        env:
+          COMMIT_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+        run: |
+          set -euo pipefail
+          git init "$GITHUB_WORKSPACE"
+          git -C "$GITHUB_WORKSPACE" remote remove origin 2>/dev/null || true
+          git -C "$GITHUB_WORKSPACE" remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          git -C "$GITHUB_WORKSPACE" fetch --depth=1 origin "$COMMIT_SHA"
+          git -C "$GITHUB_WORKSPACE" checkout --force --detach FETCH_HEAD
+          git -C "$GITHUB_WORKSPACE" clean -ffdx
 
       - name: Set up Node
         uses: actions/setup-node@v4
