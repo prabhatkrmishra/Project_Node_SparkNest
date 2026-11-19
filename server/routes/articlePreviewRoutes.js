@@ -23,7 +23,9 @@ const categoryParamSchema = z.object({
 
 const profileParamSchema = z.object({
   params: z.object({
-    id: z.coerce.number().int().positive(),
+    // Numeric ids are kept for backwards compatibility; usernames are the
+    // canonical public profile identifier.
+    id: z.string().trim().min(1).max(30),
   }),
   query: z.object({
     page: z.coerce.number().int().min(1).default(1),
