@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [V2.5, main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  client:
+    name: Client (typecheck, test, build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck --workspace=client
+      - run: npm run test --workspace=client
+      - run: npm run build --workspace=client
+        env:
+          VITE_API_URL: http://localhost:3100
+
+  server:
+    name: Server (lint, test)
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
+      SESSION_SECRET: ci-only-session-secret-at-least-32-characters
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run lint --workspace=server
+      - run: npm run test --workspace=server

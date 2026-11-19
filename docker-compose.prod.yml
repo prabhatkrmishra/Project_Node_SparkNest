@@ -14,17 +14,28 @@
 
 services:
   server:
-    build: ./server
+    build:
+      context: .
+      dockerfile: server/Dockerfile
     environment:
       DATABASE_URL: ${DATABASE_URL}
       SESSION_SECRET: ${SESSION_SECRET}
+      SERVER_HOSTNAME: 0.0.0.0
       FRONTEND_ADDRESS: https://${DOMAIN}
-      BACKEND_ADDRESS: https://${DOMAIN}
+      # Image URLs are generated from this value, so they must go through the
+      # nginx /api/ proxy as well.
+      BACKEND_ADDRESS: https://${DOMAIN}/api
       DATA_ROOT: /data
       SECURE_COOKIE: "true"
       HTTP_ONLY: "true"
       SAME_SITE: lax
       NODE_ENV: production
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      GOOGLE_CALLBACK_URL: ${GOOGLE_CALLBACK_URL:-https://${DOMAIN}/api/auth/google/home}
+      SERVICE_EMAIL_USER: ${SERVICE_EMAIL_USER:-}
+      SERVICE_EMAIL_PASS: ${SERVICE_EMAIL_PASS:-}
     volumes:
       - appdata:/data
     healthcheck:
@@ -35,7 +46,11 @@ services:
     restart: unless-stopped
 
   client:
-    build: ./client
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+      args:
+        VITE_API_URL: /api
     environment:
       DOMAIN: ${DOMAIN}
     ports:
