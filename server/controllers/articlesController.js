@@ -21,6 +21,8 @@ import {
   removeImages,
 } from "../services/imagesServices.js";
 
+import { sanitizeArticleHtml } from "../services/htmlSanitizer.js";
+
 import { inserImagestPath } from "../models/articleImagesModel.js";
 
 import {
@@ -45,6 +47,7 @@ export async function viewArticle(req, res) {
     if (!article) {
       return res.status(404).json({ message: `Article with id:${id} doesn't exist` });
     }
+    article.article_body = sanitizeArticleHtml(article.article_body);
     res.status(200).json(article);
   } catch (error) {
     console.error("Error getting article from database:", error);
@@ -67,6 +70,7 @@ export async function fetchArticle(req, res) {
     if (!article) {
       return res.status(404).json({ message: `Article with id:${id} doesn't exist` });
     }
+    article.article_body = sanitizeArticleHtml(article.article_body);
     res.status(200).json(article);
   } catch (error) {
     console.error("Error getting article from database:", error);
@@ -82,7 +86,12 @@ export async function createArticle(req, res) {
     return res.status(403).json({ message: "Not authenticated to create article" });
   }
 
-  const { user_id, title, body, preview_title, preview_subtitle } = req.body;
+  const user_id = req.user?.id ?? req.session?.passport?.user;
+  if (!user_id) {
+    return res.status(403).json({ message: "Not authenticated to create article" });
+  }
+
+  const { title, body, preview_title, preview_subtitle } = req.body;
 
   const imageFile = req.file;
   if (!imageFile) {
@@ -112,7 +121,7 @@ export async function createArticle(req, res) {
     for (const image of images) {
       image.link = await saveImage(image, user_id);
     }
-    const newBody = replaceImages(body, images);
+    const newBody = sanitizeArticleHtml(replaceImages(body, images));
     const article = {
       user_id: user_id,
       title: title,
@@ -204,7 +213,7 @@ export async function updateArticle(req, res) {
     for (const image of images) {
       image.link = await saveImage(image, article.user_id);
     }
-    const newBody = replaceImages(article_body, images);
+    const newBody = sanitizeArticleHtml(replaceImages(article_body, images));
     updatedArticle.set("body", newBody);
   }
   if (updatedArticle.size === 0) {
@@ -220,7 +229,10 @@ export async function updateArticle(req, res) {
 
   const articlePreview = await checkArticlePreview(preview_id);
   if (!articlePreview) {
-    return res.status(404).json({ message: "Article not found, cannot update" });
+    return res.status(404).json({ message: "Article preview not found, cannot update" });
+  }
+  if (String(articlePreview.article_id) !== String(article_id)) {
+    return res.status(403).json({ message: "Not authorized to update this article preview" });
   }
 
   // Validate updated_categories early

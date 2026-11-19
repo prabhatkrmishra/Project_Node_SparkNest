@@ -7,7 +7,7 @@ const categorySchema = z.object({
 
 export const createArticleSchema = z.object({
   body: z.object({
-    user_id: z.coerce.number().int().positive(),
+    user_id: z.coerce.number().int().positive().optional(),
     title: z.string().min(3).max(255),
     body: z.string().min(1),
     preview_title: z.string().min(1).max(210),
@@ -52,5 +52,17 @@ export const paginationSchema = z.object({
   query: z.object({
     page: z.coerce.number().int().min(1).default(1),
     limit: z.coerce.number().int().min(1).max(12).default(12),
+  }),
+});
+
+export const articleIdSchema = z.object({
+  params: z.object({
+    id: z.coerce.number().int().positive(),
+  }),
+});
+
+export const featureArticleSchema = z.object({
+  body: z.object({
+    articleId: z.coerce.number().int().positive(),
   }),
 });
