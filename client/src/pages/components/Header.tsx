@@ -1,12 +1,13 @@
 // @ts-nocheck
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import MobileMenu from "./effects/MobileMenu";
 import SearchEffect from "./effects/SearchEffect";
 
 import logout from "../components/tools/auth";
 import { useAuth } from "../../components/auth/AuthProvider";
+import { api } from "../../api/API";
 
 const Header = () => {
   const location = useLocation();
@@ -18,6 +19,25 @@ const Header = () => {
   const isActivePath = (path) => currentPath === path || currentPath.startsWith(path);
 
   const [searchValue, setSearchValue] = useState("");
+  const [topBlogs, setTopBlogs] = useState([]);
+
+  // Top blogs for the header listing (by likes). Falls back to an empty
+  // state so the dropdown never breaks the nav.
+  useEffect(() => {
+    let active = true;
+    api
+      .get("/articles/top?limit=8")
+      .then((response) => {
+        if (!active) return;
+        setTopBlogs(Array.isArray(response.data?.data) ? response.data.data : []);
+      })
+      .catch(() => {
+        if (active) setTopBlogs([]);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const handleSearchChange = (event) => {
     setSearchValue(event.target.value);
@@ -83,6 +103,26 @@ const Header = () => {
                 <li>
                   <a href="/categories">More...</a>
                 </li>
+              </ul>
+            </li>
+            <li className="has-children">
+              <a href="#" onClick={toggleMenu}>
+                Top Blogs
+              </a>
+              <ul className="sub-menu sub-menu--top">
+                {topBlogs.length === 0 ? (
+                  <li className="sub-menu__status">No top blogs yet</li>
+                ) : (
+                  topBlogs.map((blog, index) => (
+                    <li key={blog.article_id}>
+                      <a href={`/article/view/${blog.article_id}`} className="sub-menu__top-link">
+                        <span className="sub-menu__rank">{index + 1}</span>
+                        <span className="sub-menu__text">{blog.preview_title}</span>
+                        <span className="sub-menu__likes">{blog.like_count} likes</span>
+                      </a>
+                    </li>
+                  ))
+                )}
               </ul>
             </li>
             <li

@@ -7749,3 +7749,84 @@ select:focus-visible,
   margin-top: auto;
   padding-top: var(--vspace-0_25);
 }
+
+/* ===================================================================
+ * ## Top blogs dropdown (SparkNest)
+ *
+ * The header "Top Blogs" listing needs wider rows than the default
+ * 150px category sub-menu so full article titles stay readable.
+ * ------------------------------------------------------------------- */
+.sub-menu--top {
+  width: 360px;
+  max-width: 92vw;
+  max-height: 460px;
+  overflow-y: auto;
+  padding: 0.6rem 0;
+}
+
+.sub-menu--top li {
+  width: 100% !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+}
+
+.sub-menu--top li > a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  padding: 0.55rem 1.4rem !important;
+  white-space: normal !important;
+  font-size: 1.4rem !important;
+  line-height: 1.35rem !important;
+  color: var(--color-text-dark) !important;
+}
+
+.sub-menu--top li > a:hover,
+.sub-menu--top li > a:focus {
+  background-color: var(--color-gray-3);
+  color: var(--color-black) !important;
+}
+
+.sub-menu__rank {
+  flex: none;
+  font-family: var(--font-2);
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--color-gray-13);
+  min-width: 1.6rem;
+}
+
+.sub-menu__text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.sub-menu__likes {
+  flex: none;
+  font-size: 1.05rem;
+  color: var(--color-gray-13);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sub-menu__status {
+  display: block;
+  padding: 0.6rem 1.4rem;
+  font-size: 1.3rem;
+  color: var(--color-gray-13);
+}
+
+@media screen and (max-width: 1290px) {
+  ul.sub-menu--top {
+    width: min(360px, 88vw) !important;
+    margin-left: 1.6rem !important;
+  }
+
+  ul.sub-menu--top li {
+    width: 100% !important;
+  }
+
+  ul.sub-menu--top li > a {
+    padding-left: 1.4rem !important;
+  }
+}

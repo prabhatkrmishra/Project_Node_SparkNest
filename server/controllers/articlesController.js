@@ -11,6 +11,7 @@ import {
   newArticle,
   patchArticle,
   dropArticle,
+  getTopArticles,
 } from "../models/articlesModel.js";
 
 import {
@@ -331,5 +332,19 @@ export async function deleteArticle(req, res) {
     }
   } else {
     res.status(400).json({ message: "Cannot delete id is empty" });
+  }
+}
+
+/**
+ * Fetch the top articles by like count (for the header listing).
+ * Public endpoint.
+ */
+export async function fetchTopArticles(req, res) {
+  try {
+    const articles = await getTopArticles(req.query.limit);
+    res.status(200).json({ success: true, data: articles });
+  } catch (error) {
+    console.error("Error fetching top articles:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 }

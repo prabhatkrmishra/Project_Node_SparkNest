@@ -177,3 +177,39 @@ export async function dropArticle(id) {
   const query = "DELETE FROM articles WHERE id = $1";
   await db.query(query, [id]);
 }
+
+/**
+ * Fetch the top articles ranked by like count (ties break on recency).
+ *
+ * @param {number} limit - Max articles to return (clamped to 1-20).
+ * @returns {Promise<Array>} - List of top articles with preview info.
+ */
+export async function getTopArticles(limit = 8) {
+  const db = getDBClient();
+  const parsed = parseInt(limit, 10);
+  const safeLimit = Math.min(Math.max(Number.isFinite(parsed) ? parsed : 8, 1), 20);
+
+  const query = `
+    SELECT
+      a.id AS article_id,
+      ap.preview_title,
+      ap.preview_subtitle,
+      ap.preview_by,
+      ai.masonry AS preview_images,
+      ARRAY_AGG(DISTINCT c.name) AS categories,
+      COUNT(DISTINCT l.user_id)::int AS like_count
+    FROM articles a
+      JOIN articles_preview ap ON ap.article_id = a.id
+      JOIN article_images ai ON ai.article_id = a.id
+      LEFT JOIN articles_categories ac ON ac.article_id = a.id
+      LEFT JOIN categories c ON c.id = ac.category_id
+      LEFT JOIN liked_articles l ON l.article_id = a.id
+    GROUP BY a.id, ap.preview_title, ap.preview_subtitle, ap.preview_by, ai.masonry
+    ORDER BY like_count DESC, a.created_at DESC
+    LIMIT $1
+  `;
+
+  const result = await db.query(query, [safeLimit]);
+
+  return result.rows;
+}

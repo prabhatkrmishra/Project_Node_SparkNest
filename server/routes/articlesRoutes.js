@@ -5,6 +5,7 @@ import {
   fetchArticle,
   updateArticle,
   deleteArticle,
+  fetchTopArticles,
 } from "../controllers/articlesController.js";
 import { createImageUpload } from "../middlewares/uploadMiddleware.js";
 import { validate } from "../validators/validate.js";
@@ -54,6 +55,13 @@ articlesRouter.patch(
   upload.single("updated_preview_image"),
   updateArticle
 );
+
+/**
+ * @route GET /articles/top
+ * @description Get the top articles by like count (for the header listing)
+ * @access Public
+ */
+articlesRouter.get("/articles/top", fetchTopArticles);
 
 /**
  * @route DELETE /user/details
