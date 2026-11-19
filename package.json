@@ -18,7 +18,7 @@
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
     "test": "npm run test --workspaces --if-present",
-    "prepare": "husky"
+    "prepare": "husky || true"
   },
   "lint-staged": {
     "*.{js,jsx}": [
