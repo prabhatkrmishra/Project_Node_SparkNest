@@ -22,6 +22,7 @@ const Index = () => {
       <div id="page" className="s-pagewrap ss-home">
         <Header />
         <section id="content" className="s-content">
+          <h1 className="u-screen-reader-text">SparkNest — Read and share articles</h1>
           <HomeBanner />
           <RenderPreviews url={url} type={type} />
         </section>

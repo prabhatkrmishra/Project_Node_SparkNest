@@ -11,6 +11,7 @@ import Notifications from "./components/profile_settings/Notifications";
 import Password from "./components/profile_settings/Password";
 import Profile from "./components/profile_settings/Profile";
 import DropDownMenu from "./components/profile_settings/settings_components/DropDownMenu";
+import Footer from "./components/Footer";
 
 import updateProfile from "./components/UpdateProfile";
 import { useAuth } from "../components/auth/AuthProvider";
@@ -97,11 +98,12 @@ const Settings = () => {
           style={{ paddingTop: "130px" }}
         >
           <div className="row entry-wrap d-flex justify-content-center">
+            <h1 className="u-screen-reader-text">{`Settings: ${selectedSection || "General"}`}</h1>
             <div className="lg-9">
               <div className="entry__author-box-settings mainpage-settings-profile">
                 <div>
                   <figure className="entry__author-avatar profile-avatar-settings">
-                    <img alt="" src={profileAvatar || undefined} className="avatar avatar-settings" />
+                    <img alt="Profile avatar" src={profileAvatar || undefined} className="avatar avatar-settings" />
                   </figure>
                 </div>
                 <div className="entry__author-info" style={{ marginTop: "15px" }}>
@@ -188,6 +190,7 @@ const Settings = () => {
             </div>
           </div>
         </section>
+        <Footer />
       </div>
     </>
   );

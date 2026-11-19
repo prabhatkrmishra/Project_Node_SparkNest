@@ -122,9 +122,9 @@ const Profile = () => {
       }
     } catch (error) {
       if (
-        error.response.status == 403 || //Not Authenticated
-        error.response.status == 404 || //User not found
-        error.response.status == 500 //Server error
+        error?.response?.status === 403 || // Not authenticated
+        error?.response?.status === 404 || // User not found
+        error?.response?.status === 500 // Server error
       ) {
         logout();
       }

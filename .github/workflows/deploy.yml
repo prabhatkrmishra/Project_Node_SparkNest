@@ -52,6 +52,7 @@ jobs:
         run: npm run build --workspace=client
         env:
           VITE_API_URL: /api
+          VITE_GOOGLE_LOGIN_ENABLED: ${{ vars.VITE_GOOGLE_LOGIN_ENABLED || 'false' }}
 
       - name: Deploy
         run: bash scripts/deploy.sh

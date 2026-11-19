@@ -7,9 +7,9 @@ const MobileMenu = () => {
     const toggleButton = document.querySelector(".s-header__menu-toggle");
     const mainNavWrap = document.querySelector(".s-header__nav-wrap");
     const mainNav = document.querySelector(".s-header__nav");
-    const parentMenus = mainNav.querySelectorAll(".has-children");
     const siteBody = document.querySelector("body");
-    if (!(toggleButton && mainNavWrap)) return;
+    if (!(toggleButton && mainNavWrap && mainNav)) return;
+    const parentMenus = mainNav.querySelectorAll(".has-children");
 
     const handleResize = () => {
       if (window.matchMedia("(min-width: 1201px)").matches) {
@@ -43,14 +43,25 @@ const MobileMenu = () => {
       }
     };
 
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape" && siteBody.classList.contains("menu-is-open")) {
+        toggleButton.classList.remove("is-clicked");
+        siteBody.classList.remove("menu-is-open");
+        parentMenus.forEach((current) => current.classList.remove("sub-menu-is-open"));
+        if (!scrollLock.getScrollState()) scrollLock.enablePageScroll();
+      }
+    };
+
     toggleButton.addEventListener("click", handleToggleButtonClick);
     mainNav.addEventListener("click", handleMainNavClick);
     window.addEventListener("resize", handleResize);
+    document.addEventListener("keydown", handleKeyDown);
 
     return () => {
       toggleButton.removeEventListener("click", handleToggleButtonClick);
       mainNav.removeEventListener("click", handleMainNavClick);
       window.removeEventListener("resize", handleResize);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
 

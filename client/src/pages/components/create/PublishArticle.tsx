@@ -17,14 +17,21 @@ import { getItem, removeItem } from "../tools/IndexDBstorage";
 
 const PublishArticle = () => {
   const navigate = useNavigate();
-  const login = Cookies.get("sessionLogged") || false;
-  if (!login) {
-    navigate("/session/new");
-  }
-  const user = Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null;
-  if (user == null) {
-    logout();
-  }
+  // RequireAuth already guards these routes; avoid navigating during render.
+  useEffect(() => {
+    if (!Cookies.get("sessionLogged")) navigate("/session/new", { replace: true });
+  }, [navigate]);
+  // A missing/corrupt sessionUser cookie must not crash the page.
+  const [user] = useState(() => {
+    try {
+      return Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null;
+    } catch {
+      return null;
+    }
+  });
+  useEffect(() => {
+    if (!user) logout();
+  }, [user]);
 
   const [error, setError] = useState(false);
   const [errorMssg, setErrorMssg] = useState("");
@@ -114,7 +121,9 @@ const PublishArticle = () => {
   };
 
   const location = useLocation();
-  const { data } = location.state;
+  // Deep-linking/refreshing this page leaves location.state empty; send the
+  // user back to the editor instead of crashing the whole app shell.
+  const data = location.state?.data ?? null;
   const [title, setTitle] = useState("");
   const body = useRef("");
   const [info, setInfo] = useState("");
@@ -134,8 +143,12 @@ const PublishArticle = () => {
   };
 
   useEffect(() => {
-    setTitle(trimTitle(localStorage.getItem("articleTitle")));
-    setInfo(trimInfo(data.body_text));
+    if (!data) {
+      navigate("/create", { replace: true });
+      return;
+    }
+    setTitle(trimTitle(localStorage.getItem("articleTitle") || ""));
+    setInfo(trimInfo(data.body_text || ""));
 
     const loadContent = async () => {
       body.current = await getItem("articleContent");
@@ -193,13 +206,15 @@ const PublishArticle = () => {
         window.location.href = "/profile/articles";
       }
     } catch (error) {
-      if (error.response.status == 403) {
+      if (error?.response?.status === 403) {
         logout();
       } else {
         console.log(error);
       }
     }
   };
+
+  if (!data) return null;
 
   return (
     <>

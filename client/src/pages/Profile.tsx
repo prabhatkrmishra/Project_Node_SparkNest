@@ -107,6 +107,7 @@ const Profile = () => {
       <div id="page" className="s-pagewrap">
         <Header />
         <section id="content" className="s-content" style={{ paddingTop: "130px" }}>
+          <h1 className="u-screen-reader-text">{user ? `${user.fname} ${user.lname}` : "Your profile"}</h1>
           <div
             className="d-flex flex-column justify-content-center align-items-center row entry-wrap"
             style={{
@@ -117,7 +118,7 @@ const Profile = () => {
               <div className="profile-avatar-buttons">
                 <div className="entry__author-box-profile">
                   <figure className="entry__author-avatar-profile">
-                    <img alt="" src={profileAvatar} className="avatar" />
+                    <img alt="Profile avatar" src={profileAvatar} className="avatar" />
                   </figure>
                   <div className="entry__author-info-profile">
                     <h5 className="entry__author-name-profile">

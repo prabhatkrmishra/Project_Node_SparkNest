@@ -99,7 +99,7 @@ const Contact = () => {
                       we’ll get back to you as soon as possible. Thank you for being a part of
                       SparkNest! We look forward to hearing from you.
                     </p>
-                    <div className="row block-large-1-2 block-tab-whole entry__blocks">
+                    <div className="row block-lg-one-half block-tab-whole entry__blocks">
                       <div className="column">
                         <h4>Contact Info</h4>
                         <p style={{ marginBottom: "8px" }}>

@@ -29,7 +29,7 @@ const Category = () => {
         <section id="content" className="s-content">
           <div className="s-pageheader">
             <div className="row">
-              <div className="column large-12">
+              <div className="column lg-12">
                 <h1 className="page-title">
                   <span className="page-title__small-type" style={{ marginBottom: "25px" }}>
                     Category:

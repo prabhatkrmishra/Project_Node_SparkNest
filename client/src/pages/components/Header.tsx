@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 import MobileMenu from "./effects/MobileMenu";
@@ -10,6 +10,7 @@ import { useAuth } from "../../components/auth/AuthProvider";
 
 const Header = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const currentPath = location.pathname;
   const { user } = useAuth();
   const sessionLogged = Boolean(user);
@@ -20,6 +21,20 @@ const Header = () => {
 
   const handleSearchChange = (event) => {
     setSearchValue(event.target.value);
+  };
+
+  // No dedicated search backend exists; route the query to the categories page,
+  // which supports filtering topics client-side.
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    const query = searchValue.trim();
+    document.body.classList.remove("search-is-visible");
+    if (query) {
+      navigate(`/categories?q=${encodeURIComponent(query)}`);
+    } else {
+      navigate("/categories");
+    }
+    setSearchValue("");
   };
 
   const toggleMenu = (event) => {
@@ -117,7 +132,13 @@ const Header = () => {
       <div className="s-header__search">
         <div className="s-header__search-inner">
           <div className="row">
-            <form role="search" method="get" className="s-header__search-form" action="#">
+            <form
+              role="search"
+              method="get"
+              className="s-header__search-form"
+              action="#"
+              onSubmit={handleSearchSubmit}
+            >
               <label>
                 <span className="u-screen-reader-text">Search for:</span>
                 <input

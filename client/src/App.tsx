@@ -27,6 +27,7 @@ import Article from "./pages/components/StandardPost";
 import UserProfile from "./pages/UserProfile";
 import Error from "./pages/Error";
 import Styles from "./pages/Styles";
+import Terms from "./pages/Terms";
 
 // Devtools are dev-only and loaded on demand so production never ships them.
 const ReactQueryDevtools = import.meta.env.DEV
@@ -132,6 +133,7 @@ function App() {
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/styles" element={<Styles />} />
+              <Route path="/terms" element={<Terms />} />
               <Route path="*" element={<Error />} />
               </Routes>
             </Router>

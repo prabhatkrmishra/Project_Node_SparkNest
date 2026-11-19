@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 
 import { checkEmail, sendSignupCred } from "../api/API";
 import { WEB_URL } from "../api/API";
+import { env } from "../config/env";
 
 import PreLoader from "./components/PreLoader";
 import ErrorMessage from "./components/messageBox/ErrorMessage";
@@ -91,6 +92,7 @@ const SignUp = () => {
       <div id="page" className="s-pagewrap">
         <Header />
         <section id="content" className="s-content" style={{ paddingTop: "130px" }}>
+          <h1 className="u-screen-reader-text">Create your SparkNest account</h1>
           <div className="row d-flex justify-content-center mb-lg-5">
             <div className="column lg-6 tab-12" style={{ paddingBottom: "50px" }}>
               <div>
@@ -102,7 +104,8 @@ const SignUp = () => {
                 </h2>
               </div>
               {/*  <!-- Login with --> */}
-              {/*  <!-- Google Button --> */}
+              {/*  <!-- Google Button — shown only when Google OAuth is configured --> */}
+              {env.googleLoginEnabled && (
               <div className="d-flex align-items-center justify-content-center mt-4">
                 <a
                   onClick={googleAuth}
@@ -120,14 +123,16 @@ const SignUp = () => {
                   </svg>
                 </a>
               </div>
+              )}
               {/*  <!-- Google Button End --> */}
               {/*  <!-- OR --> */}
+              {env.googleLoginEnabled && (
               <div className="d-flex justify-content-center align-items-center mb-4">
                 {/*  <!-- Left horizontal border --> */}
                 <div style={{ width: "47%" }}>
                   <hr
                     className="mt-4 mb-4 border border-secondary-subtle"
-                    style={{ borderColor: "#000000 !important" }}
+                    style={{ borderColor: "#000000" }}
                   />
                 </div>
                 {/*  <!-- Mid Text --> */}
@@ -138,10 +143,11 @@ const SignUp = () => {
                 <div style={{ width: "47%" }}>
                   <hr
                     className="mt-4 mb-4 border border-secondary-subtle"
-                    style={{ borderolor: "#000000 !important" }}
+                    style={{ borderColor: "#000000" }}
                   />
                 </div>
               </div>
+              )}
               {/*  <!-- OR END --> */}
               <form onSubmit={handleSubmit}>
                 <div className="signup-form">
@@ -221,7 +227,7 @@ const SignUp = () => {
                       style={{ width: "15px", height: "15px" }}
                     />
                     <span className="label-text" htmlFor="newsletterSignup">
-                      SignUp for NewsLetter
+                      Sign up for the newsletter
                     </span>
                   </label>
                 </div>

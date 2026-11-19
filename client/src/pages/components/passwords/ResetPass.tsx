@@ -54,23 +54,33 @@ const ResetPass = ({ isSuccess, mssg, email, token }) => {
 
     try {
       const response = await patchPasswords(password);
-      if (response.status == 200) {
+      if (response.status === 200) {
         setSuccessMssg(response.data.message);
         setUpdated(true);
         setTimeout(() => {
           window.location.href = "/session/new";
         }, 3000);
-      }
-    } catch (error) {
-      if (error.response.status == 400) {
-        setErrorMssg(error.response.data.message);
+      } else {
+        setErrorMssg("We could not update your password. Please try again.");
         setIsError(true);
       }
+    } catch (error) {
+      setErrorMssg(
+        error?.response?.data?.message ||
+          "We could not update your password. Please try again."
+      );
+      setIsError(true);
     }
   };
 
   return (
     <div className="column lg-6 tab-12" style={{ paddingBottom: "50px" }}>
+      <h2
+        className="d-flex justify-content-center u-add-bottom mb-xxl-5"
+        style={{ marginTop: "0", textDecoration: "underline" }}
+      >
+        Set a new password
+      </h2>
       <SuccessMessage isSuccess={isSuccess} successMssg={successMssg} />
       {!updated && (
         <form action="" autoComplete="off" onSubmit={handleSubmit}>

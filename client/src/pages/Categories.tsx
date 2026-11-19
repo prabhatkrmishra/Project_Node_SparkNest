@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { useSearchParams } from "react-router-dom";
 
 import PreLoader from "./components/PreLoader";
 import Header from "./components/Header";
@@ -15,8 +16,13 @@ const letterFor = (name: string) => {
 };
 
 const Categories = () => {
+  const [searchParams] = useSearchParams();
   const [categories, setCategories] = useState<Category[]>([]);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(() => searchParams.get("q") ?? "");
+
+  useEffect(() => {
+    setQuery(searchParams.get("q") ?? "");
+  }, [searchParams]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 

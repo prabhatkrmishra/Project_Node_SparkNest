@@ -48,6 +48,7 @@ const UserProfile = () => {
       <div id="page" className="s-pagewrap">
         <Header />
         <section id="content" className="s-content user-profile" style={{ paddingTop: "130px" }}>
+          {!notFound && <h1 className="u-screen-reader-text">{profile ? `${profile.fname} ${profile.lname}` : usertag}</h1>}
           {notFound && (
             <div className="row user-profile__notfound">
               <div className="column lg-12">
@@ -71,7 +72,7 @@ const UserProfile = () => {
                 <div className="entry__author-box-profile">
                   <figure className="entry__author-avatar-profile">
                     <img
-                      alt=""
+                      alt={profile ? `${profile.fname} ${profile.lname}'s avatar` : "User avatar"}
                       src={profile?.avatar || "/images/sample-image.jpg"}
                       className="avatar"
                       onError={(event) => {

@@ -45,7 +45,7 @@ const PreLoader = () => {
   }, []);
 
   return (
-    <div id="preloader" ref={preloaderRef}>
+    <div id="preloader" ref={preloaderRef} aria-hidden="true">
       <div id="loader" className="dots-fade">
         <div></div>
         <div></div>

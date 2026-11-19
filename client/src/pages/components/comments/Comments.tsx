@@ -136,7 +136,7 @@ const Comments = ({ articleId }) => {
   return (
     <div className="comments-wrap">
       <div id="comments">
-        <div className="large-12">
+        <div className="column lg-12">
           <h3>{countComments(comments)} Comments</h3>
           {deleteError && (
             <p className="form-status form-status--error" role="alert">

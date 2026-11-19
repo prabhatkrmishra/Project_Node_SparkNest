@@ -13,6 +13,10 @@ COPY client ./client
 ARG VITE_API_URL=/api
 ENV VITE_API_URL=$VITE_API_URL
 
+# Show the Google sign-in button only when the API has Google OAuth configured.
+ARG VITE_GOOGLE_LOGIN_ENABLED=false
+ENV VITE_GOOGLE_LOGIN_ENABLED=$VITE_GOOGLE_LOGIN_ENABLED
+
 RUN npm --workspace=client run build
 
 FROM nginx:alpine

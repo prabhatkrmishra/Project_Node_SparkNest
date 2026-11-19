@@ -4061,7 +4061,10 @@ body.search-is-visible .s-header__search-inner {
 }
 
 h2.hero__entry-title {
-  max-height: 315px !important;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .hero__entry-title a {
@@ -4155,33 +4158,33 @@ h2.hero__entry-title {
 .no-js .hero__entry-image,
 .swiper-slide-active .hero__entry-image {
   visibility: visible;
-  transition-delay: 0.4s;
+  transition-delay: 0.2s;
 }
 
 .no-js .hero__entry-text-inner,
 .swiper-slide-active .hero__entry-text-inner {
   visibility: visible;
-  transition-delay: 0.8s;
+  transition-delay: 0.35s;
 }
 
 .no-js .hero__entry-text-inner > :nth-child(1),
 .swiper-slide-active .hero__entry-text-inner > :nth-child(1) {
-  transition-delay: 1s;
+  transition-delay: 0.45s;
 }
 
 .no-js .hero__entry-text-inner > :nth-child(2),
 .swiper-slide-active .hero__entry-text-inner > :nth-child(2) {
-  transition-delay: 1.2s;
+  transition-delay: 0.6s;
 }
 
 .no-js .hero__entry-text-inner > :nth-child(3),
 .swiper-slide-active .hero__entry-text-inner > :nth-child(3) {
-  transition-delay: 1.4s;
+  transition-delay: 0.75s;
 }
 
 .no-js .hero__entry-text-inner > :nth-child(4),
 .swiper-slide-active .hero__entry-text-inner > :nth-child(4) {
-  transition-delay: 1.6s;
+  transition-delay: 0.9s;
 }
 
 .no-js .hero__entry-text-inner > :nth-child(1),
@@ -4664,6 +4667,16 @@ h2.hero__entry-title {
   color: black;
 }
 
+.s-footer__copyright {
+  text-align: right;
+}
+
+@media screen and (max-width: 1200px) {
+  .s-footer__copyright {
+    text-align: left;
+  }
+}
+
 /* ------------------------------------------------------------------- 
  * ## subscription form
  * ------------------------------------------------------------------- */
@@ -4675,7 +4688,20 @@ h2.hero__entry-title {
 
 .s-footer__subscribe .mc-form {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   margin-top: var(--vspace-1_5);
+}
+
+.s-footer__subscribe .mc-form input[type="email"] {
+  flex: 1 1 auto;
+  width: auto !important;
+  min-width: 0;
+}
+
+.s-footer__subscribe .mc-form input[type="submit"] {
+  flex: 0 0 240px;
+  width: 240px !important;
 }
 
 .s-footer__subscribe input[type="email"],
@@ -4847,12 +4873,14 @@ h2.hero__entry-title {
     border-radius: var(--border-radius);
   }
 
-  .s-footer__subscribe input[type="email"] {
+  .s-footer__subscribe .mc-form input[type="email"] {
     text-align: center;
+    width: 100% !important;
   }
 
-  .s-footer__subscribe input[type="submit"] {
-    width: 100%;
+  .s-footer__subscribe .mc-form input[type="submit"] {
+    flex: none;
+    width: 100% !important;
   }
 
   .ss-copyright span {
@@ -5478,7 +5506,8 @@ div.selected-image {
 input.upload-custom-avatar {
   margin-top: 10px !important;
   margin-bottom: 0 !important;
-  width: 240px !important;
+  width: 100% !important;
+  max-width: 360px !important;
 }
 
 div.upload-avatar-error-div {
@@ -6786,7 +6815,7 @@ h3.profile-creation-heading span {
   display: block;
   padding-top: 6px !important;
   color: var(--color-gray-16);
-  font-style: var(--font-1) !important;
+  font-family: var(--font-2);
 }
 
 section.s-content.user-profile div.bricks {
@@ -7285,6 +7314,7 @@ div.tags-save-like {
  * ## Newsletter footer
  * ------------------------------------------------------------------- */
 .mc-status {
+  flex: 1 1 100%;
   min-height: 24px;
   margin-top: 10px;
   font-size: 1.3rem;
@@ -7675,4 +7705,47 @@ select:focus-visible,
   #editor.ql-container:not(.ql-viewer) .ql-editor {
     min-height: 280px;
   }
+}
+
+/* ===================================================================
+ * ## Card alignment (SparkNest)
+ *
+ * Preview cards in the masonry grid used to size themselves purely by
+ * content, so the Read More row drifted down on cards with longer
+ * excerpts. Cards are now a flex column with the action row pinned to
+ * the bottom, and the title/excerpt reserve two lines each.
+ * ------------------------------------------------------------------- */
+.bricks-wrapper .entry {
+  display: flex;
+  flex-direction: column;
+}
+
+.bricks-wrapper .entry__text {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
+.bricks-wrapper .entry__title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: calc(2 * (var(--vspace-1) + var(--vspace-0_125)));
+}
+
+.bricks-wrapper .entry__excerpt {
+  min-height: calc(2 * 1.5rem * 1.733);
+}
+
+.bricks-wrapper .entry__excerpt p {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.bricks-wrapper .lower-tool-div-preview {
+  margin-top: auto;
+  padding-top: var(--vspace-0_25);
 }

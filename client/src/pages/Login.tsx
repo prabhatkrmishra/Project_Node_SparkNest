@@ -10,6 +10,7 @@ import Header from "./components/Header";
 
 import { sendLoginCred } from "../api/API";
 import { WEB_URL } from "../api/API";
+import { env } from "../config/env";
 import { useAuth } from "../components/auth/AuthProvider";
 
 const Login = () => {
@@ -77,7 +78,8 @@ const Login = () => {
         window.location.href = `/profile`;
       }
     } catch (error) {
-      if (error.response.data.message) {
+      const message = error?.response?.data?.message;
+      if (message) {
         setError(true);
         setUserCred((preVal) => {
           return {
@@ -86,7 +88,7 @@ const Login = () => {
             password: "",
           };
         });
-        SetErrorMssg(error.response.data.message);
+        SetErrorMssg(message);
       } else {
         setError(true);
         SetErrorMssg("Something went wrong, refresh page");
@@ -107,6 +109,7 @@ const Login = () => {
       <div id="page" className="s-pagewrap">
         <Header />
         <section id="content" className="s-content" style={{ paddingTop: "130px" }}>
+          <h1 className="u-screen-reader-text">Log in to SparkNest</h1>
           <div className="row d-flex justify-content-center">
             <div className="column lg-6 tab-12" style={{ paddingBottom: "50px" }}>
               <div className="">
@@ -127,7 +130,8 @@ const Login = () => {
                 </p>
               </div>
                 <!-- Login with end --> */}
-              {/*  <!-- Google Button --> */}
+              {/*  <!-- Google Button — shown only when Google OAuth is configured --> */}
+              {env.googleLoginEnabled && (
               <div className="d-flex align-items-center justify-content-center">
                 <a
                   onClick={googleAuth}
@@ -145,14 +149,16 @@ const Login = () => {
                   </svg>
                 </a>
               </div>
+              )}
               {/*  <!-- Google Button End --> */}
               {/*  <!-- OR --> */}
+              {env.googleLoginEnabled && (
               <div className="d-flex justify-content-center align-items-center mb-4">
                 {/*  <!-- Left horizontal border --> */}
                 <div style={{ width: "47%" }}>
                   <hr
                     className="mt-4 mb-4 border border-secondary-subtle"
-                    style={{ borderColor: "#000000 !important" }}
+                    style={{ borderColor: "#000000" }}
                   />
                 </div>
                 {/*  <!-- Mid Text --> */}
@@ -163,10 +169,11 @@ const Login = () => {
                 <div style={{ width: "47%" }}>
                   <hr
                     className="mt-4 mb-4 border border-secondary-subtle"
-                    style={{ borderolor: "#000000 !important" }}
+                    style={{ borderColor: "#000000" }}
                   />
                 </div>
               </div>
+              )}
               {/*  <!-- OR END --> */}
               {<ErrorMessage isError={isError} errorMssg={errorMssg} />}
               <form onSubmit={handleSubmit}>
@@ -179,7 +186,7 @@ const Login = () => {
                     type="email"
                     id="formEmail"
                     name="useremail"
-                    placeholder="abcd@efg.ijk"
+                    placeholder="you@example.com"
                     required=""
                     onChange={handleUserCred}
                   />
@@ -223,7 +230,7 @@ const Login = () => {
                 </button>
                 <label className="u-add-bottom" style={{ margin: "0 0", textAlign: "center" }}>
                   <span className="label-text" htmlFor="loginCheck">
-                    Not have an account?{" "}
+                    Don’t have an account?{" "}
                     <a className="label-text " href="/signup/new">
                       <u>Sign up</u>
                     </a>

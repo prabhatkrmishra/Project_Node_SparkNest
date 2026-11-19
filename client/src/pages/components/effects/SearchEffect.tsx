@@ -42,10 +42,20 @@ const SearchEffect = () => {
       }
     };
 
+    const handleSearchFieldClick = (e) => e.stopPropagation();
+    // Keyboard users: Escape closes the overlay.
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape" && siteBody.classList.contains("search-is-visible")) {
+        e.stopPropagation();
+        handleCloseSearchClick(e);
+      }
+    };
+
     searchTrigger.addEventListener("click", handleSearchTriggerClick);
     closeSearch.addEventListener("click", handleCloseSearchClick);
     searchWrap.addEventListener("click", handleSearchWrapClick);
-    searchField.addEventListener("click", (e) => e.stopPropagation());
+    searchField.addEventListener("click", handleSearchFieldClick);
+    document.addEventListener("keydown", handleKeyDown);
     searchField.setAttribute("placeholder", "Search for...");
     searchField.setAttribute("autocomplete", "off");
 
@@ -53,7 +63,8 @@ const SearchEffect = () => {
       searchTrigger.removeEventListener("click", handleSearchTriggerClick);
       closeSearch.removeEventListener("click", handleCloseSearchClick);
       searchWrap.removeEventListener("click", handleSearchWrapClick);
-      searchField.removeEventListener("click", (e) => e.stopPropagation());
+      searchField.removeEventListener("click", handleSearchFieldClick);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
 

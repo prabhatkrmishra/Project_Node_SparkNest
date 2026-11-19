@@ -9,6 +9,7 @@ import { useAuth } from "../../components/auth/AuthProvider";
 import PreLoader from "./PreLoader";
 import Header from "./Header";
 import ErrorMessage from "./messageBox/ErrorMessage";
+import Footer from "./Footer";
 
 import { setItem } from "./tools/IndexDBstorage";
 
@@ -168,6 +169,7 @@ const Details = () => {
       <div id="page" className="s-pagewrap">
         <Header />
         <section id="content" className="s-content" style={{ paddingTop: "130px" }}>
+          <h1 className="u-screen-reader-text">Complete your SparkNest profile</h1>
           <div className="row d-flex justify-content-center mb-lg-5">
             <div className="column lg-6 tab-12 profile-avatar-selection">
               <div className="image-selector">
@@ -305,6 +307,7 @@ const Details = () => {
             </div>
           </div>
         </section>
+        <Footer />
       </div>
     </>
   );

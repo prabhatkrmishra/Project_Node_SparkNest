@@ -234,7 +234,7 @@ const StandardPost = () => {
                     <div className="entry__author-box customize-author-box">
                       <figure className="entry__author-avatar customize-article-avatar">
                         <img
-                          alt=""
+                          alt={article.fname ? `${article.fname} ${article.lname}'s avatar` : "Author avatar"}
                           src={article.avatar || "/images/sample-image.jpg"}
                           className="avatar"
                           onError={(event) => {

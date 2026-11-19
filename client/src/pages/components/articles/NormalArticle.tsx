@@ -23,7 +23,7 @@ const NormalArticle = (prop) => {
         const response = await fetchArticle(article_id);
         data = response.data;
       } catch (error) {
-        if (error.response.status === 403) {
+        if (error?.response?.status === 403) {
           // logout();
         }
       }
@@ -108,13 +108,13 @@ const NormalArticle = (prop) => {
                 </span>
               )}
               <span className="byline">
-                By:
+                By:{" "}
                 <a href={prop.createdBy ? `/user/${prop.createdBy}` : "#0"}>{prop.previewBy}</a>
               </span>
             </div>
-            <h1 className="entry__title">
+            <h2 className="entry__title">
               <a href={link}>{prop.previewTitle}</a>
-            </h1>
+            </h2>
           </div>
           <div className="entry__excerpt">
             <p>{prop.previewSubtitle}</p>

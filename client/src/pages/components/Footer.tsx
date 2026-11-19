@@ -131,7 +131,7 @@ const Footer = () => {
                   <a href="/contact">Contact</a>
                 </li>
                 <li>
-                  <a href="/styles">Terms & Policy</a>
+                  <a href="/terms">Terms & Policy</a>
                 </li>
               </ul>
             </div>

@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import PreLoader from "../PreLoader";
+import Header from "../Header";
+import Footer from "../Footer";
 import ResetPass from "./ResetPass";
 import ResetError from "./ResetError";
 
@@ -15,9 +17,15 @@ const ResetMain = () => {
   const [mssg, setMssg] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    if (!email || !token) return;
+    if (!email || !token) {
+      setMssg("This reset link is incomplete. Please request a new one.");
+      setIsError(true);
+      setChecking(false);
+      return;
+    }
 
     const body = {
       email: email,
@@ -25,41 +33,50 @@ const ResetMain = () => {
     };
 
     const verify = async () => {
-      if (!body.email || !body.token) return;
-
       try {
         const response = await verifyToken(body);
-        if (response.status == 200) {
+        if (response.status === 200) {
           setMssg(response.data.message);
           setIsSuccess(true);
-          return;
+        } else {
+          setMssg("We could not verify this reset link. Please request a new one.");
+          setIsError(true);
         }
       } catch (error) {
-        if (error.response.status == 400) {
-          setMssg(error.response.data.message);
-          setIsError(true);
-          return;
-        }
+        setMssg(
+          error?.response?.data?.message ||
+            "This reset link is invalid or has expired. Please request a new one."
+        );
+        setIsError(true);
+      } finally {
+        setChecking(false);
       }
     };
-    verify();
+    void verify();
   }, [email, token]);
 
   return (
     <>
       <Helmet>
-        <title>Reset Pasword</title>
+        <title>Reset Password · SparkNest</title>
       </Helmet>
       <PreLoader />
       <div id="page" className="s-pagewrap">
+        <Header />
         <section id="content" className="s-content" style={{ paddingTop: "130px" }}>
           <div className="row d-flex justify-content-center mb-lg-5">
-            {isSuccess && (
+            {checking && (
+              <div className="column lg-6 tab-12" style={{ paddingBottom: "50px" }}>
+                <p role="status">Checking your reset link…</p>
+              </div>
+            )}
+            {!checking && isSuccess && (
               <ResetPass isSuccess={isSuccess} mssg={mssg} email={email} token={token} />
             )}
-            {isError && <ResetError isError={isError} mssg={mssg} />}
+            {!checking && isError && <ResetError isError={isError} mssg={mssg} />}
           </div>
         </section>
+        <Footer />
       </div>
     </>
   );
