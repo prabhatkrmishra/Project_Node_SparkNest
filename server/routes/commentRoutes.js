@@ -7,7 +7,12 @@ import {
   deleteComment,
 } from "../controllers/commentController.js";
 import { validate } from "../validators/validate.js";
-import { createCommentSchema, updateCommentSchema } from "../validators/comment.validator.js";
+import {
+  createCommentSchema,
+  fetchCommentsSchema,
+  updateCommentSchema,
+  deleteCommentSchema,
+} from "../validators/comment.validator.js";
 import { requireAuth } from "../middlewares/authMiddleware.js";
 
 const commentRouter = express.Router();
@@ -17,7 +22,11 @@ const commentRouter = express.Router();
  * @description Get comment with database
  * @access Public
  */
-commentRouter.get("/comment/fetch/:article_id", fetchComment);
+commentRouter.get(
+  "/comment/fetch/:article_id",
+  validate(fetchCommentsSchema),
+  fetchComment
+);
 
 /**
  * @route POST /comment/create/:article_id
@@ -38,6 +47,11 @@ commentRouter.patch("/comment/update/:comment_id", requireAuth, validate(updateC
  * @description Delete a comment with commend id
  * @access Private
  */
-commentRouter.delete("/comment/delete/:comment_id", requireAuth, deleteComment);
+commentRouter.delete(
+  "/comment/delete/:comment_id",
+  requireAuth,
+  validate(deleteCommentSchema),
+  deleteComment
+);
 
 export default commentRouter;
