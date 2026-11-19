@@ -60,12 +60,11 @@ const Notifications = () => {
     if (!userData.email) return;
     if (userData.newsletter === savedNewsletter.current) return;
 
-    const formData = new FormData();
-    formData.append("email", userData.email);
-    formData.append("newsletter", userData.newsletter);
-
     try {
-      const response = await SetSubscription(formData);
+      const response = await SetSubscription({
+        email: userData.email,
+        newsletter: userData.newsletter,
+      });
       if (response.status === 200) {
         savedNewsletter.current = userData.newsletter;
         SetResponseMssg(response.data.message);

@@ -114,7 +114,7 @@ const Profile = () => {
         SetResponseMssg(response.data.message);
         setIsUpdated(true);
         setTimeout(() => {
-          window.location.href = "profile";
+          window.location.href = "/profile";
         }, 300);
       } else {
         alert("Something went wrong !");
