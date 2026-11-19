@@ -1,65 +1,59 @@
 // @ts-nocheck
-import { useEffect, useRef } from "react";
+import { useLayoutEffect } from "react";
 
+/**
+ * Progressive enhancement for the brick grid.
+ *
+ * Content is visible by default (no JS class = no hiding). When JS runs we
+ * prepare each block, then reveal it with an IntersectionObserver. A short
+ * fallback timer reveals everything if the observer never fires, and reduced
+ * motion users get an immediate, animation-free reveal.
+ */
 const AnimateBricks = () => {
-  const animateBlocksRef = useRef(null);
-  const pageWrapRef = useRef(null);
+  useLayoutEffect(() => {
+    const blocks = Array.from(document.querySelectorAll("[data-animate-block]"));
+    if (!blocks.length) return;
 
-  useEffect(() => {
-    animateBlocksRef.current = document.querySelectorAll("[data-animate-block]");
-    pageWrapRef.current = document.querySelector(".s-pagewrap");
+    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    let observer;
 
-    const animateBlocks = animateBlocksRef.current;
-    const pageWrap = pageWrapRef.current;
-
-    if (!(pageWrap && animateBlocks.length > 0)) return;
-
-    const doAnimate = (current) => {
-      const els = current.querySelectorAll("[data-animate-el]");
-
-      els.forEach((el, index) => {
-        const dly = index * 200;
-        el.style.setProperty("--transition-delay", `${dly}ms`);
+    const reveal = (block) => {
+      if (!block || block.classList.contains("ss-animated")) return;
+      const elements = block.querySelectorAll("[data-animate-el]");
+      elements.forEach((el, index) => {
+        el.style.setProperty("--transition-delay", `${Math.min(index * 80, 480)}ms`);
       });
-
-      current.classList.add("ss-animated");
-      current.offsetHeight;
+      block.classList.add("reveal-prepared");
+      block.classList.add("ss-animated");
     };
 
-    const animateOnScroll = () => {
-      const scrollY = window.scrollY;
-      const viewportHeight = window.innerHeight;
-
-      animateBlocks.forEach((current) => {
-        const triggerTop = current.offsetTop + viewportHeight * 0.1 - viewportHeight;
-        const blockHeight = current.offsetHeight;
-        const blockSpace = triggerTop + blockHeight;
-
-        const inView = scrollY > triggerTop && scrollY <= blockSpace;
-        const isAnimated = current.classList.contains("ss-animated");
-
-        if (inView && !isAnimated) {
-          doAnimate(current);
-        }
-      });
-    };
-
-    const handleLoad = () => {
-      animateBlocks.forEach((block) => {
-        if (!block.classList.contains("ss-animated")) {
-          doAnimate(block);
-        }
-      });
-    };
-
-    if (pageWrap.classList.contains("ss-home")) {
-      window.addEventListener("scroll", animateOnScroll);
-    } else {
-      handleLoad();
+    if (reduceMotion || typeof IntersectionObserver === "undefined") {
+      blocks.forEach(reveal);
+      return;
     }
 
+    blocks.forEach((block) => block.classList.add("reveal-prepared"));
+
+    observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            reveal(entry.target);
+            observer?.unobserve(entry.target);
+          }
+        });
+      },
+      { rootMargin: "0px 0px -10% 0px", threshold: 0.05 }
+    );
+
+    blocks.forEach((block) => observer.observe(block));
+
+    // Safety net: never leave prepared content invisible.
+    const fallback = window.setTimeout(() => blocks.forEach(reveal), 1500);
+
     return () => {
-      window.removeEventListener("scroll", animateOnScroll);
+      window.clearTimeout(fallback);
+      observer?.disconnect();
     };
   }, []);
 
