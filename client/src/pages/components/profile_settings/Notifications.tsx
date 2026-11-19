@@ -1,64 +1,56 @@
 // @ts-nocheck
-import { useLayoutEffect, useRef, useState } from "react";
-import Cookies from "js-cookie";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import logout from "../tools/auth";
-import { GetSubscription } from "../../../api/API";
-import { SetSubscription } from "../../../api/API";
+import { GetSubscription, SetSubscription } from "../../../api/API";
+import { useAuth } from "../../../components/auth/AuthProvider";
 
 import SuccessMessage from "../messageBox/SuccessMessage";
 
-const Notifications = (prop) => {
-  const user = Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null;
-  if (user == null) {
-    window.location.href == "/profile";
-  }
+const Notifications = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [userData, setUserdata] = useState({
-    email: user.email,
+    email: user?.email ?? "",
     newsletter: false,
   });
   const [isUpdated, setIsUpdated] = useState(false);
   const [responseMssg, SetResponseMssg] = useState("");
-  var responseData = useRef({});
-  var errorData = useRef({});
-  const sanitizedData = {};
+  const savedNewsletter = useRef(false);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
+    if (!user?.email) return;
+    let active = true;
+
     const getSubscriptions = async () => {
       try {
-        responseData.current = await GetSubscription(user.email);
-        if (responseData.current.status == 200) {
-          setUserdata(() => {
-            return responseData.current.data;
+        const response = await GetSubscription(user.email);
+        if (active && response.status === 200) {
+          savedNewsletter.current = Boolean(response.data.newsletter);
+          setUserdata({
+            email: response.data.email ?? user.email,
+            newsletter: Boolean(response.data.newsletter),
           });
         }
       } catch (error) {
-        if (error.response.status == 404) {
-          errorData.current.email = user.email;
-          errorData.current.newsletter = false;
-          setUserdata(() => {
-            return errorData.current;
-          });
-        } else if (
-          error.response.status == 400 || //empty email
-          error.response.status == 403 || //Not Authenticated
-          error.response.status == 500 //Server error
-        ) {
-          logout();
+        if (error?.response?.status === 404 && active) {
+          savedNewsletter.current = false;
+          setUserdata({ email: user.email, newsletter: false });
+        } else if (error?.response?.status === 401) {
+          navigate("/session/new", { replace: true });
         }
       }
     };
-    getSubscriptions();
-  }, [user.email]);
+
+    void getSubscriptions();
+    return () => {
+      active = false;
+    };
+  }, [navigate, user?.email]);
 
   const handleCheckboxChange = (event) => {
-    setUserdata((preval) => {
-      return {
-        ...preval,
-        [event.target.name]: event.target.checked,
-      };
-    });
+    setUserdata((preval) => ({ ...preval, [event.target.name]: event.target.checked }));
   };
 
   const handleSubmit = async (e) => {
@@ -66,38 +58,22 @@ const Notifications = (prop) => {
     setIsUpdated(false);
 
     if (!userData.email) return;
+    if (userData.newsletter === savedNewsletter.current) return;
 
     const formData = new FormData();
     formData.append("email", userData.email);
-    if (responseData.current.data) {
-      if (userData.newsletter === responseData.current.data.newsletter) return null;
-    }
-
-    if (errorData.current) {
-      if (userData.newsletter === errorData.current.newsletter) return null;
-    }
-    sanitizedData.newsletter = userData.newsletter;
     formData.append("newsletter", userData.newsletter);
 
     try {
       const response = await SetSubscription(formData);
-      if (response.status == 200) {
+      if (response.status === 200) {
+        savedNewsletter.current = userData.newsletter;
         SetResponseMssg(response.data.message);
         setIsUpdated(true);
-        if (responseData.current.data)
-          responseData.current.data.newsletter = sanitizedData.newsletter;
-        if (errorData.current) errorData.current.newsletter = sanitizedData.newsletter;
-      } else {
-        alert("Something went wrong !");
-        window.location.href = "/";
       }
     } catch (error) {
-      if (
-        error.response.status == 400 || //empty email
-        error.response.status == 403 || //Not Authenticated
-        error.response.status == 500 //Server error
-      ) {
-        logout();
+      if (error?.response?.status === 401) {
+        navigate("/session/new", { replace: true });
       }
     }
   };
@@ -110,7 +86,7 @@ const Notifications = (prop) => {
         <div className="profile-hr-container notifications-hr">
           <hr className="profile-hr" />
         </div>
-        <label className="profile-label-styles u-add-bottom">
+        <label className="profile-label-styles u-add-bottom" htmlFor="newsletterSignup">
           <input
             type="checkbox"
             id="newsletterSignup"
@@ -119,17 +95,9 @@ const Notifications = (prop) => {
             onChange={handleCheckboxChange}
             style={{ width: "15px", height: "15px" }}
           />
-          <span className="label-text" htmlFor="newsletterSignup">
-            NewsLetters from SparkNest
-          </span>
+          <span className="label-text">NewsLetters from SparkNest</span>
         </label>
-        <button
-          className="btn--primary u-quartorwidth profile-button-styles"
-          type="submit"
-          style={{
-            marginTop: prop.pSection === "notifications" ? "100px" : "0px",
-          }}
-        >
+        <button className="btn--primary u-quartorwidth profile-button-styles" type="submit">
           Update
         </button>
       </form>

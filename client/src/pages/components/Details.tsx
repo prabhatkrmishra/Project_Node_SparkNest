@@ -1,11 +1,10 @@
 // @ts-nocheck
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import Cookies from "js-cookie";
 
 import { WEB_URL, checkUserName, updateDetails } from "../../api/API";
-import logout from "./tools/auth";
+import { useAuth } from "../../components/auth/AuthProvider";
 
 import PreLoader from "./PreLoader";
 import Header from "./Header";
@@ -15,22 +14,14 @@ import { setItem } from "./tools/IndexDBstorage";
 
 const Details = () => {
   const navigate = useNavigate();
-  const setProfile = Cookies.get("setProfile") ? Cookies.get("setProfile") : null;
-
-  useEffect(() => {
-    if (setProfile == null) {
-      navigate("/session/new");
-    }
-  }, [navigate, setProfile]);
-
-  const user = useRef(Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : {});
-  const days = Cookies.get("sessionDays") ? Number(Cookies.get("sessionDays")) : 0;
+  const { user, refresh } = useAuth();
+  const [statusMessage, setStatusMessage] = useState("");
   const [userData, setUserData] = useState({
-    id: user.current.id ? user.current.id : "",
-    username: "",
-    region: "",
-    bio: "",
-    avatar: "",
+    id: user?.id ?? "",
+    username: user?.username ?? "",
+    region: user?.region ?? "",
+    bio: user?.bio ?? "",
+    avatar: user?.avatar ?? "",
   });
   const [unameExists, setUnameExists] = useState(false);
   const [errorMssg, SetErrorMssg] = useState("");
@@ -146,32 +137,25 @@ const Details = () => {
       if (selectedFile) formData.append("avatar_image", selectedFile);
 
       const response = await updateDetails(formData);
-      if (response.status == 200) {
-        user.current.username = userData.username;
-        user.current.region = userData.region;
-        user.current.avatar = "";
-        user.current.bio = "";
-        Cookies.set("sessionUser", JSON.stringify(user.current), {
-          expires: days,
-        });
+      if (response.status === 200) {
         localStorage.setItem("userBio", userData.bio);
         setItem("avatar", userData.avatar || selectedImage);
-        Cookies.remove("setProfile");
-        alert("User details update Successful");
-        window.location.href = "/profile";
+        const nextUser = await refresh();
+        if (nextUser?.avatar) localStorage.setItem("avatar", nextUser.avatar);
+        setStatusMessage("Details saved. Redirecting to your profile…");
+        navigate("/profile", { replace: true });
       } else {
-        alert("Something went wrong !");
-        window.location.href = "/";
+        SetErrorMssg("Something went wrong. Please try again.");
+        setIsNull(true);
       }
-    } catch (error) {
-      if (
-        error.response.status == 403 || //Not Authenticated
-        error.response.status == 404 || //User not found
-        error.response.status == 500 //Server error
-      ) {
-        logout();
+    } catch (error: any) {
+      if (error?.response?.status === 401) {
+        navigate("/session/new", { replace: true });
+        return;
       }
-      console.error("There was an error during Signup!", error);
+      SetErrorMssg(error?.response?.data?.message || "Could not save your details.");
+      setIsNull(true);
+      console.error("There was an error updating details!", error);
     }
   };
 
@@ -309,6 +293,11 @@ const Details = () => {
                     remaining
                   </p>
                 </div>
+                {statusMessage && (
+                  <p className="form-status form-status--success" role="status">
+                    {statusMessage}
+                  </p>
+                )}
                 <button type="submit" className="btn--primary u-fullwidth mb-5">
                   Set Details
                 </button>

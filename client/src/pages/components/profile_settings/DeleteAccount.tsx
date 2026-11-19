@@ -1,16 +1,13 @@
 // @ts-nocheck
 import { useState } from "react";
-import Cookies from "js-cookie";
 
 import { DeleteUserAccount } from "../../../api/API";
+import { useAuth } from "../../../components/auth/AuthProvider";
 
 import logout from "../tools/auth";
 
 const DeleteAccount = () => {
-  const user = Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null;
-  if (user == null) {
-    window.location.href == "/profile";
-  }
+  const { user } = useAuth();
 
   const [consent, setConsent] = useState("");
   const [isConsentGiven, SetConsentGiven] = useState(false);
@@ -18,8 +15,7 @@ const DeleteAccount = () => {
   const handleConsentChange = (e) => {
     setConsent(e.target.value);
     const consentGiven = "YES";
-    if (e.target.value == consentGiven) SetConsentGiven(true);
-    if (e.target.value != consentGiven) SetConsentGiven(false);
+    SetConsentGiven(e.target.value === consentGiven);
   };
 
   const handleSubmit = async (e) => {
@@ -27,22 +23,19 @@ const DeleteAccount = () => {
 
     if (!consent) return;
 
-    if (isConsentGiven) {
-      const details = {
-        idtodelete: user.id,
-        email: user.email,
-        allowed: isConsentGiven,
-      };
-      try {
-        const response = await DeleteUserAccount(details);
-        if (response.status == 200) {
-          logout();
-        } else {
-          logout();
-        }
-      } catch (error) {
-        if (error.response.status) logout();
-      }
+    if (!isConsentGiven || !user) return;
+
+    const details = {
+      idtodelete: user.id,
+      email: user.email,
+      allowed: isConsentGiven,
+    };
+    try {
+      await DeleteUserAccount(details);
+    } catch (error) {
+      console.error("Account deletion failed:", error);
+    } finally {
+      logout();
     }
   };
 

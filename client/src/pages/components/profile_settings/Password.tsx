@@ -1,19 +1,16 @@
 // @ts-nocheck
 import { useState, useRef } from "react";
-import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 import { updateDetails } from "../../../api/API";
-import logout from "../tools/auth";
+import { useAuth } from "../../../components/auth/AuthProvider";
 
 import ErrorMessage from "../messageBox/ErrorMessage";
 import SuccessMessage from "../messageBox/SuccessMessage";
 
 const Password = () => {
-  const user = Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null;
-  if (user == null) {
-    window.location.href == "/profile";
-  }
-
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [isError, setError] = useState(false);
   const [isSuccess, setSuccess] = useState(false);
   const [notMatch, setNotMatch] = useState(false);
@@ -24,7 +21,7 @@ const Password = () => {
     newpassword: "",
     confirmpassword: "",
   });
-  const Id = user.id;
+  const Id = user?.id;
 
   const oldPasswordRef = useRef(null);
   const newPasswordRef = useRef(null);
@@ -55,7 +52,8 @@ const Password = () => {
     e.preventDefault();
     setSuccess(false);
     if (!newUserData.oldpassword || !newUserData.newpassword || !newUserData.confirmpassword) {
-      alert("Input field are mpty");
+      SetResponseMssg("All password fields are required");
+      setError(true);
       return;
     }
 
@@ -71,27 +69,22 @@ const Password = () => {
 
     try {
       const response = await updateDetails(formData);
-      if (response.status == 200) {
+      if (response.status === 200) {
         SetResponseMssg(response.data.message);
         setSuccess(true);
         clearPasswords();
       } else {
-        alert("Something went wrong !");
-        window.location.href = "/";
+        SetResponseMssg("Something went wrong, please try again.");
+        setError(true);
       }
     } catch (error) {
-      if (error.response.status == 400) {
-        SetResponseMssg(error.response.data.message);
-        setError(true);
-        clearPasswords();
+      if (error?.response?.status === 401) {
+        navigate("/session/new", { replace: true });
+        return;
       }
-      if (
-        error.response.status == 403 || //Not Authenticated
-        error.response.status == 404 || //User not found
-        error.response.status == 500 //Server error
-      ) {
-        logout();
-      }
+      SetResponseMssg(error?.response?.data?.message || "Could not update your password.");
+      setError(true);
+      if (error?.response?.status === 400) clearPasswords();
     }
   };
 
