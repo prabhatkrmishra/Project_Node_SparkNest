@@ -1,16 +1,18 @@
 // @ts-nocheck
-import { api, WEB_URL } from "./API";
+import { api } from "./API";
 
+// Preview helpers return API-relative paths. Callers pass them to the shared
+// axios instance, which already applies the /api baseURL.
 export const getArticlePreviews = () => {
-  return `${WEB_URL}/article/previews`;
+  return `/article/previews`;
 };
 
 export const getArticlePreviewsCategory = (category) => {
-  return `${WEB_URL}/article/preview/category/${category}`;
+  return `/article/preview/category/${category}`;
 };
 
 export const getProfileArticlePreviews = (id) => {
-  return `${WEB_URL}/article/profile/preview/${id}`;
+  return `/article/profile/preview/${id}`;
 };
 
 export const getFeatured = () => {
@@ -42,9 +44,9 @@ export const unlikeArticleUser = (data) => {
 };
 
 export const getAllSaved = (user_id) => {
-  return `${WEB_URL}/articles/saved/${user_id}`;
+  return `/articles/saved/${user_id}`;
 };
 
 export const getAllLiked = (user_id) => {
-  return `${WEB_URL}/articles/liked/${user_id}`;
+  return `/articles/liked/${user_id}`;
 };
