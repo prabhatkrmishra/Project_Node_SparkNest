@@ -48,6 +48,7 @@ npm --workspace=server run db:generate-categories
 
 ```bash
 npm --workspace=server run db:migrate   # migrate (Docker Flyway or direct SQL fallback)
+npm --workspace=server run db:seed      # deterministic sample users/articles/comments
 npm --workspace=server run db:validate  # validate (requires Docker)
 npm --workspace=server run db:info      # info
 npm --workspace=server run db:clean     # clean (dev only, requires Docker)
