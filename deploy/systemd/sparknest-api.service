@@ -1,0 +1,19 @@
+[Unit]
+Description=SparkNest API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pkm
+Group=pkm
+WorkingDirectory=__APP_ROOT__/current/server
+EnvironmentFile=__APP_ROOT__/shared/.env
+ExecStart=__NODE_BIN__ server.js
+Restart=always
+RestartSec=5
+KillSignal=SIGTERM
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target
