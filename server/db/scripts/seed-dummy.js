@@ -192,10 +192,11 @@ async function mapLimit(items, limit, worker) {
   const results = new Array(items.length);
   let cursor = 0;
   const runners = Array.from({ length: Math.min(limit, items.length) }, async () => {
-    while (true) {
-      const index = cursor++;
-      if (index >= items.length) return;
+    let index = cursor;
+    while (index < items.length) {
+      cursor += 1;
       results[index] = await worker(items[index], index);
+      index = cursor;
     }
   });
   await Promise.all(runners);
