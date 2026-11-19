@@ -6,7 +6,7 @@ import {
   verifyResetToken,
   updateNewPasswords,
 } from "../services/passwordService.js";
-import { authLimiter } from "../middlewares/rateLimiter.js";
+import { authLimiter, writeLimiter } from "../middlewares/rateLimiter.js";
 
 const serviceRoutes = express.Router();
 
@@ -15,7 +15,7 @@ const serviceRoutes = express.Router();
  * @description Fetch message from client  and send to service
  * @access Private
  */
-serviceRoutes.post("/send/message", sendContactEmail);
+serviceRoutes.post("/send/message", writeLimiter, sendContactEmail);
 
 /**
  * @route POST /password/request/email

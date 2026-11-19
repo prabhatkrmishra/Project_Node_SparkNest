@@ -12,10 +12,7 @@ const envSchema = z.object({
   PG_DATABASE: z.string().optional().default(""),
   PG_PASSWORD: z.string().optional().default(""),
   PG_PORT: z.coerce.number().default(5432),
-  SESSION_SECRET: z
-    .string()
-    .min(32, "SESSION_SECRET must be >=32 chars")
-    .default("test-secret-32-chars-minimum-for-tests"),
+  SESSION_SECRET: z.string().min(32, "SESSION_SECRET must be >=32 chars").optional(),
   SECURE_COOKIE: z.enum(["true", "false"]).default("false"),
   HTTP_ONLY: z.enum(["true", "false"]).default("true"),
   SAME_SITE: z.enum(["lax", "strict", "none"]).default("lax"),
@@ -41,4 +38,17 @@ if (!parsed.success) {
   }
 }
 
-export const env = parsed.success ? parsed.data : envSchema.parse({});
+const data = parsed.success ? parsed.data : envSchema.parse({});
+
+// The insecure fallback is only allowed in tests. Any real deployment missing a
+// strong session secret must fail fast instead of booting with a known value.
+if (!data.SESSION_SECRET) {
+  if (data.NODE_ENV === "test") {
+    data.SESSION_SECRET = "test-secret-32-chars-minimum-for-tests";
+  } else {
+    console.error("SESSION_SECRET is required (>=32 characters) outside NODE_ENV=test");
+    process.exit(1);
+  }
+}
+
+export const env = data;
