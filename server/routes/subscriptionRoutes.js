@@ -13,15 +13,16 @@ import {
   unsubscribeSchema,
 } from "../validators/subscription.validator.js";
 import { requireAuth } from "../middlewares/authMiddleware.js";
+import { writeLimiter } from "../middlewares/rateLimiter.js";
 
 const subscriptionRouter = express.Router();
 
 /**
  * @route POST /subscribe/newsletter
  * @description Subscribe to a newsletter
- * @access Private
+ * @access Public
  */
-subscriptionRouter.post("/subscribe/newsletter", requireAuth, validate(subscribeSchema), subscribe);
+subscriptionRouter.post("/subscribe/newsletter", writeLimiter, validate(subscribeSchema), subscribe);
 
 /**
  * @route GET /get/subscription/:email

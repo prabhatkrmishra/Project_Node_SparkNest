@@ -2,8 +2,8 @@ import { z } from "zod";
 
 export const subscribeSchema = z.object({
   body: z.object({
-    email: z.string().email(),
-    type: z.string().min(1),
+    email: z.string().trim().email().transform((value) => value.toLowerCase()),
+    type: z.literal("newsletter"),
   }),
 });
 
