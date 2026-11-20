@@ -11,18 +11,28 @@ const HomeBanner = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let ignore = false;
     const fetchFeatured = async () => {
       try {
         const response = await getFeatured();
-        setArticles(Array.isArray(response.data) ? response.data : []);
+        if (!ignore) {
+          setArticles(Array.isArray(response.data) ? response.data : []);
+        }
       } catch (error) {
-        console.log("Error fetching featured articles:", error.response?.data || error.message);
+        if (!ignore) {
+          console.log("Error fetching featured articles:", error.response?.data || error.message);
+        }
       } finally {
-        setImagesLoaded(true);
-        setLoading(false);
+        if (!ignore) {
+          setImagesLoaded(true);
+          setLoading(false);
+        }
       }
     };
     fetchFeatured();
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   return (
