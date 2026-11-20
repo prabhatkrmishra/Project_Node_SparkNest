@@ -8095,7 +8095,7 @@ input[type="button"]:disabled {
   .s-header__nav-wrap .s-header__nav li > ul.sub-menu {
     width: 100% !important;
     margin: 0 !important;
-    padding: 0.4rem 0 0.8rem 1.6rem !important;
+    padding: 0 !important;
     background: transparent !important;
     border: 0 !important;
     border-radius: 0 !important;
@@ -8105,6 +8105,7 @@ input[type="button"]:disabled {
   .s-header__nav-wrap .s-header__nav li.sub-menu-is-open > ul.sub-menu {
     max-height: none !important;
     overflow: visible !important;
+    padding: 0.4rem 0 0.8rem 1.6rem !important;
   }
 
   .s-header__nav-wrap .s-header__nav li > ul.sub-menu li {

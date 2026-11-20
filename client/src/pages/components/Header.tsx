@@ -174,11 +174,7 @@ const Header = () => {
               </li>
             ) : (
               <li className={loginActive ? "current-menu-item" : ""}>
-                <a
-                  className="text-dark-emphasis"
-                  href="/session/new"
-                  aria-current={loginActive ? "page" : undefined}
-                >
+                <a href="/session/new" aria-current={loginActive ? "page" : undefined}>
                   Log in
                 </a>
               </li>
