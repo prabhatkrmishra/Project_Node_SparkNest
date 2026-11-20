@@ -4818,6 +4818,16 @@ h2.hero__entry-title {
   box-shadow: none;
 }
 
+/* The footer input sits on a dark surface, where the global focus ring reads
+ * as a heavy black border plus a blue halo. Keep one quiet brand-colored ring
+ * instead, including mouse focus (text fields match :focus-visible on click). */
+.s-footer__subscribe input[type="email"]:focus,
+.s-footer__subscribe input[type="email"]:focus-visible {
+  border-color: var(--color-1);
+  box-shadow: inset 0 0 0 1px var(--color-1);
+  outline: 0;
+}
+
 .s-footer__subscribe input[type="submit"] {
   width: 240px;
   margin-right: 0;
@@ -7924,6 +7934,7 @@ select:focus-visible,
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  margin-bottom: 0;
 }
 
 .bricks-wrapper .lower-tool-div-preview {

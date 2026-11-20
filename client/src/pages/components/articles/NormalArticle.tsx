@@ -60,9 +60,7 @@ const NormalArticle = (prop) => {
       const response = await dropArticle(article_id);
       if (response.status === 200) {
         setShow(false);
-        prop.setArticles?.(
-          prop.articles.filter((article) => article.article_id !== article_id)
-        );
+        prop.setArticles?.(prop.articles.filter((article) => article.article_id !== article_id));
       } else {
         setDeleteError("Could not delete this article. Please try again.");
       }
@@ -90,8 +88,11 @@ const NormalArticle = (prop) => {
               alt={prop.previewTitle || "Article preview"}
               loading="lazy"
               onError={(event) => {
-                event.currentTarget.onerror = null;
-                event.currentTarget.src = "/images/sample-image.jpg";
+                const image = event.currentTarget;
+                image.onerror = null;
+                image.removeAttribute("srcset");
+                image.removeAttribute("sizes");
+                image.src = "/images/sample-image.jpg";
               }}
             />
           </a>
@@ -108,8 +109,7 @@ const NormalArticle = (prop) => {
                 </span>
               )}
               <span className="byline">
-                By:{" "}
-                <a href={prop.createdBy ? `/user/${prop.createdBy}` : "#0"}>{prop.previewBy}</a>
+                By: <a href={prop.createdBy ? `/user/${prop.createdBy}` : "#0"}>{prop.previewBy}</a>
               </span>
             </div>
             <h2 className="entry__title">
@@ -176,7 +176,9 @@ const NormalArticle = (prop) => {
                     </>
                   }
                 >
-                  <p>Are you sure you want to delete “{prop.previewTitle}”? This cannot be undone.</p>
+                  <p>
+                    Are you sure you want to delete “{prop.previewTitle}”? This cannot be undone.
+                  </p>
                   {deleteError && (
                     <p className="form-status form-status--error" role="alert">
                       {deleteError}

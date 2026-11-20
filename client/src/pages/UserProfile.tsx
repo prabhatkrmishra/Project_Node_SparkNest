@@ -76,7 +76,9 @@ const UserProfile = () => {
                       src={profile?.avatar || "/images/sample-image.jpg"}
                       className="avatar"
                       onError={(event) => {
-                        event.currentTarget.src = "/images/sample-image.jpg";
+                        const image = event.currentTarget;
+                        image.onerror = null;
+                        image.src = "/images/sample-image.jpg";
                       }}
                     />
                   </figure>

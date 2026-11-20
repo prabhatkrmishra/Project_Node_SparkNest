@@ -206,8 +206,11 @@ const StandardPost = () => {
                             sizes="(max-width: 2400px) 100vw, 2400px"
                             alt={article.article_title || ""}
                             onError={(event) => {
-                              event.currentTarget.onerror = null;
-                              event.currentTarget.src = "/images/sample-image.jpg";
+                              const image = event.currentTarget;
+                              image.onerror = null;
+                              image.removeAttribute("srcset");
+                              image.removeAttribute("sizes");
+                              image.src = "/images/sample-image.jpg";
                             }}
                           />
                         </figure>
@@ -245,7 +248,9 @@ const StandardPost = () => {
                               src={article.avatar || "/images/sample-image.jpg"}
                               className="avatar"
                               onError={(event) => {
-                                event.currentTarget.src = "/images/sample-image.jpg";
+                                const image = event.currentTarget;
+                                image.onerror = null;
+                                image.src = "/images/sample-image.jpg";
                               }}
                             />
                           </figure>

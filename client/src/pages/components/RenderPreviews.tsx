@@ -147,7 +147,11 @@ const RenderPreviews = ({ url, type }) => {
           />
         )}
       </div>
-      {hasArticles && <MasonryEffect />}
+      {hasArticles && (
+        <MasonryEffect
+          key={`${currentPage}-${articles.length}-${articles[0]?.preview_id ?? "none"}`}
+        />
+      )}
       {hasArticles && <AnimateBricks />}
     </>
   );

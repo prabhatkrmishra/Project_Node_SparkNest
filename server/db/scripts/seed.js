@@ -18,8 +18,11 @@ import { hashPassword } from "../../services/bcryptService.js";
 import { resolveDataPath } from "../../services/storageService.js";
 import { updateFeaturedArticles } from "../../models/featuredArticlesModel.js";
 
-
 const PASSWORD = "Password123!";
+// Seeded images are rewritten in place on every run. A per-run query keeps
+// browsers from serving a year-old immutable copy of the previous image.
+const ASSET_VERSION = Date.now().toString(36);
+const withAssetVersion = (url) => `${url}?v=${ASSET_VERSION}`;
 
 const USERS = [
   {
@@ -106,14 +109,104 @@ const ARTICLES = [
     body: `<p>Learning in public is less about performance and more about leaving a trail for the next person.</p>
 <p>Short notes beat polished essays. A sentence about what surprised you is enough to start.</p>`,
   },
+  {
+    author: "carol@example.com",
+    title: "The Art of Noticing",
+    createdAt: "2026-02-09T09:20:00Z",
+    categoryIds: [17, 62],
+    previewTitle: "The Art of Noticing",
+    previewSubtitle: "A camera is optional; attention is not.",
+    body: `<p>The best photographs I have made started as ordinary walks with no camera at all.</p>
+<p>Noticing is a practice: the angle of light, a repeated color, the pause before someone laughs. The frame is just where the noticing lands.</p>`,
+  },
+  {
+    author: "alice@example.com",
+    title: "A Small Guide to Better Defaults",
+    createdAt: "2026-02-16T14:10:00Z",
+    categoryIds: [25, 57],
+    previewTitle: "A Small Guide to Better Defaults",
+    previewSubtitle: "Most people never open the settings screen.",
+    body: `<p>Defaults are the interface for everyone who never opens settings. Treat them as product decisions, not implementation details.</p>
+<p>Choose the safest useful option, explain what changes, and make the choice reversible.</p>`,
+  },
+  {
+    author: "bob@example.com",
+    title: "What the Trail Taught Me About Scope",
+    createdAt: "2026-02-23T11:05:00Z",
+    categoryIds: [45, 10],
+    previewTitle: "What the Trail Taught Me About Scope",
+    previewSubtitle: "The summit is optional. Getting back before dark is not.",
+    body: `<p>Every long hike includes a moment when the plan stops matching the terrain. The useful skill is not grit; it is re-planning without drama.</p>
+<p>We turned around an hour before the summit. The walk back was the best part of the day.</p>`,
+  },
+  {
+    author: "carol@example.com",
+    title: "Weeknight Baking, Without the Project",
+    createdAt: "2026-03-02T18:30:00Z",
+    categoryIds: [8, 66],
+    previewTitle: "Weeknight Baking, Without the Project",
+    previewSubtitle: "One bowl, one pan, and a reason to stop working.",
+    body: `<p>Weeknight baking does not need a stand mixer or a weekend. A simple olive-oil cake and a tray of biscuits cover most occasions.</p>
+<p>The point is not the output. It is the twenty quiet minutes in the middle of the week.</p>`,
+  },
+  {
+    author: "alice@example.com",
+    title: "Why I Keep a Paper Notebook",
+    createdAt: "2026-03-09T08:00:00Z",
+    categoryIds: [56, 26],
+    previewTitle: "Why I Keep a Paper Notebook",
+    previewSubtitle: "The slowest tool is sometimes the one that sticks.",
+    body: `<p>A notebook has no notifications, no search, and no way to sync. That is the feature.</p>
+<p>I use it for the messy middle of thinking: questions, half-lists, and the one sentence that survives the week.</p>`,
+  },
+  {
+    author: "bob@example.com",
+    title: "Reading Slowly on Purpose",
+    createdAt: "2026-03-16T20:15:00Z",
+    categoryIds: [18, 20],
+    previewTitle: "Reading Slowly on Purpose",
+    previewSubtitle: "A book is not a feed to clear.",
+    body: `<p>I used to measure reading by books finished. Now I measure it by passages I can still explain a month later.</p>
+<p>Slowing down feels inefficient until you notice how much you were skimming.</p>`,
+  },
+  {
+    author: "carol@example.com",
+    title: "The Quiet Joy of a Tidy Shelf",
+    createdAt: "2026-03-23T10:40:00Z",
+    categoryIds: [25, 13],
+    previewTitle: "The Quiet Joy of a Tidy Shelf",
+    previewSubtitle: "A place for the things you actually reach for.",
+    body: `<p>A tidy shelf is not about matching baskets. It is about knowing where the tape measure lives when you need it.</p>
+<p>Start with one shelf, remove what does not belong, and let the empty space stay empty for a week.</p>`,
+  },
 ];
 
 const COMMENTS = [
-  { article: 1, author: "bob@example.com", body: "The defaults point is underrated. Most of our settings page exists because nobody made a decision." },
-  { article: 1, author: "carol@example.com", body: "Saving this. The whitespace advice applies to documents too." },
-  { article: 2, author: "alice@example.com", body: "Adding the ridge route to my list. Which station did you start from?" },
-  { article: 3, author: "bob@example.com", body: "The under-season-then-finish approach changed my weeknights." },
-  { article: 4, author: "carol@example.com", body: "Boring infrastructure is a feature, not an apology." },
+  {
+    article: 1,
+    author: "bob@example.com",
+    body: "The defaults point is underrated. Most of our settings page exists because nobody made a decision.",
+  },
+  {
+    article: 1,
+    author: "carol@example.com",
+    body: "Saving this. The whitespace advice applies to documents too.",
+  },
+  {
+    article: 2,
+    author: "alice@example.com",
+    body: "Adding the ridge route to my list. Which station did you start from?",
+  },
+  {
+    article: 3,
+    author: "bob@example.com",
+    body: "The under-season-then-finish approach changed my weeknights.",
+  },
+  {
+    article: 4,
+    author: "carol@example.com",
+    body: "Boring infrastructure is a feature, not an apology.",
+  },
 ];
 
 const SAVES = [
@@ -237,7 +330,7 @@ async function seed() {
           user.username,
           user.region,
           user.bio,
-          `${env.BACKEND_ADDRESS}/get/avatars/${user.avatar}`,
+          withAssetVersion(`${env.BACKEND_ADDRESS}/get/avatars/${user.avatar}`),
           passwordHash,
         ]
       );
@@ -255,13 +348,18 @@ async function seed() {
       const userId = userIds.get(article.author);
       const bodyImageName = article.bodyImage ? `${userId}-seed-illustration.jpg` : null;
       const bodyImageUrl = bodyImageName
-        ? `${env.BACKEND_ADDRESS}/article/images/${userId}/${bodyImageName}`
+        ? withAssetVersion(`${env.BACKEND_ADDRESS}/article/images/${userId}/${bodyImageName}`)
         : "";
 
       const result = await client.query(
         `INSERT INTO articles (user_id, title, body, created_at, updated_at)
          VALUES ($1, $2, $3, $4, $4) RETURNING id`,
-        [userId, article.title, article.body.replace("{{BODY_IMAGE}}", bodyImageUrl), article.createdAt]
+        [
+          userId,
+          article.title,
+          article.body.replace("{{BODY_IMAGE}}", bodyImageUrl),
+          article.createdAt,
+        ]
       );
       const createdId = result.rows[0].id;
 
@@ -282,9 +380,13 @@ async function seed() {
          VALUES ($1, $2, $3, $4)`,
         [
           createdId,
-          [`${base}/${userId}-m-600.jpg`, `${base}/${userId}-m-1200.jpg`],
-          [`${base}/${userId}-f-2000.jpg`],
-          [`${base}/${userId}-t-600.jpg`, `${base}/${userId}-t-1200.jpg`, `${base}/${userId}-t-2400.jpg`],
+          [`${base}/${userId}-m-600.jpg`, `${base}/${userId}-m-1200.jpg`].map(withAssetVersion),
+          [`${base}/${userId}-f-2000.jpg`].map(withAssetVersion),
+          [
+            `${base}/${userId}-t-600.jpg`,
+            `${base}/${userId}-t-1200.jpg`,
+            `${base}/${userId}-t-2400.jpg`,
+          ].map(withAssetVersion),
         ]
       );
 
@@ -303,7 +405,13 @@ async function seed() {
       await client.query(
         `INSERT INTO comments (article_id, user_id, name, email, body)
          VALUES ($1, $2, $3, $4, $5)`,
-        [comment.article, userIds.get(comment.author), `${user.fname} ${user.lname}`, comment.author, comment.body]
+        [
+          comment.article,
+          userIds.get(comment.author),
+          `${user.fname} ${user.lname}`,
+          comment.author,
+          comment.body,
+        ]
       );
     }
 
