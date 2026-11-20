@@ -15,6 +15,13 @@ if [ -z "$NODE_BIN" ] || [ ! -x "$NODE_BIN" ]; then
   echo "Node.js is required. Set NODE_BIN to a Node 20+ executable." >&2
   exit 1
 fi
+NODE_BIN="$(readlink -f "$NODE_BIN")"
+NODE_VERSION="$("$NODE_BIN" -p "process.versions.node")"
+NODE_MAJOR="${NODE_VERSION%%.*}"
+if [ "$NODE_MAJOR" -lt 20 ]; then
+  echo "Node 20.18+ is required (found $NODE_VERSION)." >&2
+  exit 1
+fi
 
 if ! sudo -n true 2>/dev/null; then
   echo "Passwordless sudo is required for nginx and service setup." >&2
@@ -60,14 +67,20 @@ else
   echo "Keeping existing $APP_ROOT/shared/.env"
 fi
 
+# Copy Node into the app directory so the service keeps working when nvm or
+# the Actions tool cache replaces its Node installation.
+install -d -m 0755 "$APP_ROOT/shared/bin"
+install -m 0755 "$NODE_BIN" "$APP_ROOT/shared/bin/node"
+NODE_BIN="$APP_ROOT/shared/bin/node"
+
 sudo install -m 0644 "$REPO_ROOT/deploy/nginx/sparknest.conf" /etc/nginx/sites-available/sparknest
 sudo ln -sfn /etc/nginx/sites-available/sparknest /etc/nginx/sites-enabled/sparknest
 
 UNIT_TMP="$(mktemp)"
+trap 'rm -f "$UNIT_TMP"' EXIT
 sed -e "s#__APP_ROOT__#${APP_ROOT}#g" -e "s#__NODE_BIN__#${NODE_BIN}#g" \
   "$REPO_ROOT/deploy/systemd/sparknest-api.service" > "$UNIT_TMP"
 sudo install -m 0644 "$UNIT_TMP" /etc/systemd/system/sparknest-api.service
-rm -f "$UNIT_TMP"
 
 sudo nginx -t
 sudo systemctl reload nginx 2>/dev/null || sudo systemctl restart nginx
