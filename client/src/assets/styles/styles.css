@@ -7925,6 +7925,10 @@ select:focus-visible,
   min-height: calc(2 * (var(--vspace-1) + var(--vspace-0_125)));
 }
 
+.bricks-wrapper .entry__meta {
+  min-height: calc(2 * 1.1rem * 1.455);
+}
+
 .bricks-wrapper .entry__excerpt {
   min-height: calc(2 * 1.5rem * 1.733);
 }

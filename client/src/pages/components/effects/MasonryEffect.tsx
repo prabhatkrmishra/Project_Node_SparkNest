@@ -16,6 +16,22 @@ const MasonryEffect = () => {
 
     let masonry;
     let cancelled = false;
+    let frame;
+
+    // Images below the fold load lazily, so their height can change long after
+    // the first layout. Reposition the grid as each one settles.
+    const scheduleRelayout = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        if (!cancelled) masonry?.layout?.();
+      });
+    };
+
+    const imageNodes = Array.from(containerBricks.querySelectorAll("img"));
+    imageNodes.forEach((image) => {
+      image.addEventListener("load", scheduleRelayout);
+      image.addEventListener("error", scheduleRelayout);
+    });
 
     const setup = () => {
       if (cancelled) return;
@@ -35,6 +51,11 @@ const MasonryEffect = () => {
 
     return () => {
       cancelled = true;
+      cancelAnimationFrame(frame);
+      imageNodes.forEach((image) => {
+        image.removeEventListener("load", scheduleRelayout);
+        image.removeEventListener("error", scheduleRelayout);
+      });
       masonry?.destroy?.();
     };
   }, []);
