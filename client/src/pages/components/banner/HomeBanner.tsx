@@ -8,15 +8,18 @@ import ScrollDown from "../navigate/ScrollDown";
 const HomeBanner = () => {
   const [articles, setArticles] = useState([]);
   const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchFeatured = async () => {
       try {
         const response = await getFeatured();
-        setArticles(response.data);
-        setImagesLoaded(true);
+        setArticles(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.log("Error fetching featured articles:", error.response?.data || error.message);
+      } finally {
+        setImagesLoaded(true);
+        setLoading(false);
       }
     };
     fetchFeatured();
@@ -24,11 +27,11 @@ const HomeBanner = () => {
 
   return (
     <>
-      <div className="hero">
-        <div className="hero__slider swiper-container">
-          <div className="swiper-wrapper">
-            {articles.length > 0 ? (
-              articles.map((article) => (
+      <div className={`hero${articles.length === 0 ? " hero--empty" : ""}`}>
+        {articles.length > 0 ? (
+          <div className="hero__slider swiper-container">
+            <div className="swiper-wrapper">
+              {articles.map((article) => (
                 <FeaturedArticle
                   key={article.article_id}
                   articleId={article.article_id}
@@ -37,16 +40,34 @@ const HomeBanner = () => {
                   previewImage={article.featured_images[0]}
                   categories={article.categories}
                 />
-              ))
+              ))}
+            </div>
+            <div className="swiper-pagination"></div>
+          </div>
+        ) : (
+          <div className="hero__empty-inner">
+            {loading ? (
+              <p className="hero__empty-status" role="status">
+                Loading featured stories…
+              </p>
             ) : (
-              <p>No featured articles available.</p>
+              <>
+                <p className="hero__empty-eyebrow">SparkNest</p>
+                <h2 className="hero__empty-title">Stories worth your attention.</h2>
+                <p className="hero__empty-desc">
+                  There are no featured stories right now. Browse the latest articles from the
+                  community below.
+                </p>
+                <a className="hero__more-link" href="#bricks">
+                  Browse latest articles
+                </a>
+              </>
             )}
           </div>
-          <div className="swiper-pagination"></div>
-        </div>
+        )}
         <ScrollDown />
       </div>
-      <SwiperEffect imagesLoaded={imagesLoaded} />
+      {articles.length > 0 && <SwiperEffect imagesLoaded={imagesLoaded} />}
     </>
   );
 };

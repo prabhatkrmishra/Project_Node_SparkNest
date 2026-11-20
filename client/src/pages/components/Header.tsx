@@ -106,7 +106,7 @@ const Header = () => {
               </ul>
             </li>
             <li className="has-children">
-              <a href="#" onClick={toggleMenu}>
+              <a href="#top-blogs" onClick={(event) => event.preventDefault()}>
                 Top Blogs
               </a>
               <ul className="sub-menu sub-menu--top">
@@ -200,8 +200,13 @@ const Header = () => {
           </div>
         </div>
       </div>
-      <a className="s-header__search-trigger" href=" ">
-        <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+      <a
+        className="s-header__search-trigger"
+        href="#search"
+        aria-label="Open search"
+        title="Open search"
+      >
+        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" aria-hidden="true">
           <path
             stroke="currentColor"
             strokeLinecap="round"
@@ -211,7 +216,7 @@ const Header = () => {
           ></path>
         </svg>
       </a>
-      <a className="s-header__menu-toggle" href=" ">
+      <a className="s-header__menu-toggle" href="#menu" aria-label="Open menu">
         <span>Menu</span>
       </a>
       <MobileMenu />

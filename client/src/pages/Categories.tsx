@@ -82,8 +82,12 @@ const Categories = () => {
                 <p className="categories-page__eyebrow">Explore</p>
                 <h1 className="categories-page__title">All categories</h1>
                 <p className="categories-page__lead">
-                  Browse every topic on SparkNest. {categories.length.toLocaleString()} categories,
-                  grouped A–Z.
+                  Browse every topic on SparkNest.
+                  {!loading &&
+                    !error &&
+                    ` ${categories.length.toLocaleString()} ${
+                      categories.length === 1 ? "category" : "categories"
+                    }, grouped A–Z.`}
                 </p>
               </div>
               <div className="column lg-4">
@@ -128,7 +132,9 @@ const Categories = () => {
             )}
             {!loading && !error && letters.length === 0 && (
               <p className="categories-empty" role="status">
-                No categories match “{query}”.
+                {query.trim()
+                  ? `No categories match “${query.trim()}”.`
+                  : "No categories are available yet."}
               </p>
             )}
             {!loading &&

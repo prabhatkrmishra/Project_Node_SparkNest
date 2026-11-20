@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import PreLoader from "./components/PreLoader";
 import ErrorMessage from "./components/messageBox/ErrorMessage";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 import { sendLoginCred } from "../api/API";
 import { WEB_URL } from "../api/API";
@@ -117,7 +118,7 @@ const Login = () => {
                   className="d-flex justify-content-center u-add-bottom mb-xxl-5"
                   style={{ marginTop: "0" }}
                 >
-                  <u>Login</u>
+                  Login
                 </h2>
               </div>
               {/*  <!-- Login with -->
@@ -240,6 +241,7 @@ const Login = () => {
             </div>
           </div>
         </section>
+        <Footer />
       </div>
     </>
   );

@@ -86,13 +86,13 @@ const Contact = () => {
                 </div>
                 <div className="content-primary">
                   <div className="entry__content">
-                    <p className="lead" style={{ textAlign: "justify" }}>
+                    <p className="lead">
                       At SparkNest, we are committed to fostering meaningful connections with our
                       community. Whether you have feedback, suggestions, or just want to say hello,
                       we’re here to listen. Your input helps us grow and create better experiences
                       for everyone.
                     </p>
-                    <p style={{ textAlign: "justify" }}>
+                    <p>
                       We believe in open communication and value your thoughts. Feel free to reach
                       out for any inquiries, suggestions or collaborations. Our team is always ready
                       to assist and ensure your voice is heard. Simply fill out the form below, and

@@ -10,18 +10,18 @@ import SuccessMessage from "../messageBox/SuccessMessage";
 
 const Profile = () => {
   const user = useRef(Cookies.get("sessionUser") ? JSON.parse(Cookies.get("sessionUser")) : null);
-  const days = Cookies.get("sessionDays") ? Number(Cookies.get("sessionDays")) : 0;
-  if (user.current == null || days == 0) {
+  const days = Cookies.get("sessionDays") ? Number(Cookies.get("sessionDays")) : 30;
+  if (user.current == null) {
     window.location.href = "/profile";
   }
-  const userBio = localStorage.getItem("userBio") || "";
+  const userBio = localStorage.getItem("userBio") ?? user.current?.bio ?? "";
   const profileAvatar = useRef(null);
   useEffect(() => {
     if (!localStorage.getItem("avatar")) {
       updateProfile();
     }
   }, []);
-  profileAvatar.current = localStorage.getItem("avatar") || "";
+  profileAvatar.current = localStorage.getItem("avatar") || user.current?.avatar || "";
 
   const [newUserData, setUserData] = useState({
     fname: user.current?.fname || "",
@@ -29,7 +29,7 @@ const Profile = () => {
     region: user.current?.region || "",
     bio: userBio,
   });
-  const Id = user.current.id;
+  const Id = user.current?.id;
   const [isUpdated, setIsUpdated] = useState(false);
   const [responseMssg, SetResponseMssg] = useState("");
   const [charCount, setCharCount] = useState(0);
@@ -138,7 +138,11 @@ const Profile = () => {
         <div className="settings-image-selector">
           {selectedImage && (
             <div className="settings-image-avatar">
-              <img src={selectedImage} alt="Selected" style={{ width: "100px", height: "100px" }} />
+              <img
+                src={selectedImage}
+                alt="Selected profile avatar preview"
+                style={{ width: "100px", height: "100px", objectFit: "cover" }}
+              />
             </div>
           )}
           <div className="settings-image">
@@ -147,6 +151,7 @@ const Profile = () => {
               type="file"
               className="upload-custom-avatar"
               accept="image/*"
+              aria-label="Choose a new profile avatar"
               onChange={handleImageChange}
             />
           </div>

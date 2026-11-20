@@ -15,7 +15,8 @@ import logout from "../components/tools/auth";
 const RenderPreviews = ({ url, type }) => {
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
-  const pageParam = parseInt(searchParams.get("page")) || 1;
+  const rawPage = Number.parseInt(searchParams.get("page") ?? "1", 10);
+  const pageParam = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
   const [articles, setArticles] = useState([]);
   const [currentPage, setCurrentPage] = useState(pageParam);
   const [totalPages, setTotalPages] = useState(1);
@@ -23,6 +24,7 @@ const RenderPreviews = ({ url, type }) => {
   const [loading, setLoading] = useState(true);
   const [accessWD, setAccess] = useState(false);
   const bricksRef = useRef(null);
+  const lastScrolledPage = useRef(pageParam);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -70,9 +72,38 @@ const RenderPreviews = ({ url, type }) => {
     setCurrentPage(pageParam);
   }, [pageParam]);
 
+  // If a stale URL points past the last available page, move to the last page.
+  useEffect(() => {
+    if (loading || totalPages < 1 || currentPage <= totalPages) return;
+
+    const next = new URLSearchParams(searchParams);
+    next.set("page", String(totalPages));
+    setSearchParams(next);
+    setCurrentPage(totalPages);
+  }, [currentPage, loading, searchParams, setSearchParams, totalPages]);
+
+  // Scroll to the start of the article grid once the requested page has loaded.
+  useEffect(() => {
+    if (loading || lastScrolledPage.current === currentPage) return;
+    lastScrolledPage.current = currentPage;
+
+    const frame = requestAnimationFrame(() => {
+      document.getElementById("bricks")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [currentPage, loading]);
+
   const handlePageChange = (newPage) => {
-    setSearchParams({ page: newPage });
-    setCurrentPage(newPage);
+    const safePage = Math.min(Math.max(1, Number(newPage) || 1), Math.max(1, totalPages));
+    if (safePage === currentPage) return;
+
+    setSearchParams((previousParams) => {
+      const next = new URLSearchParams(previousParams);
+      next.set("page", String(safePage));
+      return next;
+    });
+    setCurrentPage(safePage);
   };
 
   return (
@@ -108,7 +139,7 @@ const RenderPreviews = ({ url, type }) => {
             )}
           </div>
         </div>
-        {articles && articles.length > 0 && (
+        {hasArticles && totalPages > 1 && (
           <PaginationBlock
             currentPage={currentPage}
             totalPages={totalPages}

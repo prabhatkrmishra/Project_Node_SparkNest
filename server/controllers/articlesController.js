@@ -44,12 +44,12 @@ export async function viewArticle(req, res) {
   const { id } = req.params;
 
   try {
-    const article = await getArticle(id);
-    if (!article) {
+    const result = await getArticle(id);
+    if (!result?.article) {
       return res.status(404).json({ message: `Article with id:${id} doesn't exist` });
     }
-    article.article_body = sanitizeArticleHtml(article.article_body);
-    res.status(200).json(article);
+    result.article.article_body = sanitizeArticleHtml(result.article.article_body);
+    res.status(200).json(result);
   } catch (error) {
     console.error("Error getting article from database:", error);
     res.status(500).json({ message: "Internal Server Error, " });

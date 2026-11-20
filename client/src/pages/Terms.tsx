@@ -22,7 +22,7 @@ const Terms = () => {
                 <header className="entry__header entry__header--narrow">
                   <h1 className="entry__title">Terms &amp; Policy</h1>
                 </header>
-                <div className="entry__content">
+                <div className="entry__content content-primary">
                   <p className="lead">
                     The short version: SparkNest is a place to publish and read articles. Be kind,
                     publish your own work, and don&apos;t abuse the service. The details are below.

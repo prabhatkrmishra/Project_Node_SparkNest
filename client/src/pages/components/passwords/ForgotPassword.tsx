@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 
 import PreLoader from "../PreLoader";
 import Header from "../Header";
+import Footer from "../Footer";
 import SuccessMessage from "../messageBox/SuccessMessage";
 
 import { resetPassword } from "../../../api/SERVICESAPI";
@@ -65,14 +66,18 @@ const ForgotPassword = () => {
         <section id="content" className="s-content" style={{ paddingTop: "130px" }}>
           <div className="row d-flex justify-content-center mb-lg-5">
             <div className="column lg-6 tab-12" style={{ paddingBottom: "50px" }}>
+              <h2
+                className="d-flex justify-content-center u-add-bottom mb-xxl-5"
+                style={{ marginTop: "0" }}
+              >
+                Forgot password?
+              </h2>
+              <p className="text-center">
+                Enter your email and we&apos;ll send you a password reset link.
+              </p>
               <SuccessMessage isSuccess={isSuccess} successMssg={mssg} />
-              {countdown < 1 && (
-                <p>
-                  <u>Request a password reset link to your email</u>
-                </p>
-              )}
               {countdown > 0 && (
-                <p>
+                <p className="text-center">
                   Please wait <b>{countdown}</b> seconds before requesting a new link.
                 </p>
               )}
@@ -103,6 +108,7 @@ const ForgotPassword = () => {
             </div>
           </div>
         </section>
+        <Footer />
       </div>
     </>
   );

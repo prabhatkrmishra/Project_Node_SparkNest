@@ -55,7 +55,7 @@ const Settings = () => {
     ["profile", "Manage your Profile"],
     ["password", "Manage your Password"],
     ["notifications", "Manage your email notifications"],
-    ["delete", "Delete your account permanentely"],
+    ["delete", "Delete your account permanently"],
   ]);
 
   var selectedSection = "";

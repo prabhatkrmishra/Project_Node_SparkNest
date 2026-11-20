@@ -115,7 +115,9 @@ const Comments = ({ articleId }) => {
   useEffect(() => {
     if (!replyComment) return;
     const timer = setTimeout(() => {
-      document.getElementById("comment-box")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      document
+        .getElementById("comment-box")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 100);
     return () => clearTimeout(timer);
   }, [replyComment, addComment]);
@@ -133,27 +135,36 @@ const Comments = ({ articleId }) => {
     }
   };
 
+  const totalComments = countComments(comments);
+
   return (
     <div className="comments-wrap">
       <div id="comments">
         <div className="column lg-12">
-          <h3>{countComments(comments)} Comments</h3>
+          <h3>
+            {totalComments} {totalComments === 1 ? "Comment" : "Comments"}
+          </h3>
+          {totalComments === 0 && (
+            <p className="comments-empty">No comments yet. Be the first to share your thoughts.</p>
+          )}
           {deleteError && (
             <p className="form-status form-status--error" role="alert">
               {deleteError}
             </p>
           )}
-          <ol className="commentlist">
-            {comments.map((comment) => (
-              <Comment
-                key={comment.id}
-                comment={comment}
-                onReply={handleReply}
-                handleDelete={handleDelete}
-                currentUser={user?.id ?? null}
-              />
-            ))}
-          </ol>
+          {comments.length > 0 && (
+            <ol className="commentlist">
+              {comments.map((comment) => (
+                <Comment
+                  key={comment.id}
+                  comment={comment}
+                  onReply={handleReply}
+                  handleDelete={handleDelete}
+                  currentUser={user?.id ?? null}
+                />
+              ))}
+            </ol>
+          )}
         </div>
       </div>
       <div className="add-comment-div">

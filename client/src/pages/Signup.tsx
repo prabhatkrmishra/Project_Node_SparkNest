@@ -9,6 +9,7 @@ import { env } from "../config/env";
 import PreLoader from "./components/PreLoader";
 import ErrorMessage from "./components/messageBox/ErrorMessage";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 const SignUp = () => {
   const [userData, setUserData] = useState({
@@ -100,7 +101,7 @@ const SignUp = () => {
                   className="d-flex justify-content-center u-add-bottom mb-xxl-5"
                   style={{ marginTop: "0" }}
                 >
-                  <u>Signup</u>
+                  Signup
                 </h2>
               </div>
               {/*  <!-- Login with --> */}
@@ -246,6 +247,7 @@ const SignUp = () => {
             </div>
           </div>
         </section>
+        <Footer />
       </div>
     </>
   );

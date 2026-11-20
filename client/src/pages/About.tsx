@@ -34,7 +34,7 @@ const About = () => {
                 </div>
                 <div className="content-primary">
                   <div className="entry__content">
-                    <p className="lead" style={{ textAlign: "justify" }}>
+                    <p className="lead">
                       SparkNest serves as a haven for human narratives and ideas. It empowers anyone
                       to share their insights and knowledge with the world—no need to build a
                       mailing list or cultivate a following beforehand. In a digital landscape
@@ -44,7 +44,7 @@ const About = () => {
                     </p>
                     <div className="row block-lg-one-half block-tab-whole">
                       <div className="column">
-                        <p className="drop-cap" style={{ textAlign: "justify" }}>
+                        <p className="drop-cap">
                           Our ultimate aim is to enhance our collective understanding of the world
                           through the art of writing. We hold the belief that the content we read
                           and write holds significance. Words have the power to either alienate or
@@ -56,7 +56,7 @@ const About = () => {
                         </p>
                       </div>
                       <div className="column">
-                        <p style={{ textAlign: "justify" }}>
+                        <p>
                           Every individual engages with their daily life, so why not share their
                           insights on SparkNest? This vibrant platform showcases a multitude of
                           creative topics, including innovative software solutions, compelling
@@ -70,7 +70,7 @@ const About = () => {
                     </div>
                     <div className="row">
                       <div className="lg-12 tab-12 mob-12 column">
-                        <p style={{ textAlign: "justify" }}>
+                        <p>
                           At SparkNest, we prioritize meaningful engagement over advertisements or
                           data exploitation. Our mission is supported by a thriving community of
                           over a million users who share a passion for creativity and exploration.

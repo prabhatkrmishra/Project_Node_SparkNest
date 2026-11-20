@@ -1,36 +1,37 @@
 // @ts-nocheck
 import { useLocation } from "react-router-dom";
-import { useEffect, useRef } from "react";
+
+const decodeCategory = (value: string) => {
+  try {
+    return decodeURIComponent(value.replace(/\+/g, " ")).trim();
+  } catch {
+    return value.replace(/\+/g, " ").trim();
+  }
+};
 
 const EmptyPreviews = () => {
-  const location = useLocation();
-  let message = useRef("");
-  const categoryMatch = location.pathname.match(/\/category\/(.+)/);
-  const category = categoryMatch ? categoryMatch[1] : null;
-  const decodedString = decodeURIComponent(category);
+  const { pathname } = useLocation();
+  const cleanPath = pathname.replace(/\/+$/, "") || "/";
+  const categoryMatch = cleanPath.match(/^\/category\/(.+)$/);
 
-  useEffect(() => {
-    switch (location.pathname) {
-      case "/profile/articles":
-        message.current = "No created articles";
-        break;
-      case "/profile/collections":
-        message.current = "No saved articles";
-        break;
-      case "/profile/liked":
-        message.current = "No liked articles";
-        break;
-      case category ? `/category/${category}` : null:
-        message.current = `No articles having tags ${decodedString}`;
-        break;
-      default:
-        message.current = "No articles to show";
-    }
-  }, [category, decodedString, location.pathname]);
+  let message = "No articles to show";
+
+  if (cleanPath === "/profile/articles") {
+    message = "No created articles";
+  } else if (cleanPath === "/profile/collections") {
+    message = "No saved articles";
+  } else if (cleanPath === "/profile/liked") {
+    message = "No liked articles";
+  } else if (categoryMatch) {
+    const category = decodeCategory(categoryMatch[1]);
+    message = category
+      ? `No articles tagged “${category}” yet.`
+      : "No articles in this category yet.";
+  }
 
   return (
-    <div className="nothing-menu">
-      {message.current && <span className="nothing-menu-span">{message.current}</span>}
+    <div className="nothing-menu" role="status">
+      <span className="nothing-menu-span">{message}</span>
     </div>
   );
 };
