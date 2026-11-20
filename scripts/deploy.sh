@@ -57,7 +57,8 @@ fi
 install -d -m 0755 "$(dirname "$APP_NODE_BIN")"
 if [ ! -x "$APP_NODE_BIN" ] || ! cmp -s "$NODE_BIN" "$APP_NODE_BIN"; then
   log "Installing stable Node runtime at $APP_NODE_BIN"
-  install -m 0755 "$NODE_BIN" "$APP_NODE_BIN"
+  install -m 0755 "$NODE_BIN" "$APP_NODE_BIN.tmp"
+  mv -f "$APP_NODE_BIN.tmp" "$APP_NODE_BIN"
 fi
 
 UNIT_TMP="$(mktemp)"

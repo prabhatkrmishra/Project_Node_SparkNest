@@ -70,7 +70,8 @@ fi
 # Copy Node into the app directory so the service keeps working when nvm or
 # the Actions tool cache replaces its Node installation.
 install -d -m 0755 "$APP_ROOT/shared/bin"
-install -m 0755 "$NODE_BIN" "$APP_ROOT/shared/bin/node"
+install -m 0755 "$NODE_BIN" "$APP_ROOT/shared/bin/node.tmp"
+mv -f "$APP_ROOT/shared/bin/node.tmp" "$APP_ROOT/shared/bin/node"
 NODE_BIN="$APP_ROOT/shared/bin/node"
 
 sudo install -m 0644 "$REPO_ROOT/deploy/nginx/sparknest.conf" /etc/nginx/sites-available/sparknest
