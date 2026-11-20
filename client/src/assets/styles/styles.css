@@ -2460,7 +2460,9 @@ td:last-child {
   margin: 0;
   color: var(--color-text-dark);
   border-radius: var(--border-radius);
-  transition: background-color 0.25s ease-in-out, color 0.25s ease-in-out;
+  transition:
+    background-color 0.25s ease-in-out,
+    color 0.25s ease-in-out;
 }
 
 .pgn__num {
@@ -2520,7 +2522,9 @@ td:last-child {
   color: var(--color-text-dark);
   cursor: pointer;
   opacity: 1;
-  transition: background-color 0.25s ease-in-out, opacity 0.25s ease-in-out;
+  transition:
+    background-color 0.25s ease-in-out,
+    opacity 0.25s ease-in-out;
 }
 
 .pgn__prev:focus,
@@ -6758,7 +6762,6 @@ span.enabled-like-article {
   overflow-wrap: anywhere;
 }
 
-
 /*
  * Modals
  * Customization
@@ -7809,7 +7812,6 @@ div.tags-save-like {
   }
 }
 
-
 /* -------------------------------------------------------------------
  * ## Final form, focus, and editor polish
  * ------------------------------------------------------------------- */
@@ -8007,5 +8009,145 @@ select:focus-visible,
 
   ul.sub-menu--top li > a {
     padding-left: 1.4rem !important;
+  }
+}
+
+/* ===================================================================
+ * ## Interactive state polish
+ *
+ * Keep primary actions visually responsive, make disabled controls
+ * unmistakable, and give native checkboxes a usable hit area and brand
+ * accent. These rules sit last so the base template cannot override them.
+ * ------------------------------------------------------------------- */
+input[type="checkbox"] {
+  width: 1.8rem;
+  height: 1.8rem;
+  accent-color: var(--color-1);
+  cursor: pointer;
+}
+
+label > input[type="checkbox"] {
+  top: 0.15rem;
+}
+
+.btn.btn--primary:not(:disabled):hover,
+button.btn--primary:not(:disabled):hover,
+input[type="submit"].btn--primary:not(:disabled):hover,
+input[type="reset"].btn--primary:not(:disabled):hover,
+input[type="button"].btn--primary:not(:disabled):hover,
+.btn.btn--primary:not(:disabled):focus-visible,
+button.btn--primary:not(:disabled):focus-visible,
+input[type="submit"].btn--primary:not(:disabled):focus-visible {
+  background: var(--color-btn-primary-hover);
+  border-color: var(--color-btn-primary-hover);
+  color: var(--color-btn-primary-hover-text);
+}
+
+.btn.btn--primary:not(:disabled):active,
+button.btn--primary:not(:disabled):active,
+input[type="submit"].btn--primary:not(:disabled):active,
+input[type="reset"].btn--primary:not(:disabled):active,
+input[type="button"].btn--primary:not(:disabled):active {
+  background: var(--color-1-dark);
+  border-color: var(--color-1-dark);
+  color: var(--color-btn-primary-hover-text);
+}
+
+.btn.btn--primary:disabled,
+button.btn--primary:disabled,
+input[type="submit"].btn--primary:disabled,
+input[type="reset"].btn--primary:disabled,
+input[type="button"].btn--primary:disabled {
+  background: var(--color-btn-primary);
+  border-color: var(--color-btn-primary);
+  color: var(--color-btn-primary-text);
+}
+
+.btn:disabled,
+button:disabled,
+input[type="submit"]:disabled,
+input[type="reset"]:disabled,
+input[type="button"]:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* The search overlay is intentionally chrome-free; give keyboard users a
+ * focus cue without drawing a heavy box around the full-width field. */
+.s-header__search-form input[type="search"]:focus-visible {
+  outline: none;
+  box-shadow: inset 0 -2px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* Mobile navigation uses the same underline language as desktop, where
+ * the current item already has a bottom border. */
+@media screen and (max-width: 1200px) {
+  .s-header__nav-wrap .s-header__nav > li.current-menu-item > a {
+    color: var(--color-1);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.35em;
+  }
+
+  /* Turn the legacy floating submenu card into an inline, readable list
+   * that belongs to its parent item. */
+  .s-header__nav-wrap .s-header__nav li > ul.sub-menu {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0.4rem 0 0.8rem 1.6rem !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .s-header__nav-wrap .s-header__nav li.sub-menu-is-open > ul.sub-menu {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .s-header__nav-wrap .s-header__nav li > ul.sub-menu li {
+    width: 100% !important;
+    min-height: 0;
+  }
+
+  .s-header__nav-wrap .s-header__nav li > ul.sub-menu li > a {
+    width: 100% !important;
+    padding: 0.7rem 0 0.7rem 1.6rem !important;
+    border-left: 1px solid var(--color-gray-5);
+    font-size: 1.7rem !important;
+    line-height: 1.45 !important;
+    color: var(--color-text-light) !important;
+    white-space: normal !important;
+  }
+
+  .s-header__nav-wrap .s-header__nav li > ul.sub-menu li > a:hover,
+  .s-header__nav-wrap .s-header__nav li > ul.sub-menu li > a:focus {
+    border-left-color: var(--color-1);
+    color: var(--color-1) !important;
+    background: transparent !important;
+  }
+
+  .s-header__nav-wrap .s-header__nav ul.sub-menu--top {
+    width: 100% !important;
+  }
+
+  .s-header__nav-wrap .s-header__nav ul.sub-menu--top li > a {
+    padding: 0.7rem 0 0.7rem 1.6rem !important;
+  }
+}
+
+/* Desktop dropdowns open on hover, and the trigger also exposes a
+ * keyboard-operable open state for Enter activation. */
+@media screen and (min-width: 1201px) {
+  .s-header__nav li.has-children.active > ul {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(0, 0);
+  }
+
+  .s-header__nav li.has-children.active > a::after {
+    transform: rotate(225deg);
   }
 }

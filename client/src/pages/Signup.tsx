@@ -107,47 +107,50 @@ const SignUp = () => {
               {/*  <!-- Login with --> */}
               {/*  <!-- Google Button — shown only when Google OAuth is configured --> */}
               {env.googleLoginEnabled && (
-              <div className="d-flex align-items-center justify-content-center mt-4">
-                <a
-                  onClick={googleAuth}
-                  className="btn btn--hollow u-fullwidth d-flex gap-3  align-items-center justify-content-center"
-                >
-                  <div>Sign Up with</div>
-                  <svg
-                    className="google-svg-icon"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20px"
-                    height="20px"
-                    viewBox="0 0 488 512"
+                <div className="d-flex align-items-center justify-content-center mt-4">
+                  <a
+                    onClick={googleAuth}
+                    className="btn btn--hollow u-fullwidth d-flex gap-3  align-items-center justify-content-center"
                   >
-                    <path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
-                  </svg>
-                </a>
-              </div>
+                    <div>Sign Up with</div>
+                    <svg
+                      className="google-svg-icon"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20px"
+                      height="20px"
+                      viewBox="0 0 488 512"
+                    >
+                      <path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
+                    </svg>
+                  </a>
+                </div>
               )}
               {/*  <!-- Google Button End --> */}
               {/*  <!-- OR --> */}
               {env.googleLoginEnabled && (
-              <div className="d-flex justify-content-center align-items-center mb-4">
-                {/*  <!-- Left horizontal border --> */}
-                <div style={{ width: "47%" }}>
-                  <hr
-                    className="mt-4 mb-4 border border-secondary-subtle"
-                    style={{ borderColor: "#000000" }}
-                  />
+                <div className="d-flex justify-content-center align-items-center mb-4">
+                  {/*  <!-- Left horizontal border --> */}
+                  <div style={{ width: "47%" }}>
+                    <hr
+                      className="mt-4 mb-4 border border-secondary-subtle"
+                      style={{ borderColor: "#000000" }}
+                    />
+                  </div>
+                  {/*  <!-- Mid Text --> */}
+                  <div
+                    className="text-center fw-bold mx-3 text-muted"
+                    style={{ textWrap: "nowrap" }}
+                  >
+                    OR
+                  </div>
+                  {/* <!-- Right horizontal border --> */}
+                  <div style={{ width: "47%" }}>
+                    <hr
+                      className="mt-4 mb-4 border border-secondary-subtle"
+                      style={{ borderColor: "#000000" }}
+                    />
+                  </div>
                 </div>
-                {/*  <!-- Mid Text --> */}
-                <div className="text-center fw-bold mx-3 text-muted" style={{ textWrap: "nowrap" }}>
-                  OR
-                </div>
-                {/* <!-- Right horizontal border --> */}
-                <div style={{ width: "47%" }}>
-                  <hr
-                    className="mt-4 mb-4 border border-secondary-subtle"
-                    style={{ borderColor: "#000000" }}
-                  />
-                </div>
-              </div>
               )}
               {/*  <!-- OR END --> */}
               <form onSubmit={handleSubmit}>
@@ -225,7 +228,6 @@ const SignUp = () => {
                       name="newsletter"
                       checked={userData.newsletter}
                       onChange={handleCheckboxChange}
-                      style={{ width: "15px", height: "15px" }}
                     />
                     <span className="label-text" htmlFor="newsletterSignup">
                       Sign up for the newsletter

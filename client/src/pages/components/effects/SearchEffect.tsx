@@ -8,13 +8,14 @@ const SearchEffect = () => {
     const searchTrigger = document.querySelector(".s-header__search-trigger");
     if (!(searchWrap && searchTrigger)) return;
     const searchField = searchWrap.querySelector(".s-header__search-field");
-    const closeSearch = searchWrap.querySelector(".s-header__search-close");
+    const closeSearchButton = searchWrap.querySelector(".s-header__search-close");
     const siteBody = document.querySelector("body");
 
     const handleSearchTriggerClick = (e) => {
       e.preventDefault();
       e.stopPropagation();
       siteBody.classList.add("search-is-visible");
+      searchTrigger.setAttribute("aria-expanded", "true");
       if (scrollLock.getScrollState()) {
         scrollLock.disablePageScroll(searchWrap);
       } else {
@@ -23,22 +24,29 @@ const SearchEffect = () => {
       setTimeout(() => searchField.focus(), 100);
     };
 
-    const handleCloseSearchClick = (e) => {
-      e.stopPropagation();
-      if (siteBody.classList.contains("search-is-visible")) {
-        siteBody.classList.remove("search-is-visible");
-        setTimeout(() => searchField.blur(), 100);
-        if (scrollLock.getScrollState()) {
-          scrollLock.disablePageScroll(searchWrap);
-        } else {
-          scrollLock.enablePageScroll(searchWrap);
-        }
+    const closeOverlay = ({ restoreFocus = false } = {}) => {
+      if (!siteBody.classList.contains("search-is-visible")) return;
+      siteBody.classList.remove("search-is-visible");
+      searchTrigger.setAttribute("aria-expanded", "false");
+      setTimeout(() => searchField.blur(), 100);
+      if (scrollLock.getScrollState()) {
+        scrollLock.disablePageScroll(searchWrap);
+      } else {
+        scrollLock.enablePageScroll(searchWrap);
       }
+      if (restoreFocus) searchTrigger.focus();
+    };
+
+    const handleCloseSearchClick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      closeOverlay({ restoreFocus: true });
     };
 
     const handleSearchWrapClick = (e) => {
       if (!e.target.matches(".s-header__search-inner")) {
-        handleCloseSearchClick(e);
+        e.stopPropagation();
+        closeOverlay();
       }
     };
 
@@ -47,12 +55,12 @@ const SearchEffect = () => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape" && siteBody.classList.contains("search-is-visible")) {
         e.stopPropagation();
-        handleCloseSearchClick(e);
+        closeOverlay({ restoreFocus: true });
       }
     };
 
     searchTrigger.addEventListener("click", handleSearchTriggerClick);
-    closeSearch.addEventListener("click", handleCloseSearchClick);
+    closeSearchButton.addEventListener("click", handleCloseSearchClick);
     searchWrap.addEventListener("click", handleSearchWrapClick);
     searchField.addEventListener("click", handleSearchFieldClick);
     document.addEventListener("keydown", handleKeyDown);
@@ -61,7 +69,7 @@ const SearchEffect = () => {
 
     return () => {
       searchTrigger.removeEventListener("click", handleSearchTriggerClick);
-      closeSearch.removeEventListener("click", handleCloseSearchClick);
+      closeSearchButton.removeEventListener("click", handleCloseSearchClick);
       searchWrap.removeEventListener("click", handleSearchWrapClick);
       searchField.removeEventListener("click", handleSearchFieldClick);
       document.removeEventListener("keydown", handleKeyDown);

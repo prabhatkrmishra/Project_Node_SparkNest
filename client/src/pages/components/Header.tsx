@@ -16,7 +16,19 @@ const Header = () => {
   const { user } = useAuth();
   const sessionLogged = Boolean(user);
 
-  const isActivePath = (path) => currentPath === path || currentPath.startsWith(path);
+  const isActivePath = (path) => currentPath === path || currentPath.startsWith(`${path}/`);
+  const categoriesActive = currentPath === "/categories" || isActivePath("/category");
+  const createActive = ["/create", "/publish", "/article/edit", "/article/update/publish"].some(
+    isActivePath
+  );
+  const userActive = isActivePath("/profile") || isActivePath("/account/settings");
+  const loginActive = [
+    "/session/new",
+    "/password/request",
+    "/password/reset",
+    "/google/login",
+    "/google/success",
+  ].some(isActivePath);
 
   const [searchValue, setSearchValue] = useState("");
   const [topBlogs, setTopBlogs] = useState([]);
@@ -49,6 +61,7 @@ const Header = () => {
     event.preventDefault();
     const query = searchValue.trim();
     document.body.classList.remove("search-is-visible");
+    document.querySelector(".s-header__search-trigger")?.setAttribute("aria-expanded", "false");
     if (query) {
       navigate(`/categories?q=${encodeURIComponent(query)}`);
     } else {
@@ -60,7 +73,9 @@ const Header = () => {
   const toggleMenu = (event) => {
     event.preventDefault();
     const parentLi = event.target.closest(".has-children");
-    parentLi.classList.toggle("active");
+    if (!parentLi) return;
+    const isOpen = parentLi.classList.toggle("active");
+    parentLi.querySelector(":scope > a")?.setAttribute("aria-expanded", String(isOpen));
   };
 
   return (
@@ -71,14 +86,16 @@ const Header = () => {
         </p>
       </div>
       <div className="row s-header__navigation">
-        <nav className="s-header__nav-wrap">
+        <nav className="s-header__nav-wrap" id="primary-navigation">
           <h3 className="s-header__nav-heading">Navigate to</h3>
           <ul className="s-header__nav">
             <li className={currentPath === "/" ? "current-menu-item" : ""}>
-              <a href="/">Home</a>
+              <a href="/" aria-current={currentPath === "/" ? "page" : undefined}>
+                Home
+              </a>
             </li>
-            <li className={`has-children ${isActivePath("/category") ? "current-menu-item" : ""}`}>
-              <a href="#" onClick={toggleMenu}>
+            <li className={`has-children ${categoriesActive ? "current-menu-item" : ""}`}>
+              <a href="#" onClick={toggleMenu} aria-expanded="false" aria-haspopup="true">
                 Categories
               </a>
               <ul className="sub-menu">
@@ -106,7 +123,7 @@ const Header = () => {
               </ul>
             </li>
             <li className="has-children">
-              <a href="#top-blogs" onClick={(event) => event.preventDefault()}>
+              <a href="#top-blogs" onClick={toggleMenu} aria-expanded="false" aria-haspopup="true">
                 Top Blogs
               </a>
               <ul className="sub-menu sub-menu--top">
@@ -125,18 +142,14 @@ const Header = () => {
                 )}
               </ul>
             </li>
-            <li
-              className={
-                currentPath === "/create" || currentPath === "/publish" ? "current-menu-item" : ""
-              }
-            >
-              <a href="/create">Create</a>
+            <li className={createActive ? "current-menu-item" : ""}>
+              <a href="/create" aria-current={createActive ? "page" : undefined}>
+                Create
+              </a>
             </li>
             {sessionLogged ? (
-              <li
-                className={` has-children ${currentPath === "/profile" ? "current-menu-item" : ""}`}
-              >
-                <a href="#" onClick={toggleMenu}>
+              <li className={`has-children ${userActive ? "current-menu-item" : ""}`}>
+                <a href="#" onClick={toggleMenu} aria-expanded="false" aria-haspopup="true">
                   User
                 </a>
                 <ul className="sub-menu">
@@ -160,8 +173,12 @@ const Header = () => {
                 </ul>
               </li>
             ) : (
-              <li className={currentPath === "/login" ? "current-menu-item" : ""}>
-                <a className="text-dark-emphasis" href="/session/new">
+              <li className={loginActive ? "current-menu-item" : ""}>
+                <a
+                  className="text-dark-emphasis"
+                  href="/session/new"
+                  aria-current={loginActive ? "page" : undefined}
+                >
                   Log in
                 </a>
               </li>
@@ -169,7 +186,7 @@ const Header = () => {
           </ul>
         </nav>
       </div>
-      <div className="s-header__search">
+      <div className="s-header__search" id="site-search">
         <div className="s-header__search-inner">
           <div className="row">
             <form
@@ -204,6 +221,8 @@ const Header = () => {
         className="s-header__search-trigger"
         href="#search"
         aria-label="Open search"
+        aria-controls="site-search"
+        aria-expanded="false"
         title="Open search"
       >
         <svg width="24" height="24" fill="none" viewBox="0 0 24 24" aria-hidden="true">
@@ -216,7 +235,13 @@ const Header = () => {
           ></path>
         </svg>
       </a>
-      <a className="s-header__menu-toggle" href="#menu" aria-label="Open menu">
+      <a
+        className="s-header__menu-toggle"
+        href="#menu"
+        aria-label="Open menu"
+        aria-controls="primary-navigation"
+        aria-expanded="false"
+      >
         <span>Menu</span>
       </a>
       <MobileMenu />

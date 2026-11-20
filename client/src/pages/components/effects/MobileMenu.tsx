@@ -11,20 +11,37 @@ const MobileMenu = () => {
     if (!(toggleButton && mainNavWrap && mainNav)) return;
     const parentMenus = mainNav.querySelectorAll(".has-children");
 
+    const syncMenuState = (isOpen) => {
+      toggleButton.setAttribute("aria-expanded", String(isOpen));
+      toggleButton.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
+    };
+
+    const closeMenu = () => {
+      toggleButton.classList.remove("is-clicked");
+      siteBody.classList.remove("menu-is-open");
+      parentMenus.forEach((current) => {
+        current.classList.remove("sub-menu-is-open");
+        current.querySelector(":scope > a")?.setAttribute("aria-expanded", "false");
+      });
+      if (!scrollLock.getScrollState()) scrollLock.enablePageScroll();
+      syncMenuState(false);
+    };
+
     const handleResize = () => {
-      if (window.matchMedia("(min-width: 1201px)").matches) {
-        if (siteBody.classList.contains("menu-is-open")) siteBody.classList.remove("menu-is-open");
-        if (toggleButton.classList.contains("is-clicked"))
-          toggleButton.classList.remove("is-clicked");
-        if (!scrollLock.getScrollState()) scrollLock.enablePageScroll();
-        parentMenus.forEach((current) => current.classList.remove("sub-menu-is-open"));
+      if (
+        window.matchMedia("(min-width: 1201px)").matches &&
+        siteBody.classList.contains("menu-is-open")
+      ) {
+        closeMenu();
       }
     };
 
     const handleToggleButtonClick = (e) => {
       e.preventDefault();
-      toggleButton.classList.toggle("is-clicked");
-      siteBody.classList.toggle("menu-is-open");
+      const isOpen = !siteBody.classList.contains("menu-is-open");
+      toggleButton.classList.toggle("is-clicked", isOpen);
+      siteBody.classList.toggle("menu-is-open", isOpen);
+      syncMenuState(isOpen);
       if (scrollLock.getScrollState()) {
         scrollLock.disablePageScroll(mainNavWrap);
       } else {
@@ -35,22 +52,25 @@ const MobileMenu = () => {
     const handleMainNavClick = (e) => {
       const target = e.target.closest(".has-children");
       if (!target) return;
-      if (!target.classList.contains("sub-menu-is-open")) {
-        parentMenus.forEach((current) => current.classList.remove("sub-menu-is-open"));
-        target.classList.add("sub-menu-is-open");
-      } else {
-        target.classList.remove("sub-menu-is-open");
+      const isOpen = !target.classList.contains("sub-menu-is-open");
+      if (isOpen) {
+        parentMenus.forEach((current) => {
+          current.classList.remove("sub-menu-is-open");
+          current.querySelector(":scope > a")?.setAttribute("aria-expanded", "false");
+        });
       }
+      target.classList.toggle("sub-menu-is-open", isOpen);
+      target.querySelector(":scope > a")?.setAttribute("aria-expanded", String(isOpen));
     };
 
     const handleKeyDown = (e) => {
       if (e.key === "Escape" && siteBody.classList.contains("menu-is-open")) {
-        toggleButton.classList.remove("is-clicked");
-        siteBody.classList.remove("menu-is-open");
-        parentMenus.forEach((current) => current.classList.remove("sub-menu-is-open"));
-        if (!scrollLock.getScrollState()) scrollLock.enablePageScroll();
+        closeMenu();
+        toggleButton.focus();
       }
     };
+
+    syncMenuState(false);
 
     toggleButton.addEventListener("click", handleToggleButtonClick);
     mainNav.addEventListener("click", handleMainNavClick);
